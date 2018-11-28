@@ -28,13 +28,13 @@ yo
 Depending on your target platform you have to install the following tools
 #### Deploy to Cloud Foundry
 1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud  account
-* [Set your environment up](https://developers.sap.com/tutorials/hcp-cf-getting-started.html) and connect to your Cloud Foundry endpoint
+2. [Set your environment up](https://developers.sap.com/tutorials/hcp-cf-getting-started.html) and connect to your Cloud Foundry endpoint
   ```sh
   cf login
   ```
 
 
-### Getting Started
+## Getting Started
 Create your first OpenUI5 App within seconds!
 
 1. Scaffold your OpenUI5 project
@@ -52,16 +52,6 @@ npm run deploy-to-cf
 ```
 
 <!-- *********************************************************************** -->
-## Configuration
-
-Yeoman will prompt you the following questions to configure the generator.
-
-
-<!-- *********************************************************************** -->
-## Known Issues
-At the time this version was released, there are no known issues.
-
-<!-- *********************************************************************** -->
 ## Support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
@@ -71,15 +61,15 @@ This project is provided "as-is": there is no guarantee that raised issues will 
 <!-- *********************************************************************** -->
 ## Contributing
 
-You are welcome to contribute code to the UI5 Build and Development Tooling in order to fix bugs or to implement new features.
+You are welcome to contribute code to the Easy-UI5 generator in order to fix bugs or to implement new features.
 
 <!-- *********************************************************************** -->
 ## TODO
 
-The following aspects are not yet implemented
+The following aspects/features are not yet implemented:
 * Tests / Continuous Integration Workflow
-* Init git
-* Add more target platforms
+* Init git after project creation
+* Add more target platforms:
   * Neo env
   * SAP HANA
   * SAP NetWeaver
