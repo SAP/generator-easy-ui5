@@ -1,0 +1,38 @@
+{
+  "name": "generator-easy-ui5",
+  "version": "0.1.1",
+  "description": "Generator for OpenUI5-based web-apps which use the official UI5 tooling and support deployment targets such as the SAP Cloud Platform",
+  "main": "index.js",
+  "files": [
+    "app",
+    "newview",
+    "newcontrol"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IObert/generator-easy-ui5.git"
+  },
+  "keywords": [
+    "yeoman-generator",
+    "sap",
+    "sapui5",
+    "openui5",
+    "sapcloudplatform",
+    "cloudplatform",
+    "generator",
+    "scaffold"
+  ],
+  "author": "IObert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IObert/generator-easy-ui5/issues"
+  },
+  "homepage": "https://github.com/IObert/generator-easy-ui5#readme",
+  "dependencies": {
+    "glob": "^7.0.0",
+    "yeoman-generator": "^2.0.1"
+  }
+}
