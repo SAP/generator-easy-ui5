@@ -4,9 +4,8 @@
 <!-- *********************************************************************** -->
 
 
-**Disclaimer:** This is an alpha release!
-The UI5 generator here is not intended for productive use yet. Breaking changes are to be expected.
-
+**Disclaimer:** The purpose of this Yeoman plugin is to guide you on your first steps with SAPUI5 and SAP Cloud Platform deployments. Once you are familiar with those technologies you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
+Currently, we do **NOT** recommend that you use this plugin for production applications.
 
 
 <!-- *********************************************************************** -->
@@ -32,6 +31,8 @@ Depending on your target platform you have to install the following tools
   ```sh
   cf login
   ```
+3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
+4. [Download](https://tools.hana.ondemand.com/additional/mta_archive_builder-1.1.7.jar) the Multi-Target Application Archive Builder
 
 
 ## Getting Started
