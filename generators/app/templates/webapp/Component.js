@@ -5,7 +5,7 @@ sap.ui.define([
 ], function(UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("<%= namespace%>.<%=projectname %>.Component", {
+	return UIComponent.extend("<%=namespace%>.<%=projectname%>.Component", {
 
 		metadata: {
 			manifest: "json"
