@@ -59,7 +59,7 @@ yo easy-ui5
 cd <your project name>
 npm start
 ```
-4. Deploy it to SAP Cloud Platform (Make sure you [set up](#### Deploy to Cloud Foundry)  your environment correctly)
+4. Deploy it to SAP Cloud Platform (Make sure you [set up](#deploy-to-cloud-foundry)  your environment correctly)
 ```
 npm run deploy-to-cf
 ```
