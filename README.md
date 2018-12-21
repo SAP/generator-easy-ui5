@@ -26,7 +26,7 @@ This project leverages (among others) the following Open Source projects:
 1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher ⚠️)
 2. Install the generator
 ```sh
-npm install -g yo easy-ui5
+npm install -g yo generator-easy-ui5
 ```
 3. Verify your installation
 ```sh
