@@ -1,32 +1,30 @@
-# [Easy UI5](https://ui5.sap.com/) Generator
+# Easy UI5 Generator
 
-Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple OpenUI5-based web-apps within seconds.
+Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps within seconds.
 
 This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
 > **Disclaimer:** The purpose of this generator is to guide you on your first steps with SAPUI5 and SAP Cloud Platform deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
-Currently, we do **NOT** recommend that you use this plugin for production applications.
 
 
-## Used Technologies
+## Embedded Technologies
 This project leverages (among others) the following Open Source projects:
 * [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
 * [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
-* [Yeoman - a set of tools for automating development workflow](https://github.com/yeoman/yeoman)
-* [Cloud Foundry CLI](https://github.com/cloudfoundry/cli)
 
 ## Installation
-### Dependencies
+### Requirements
 
-1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher ⚠️)
+1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher)
 2. Install the generator
     ```sh
-    npm install -g yo generator-easy-ui5 
+    npm install -g yo generator-easy-ui5
     ```
-3. Verify your installation
+3. Verify your installation to see if Yeoman has been installed correctly
     ```sh
     yo
     ```
+	Make sure you see the `easy-ui5` generator listed.
 
 
 ### Optional Steps
@@ -43,7 +41,7 @@ Depending on your target platform you have to install the following tools:
 
 
 ## Usage
-### Create your first OpenUI5 App within seconds!
+### Create your first OpenUI5 App within a few seconds!
 
 1. Scaffold your OpenUI5 project
     ```
@@ -54,10 +52,6 @@ Depending on your target platform you have to install the following tools:
     ```
     cd <your project name>
     npm start
-    ```
-4. Deploy it to SAP Cloud Platform (Make sure you [set up](#deploy-to-cloud-foundry)  your environment correctly)
-    ```
-    npm run deploy-to-cf
     ```
 
 ### Add a new view
@@ -74,10 +68,15 @@ yo easy-ui5:newcontrol
 ```
 
 
+### Deploy to SAP Cloud Platform, Cloud Foundry Environment
+Deploy the application to SAP Cloud Platform (Make sure you [set up](#deploy-to-cloud-foundry)  your environment correctly)
+```
+npm run deploy-to-cf
+```
+
 ## Support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
-This project is provided "as-is": there is no guarantee that raised issues will be answered or addressed in future releases.
 
 ## Contributing
 
