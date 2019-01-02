@@ -1,5 +1,7 @@
 # Easy UI5 Generator
 
+## Description
+
 Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps within seconds.
 
 This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
