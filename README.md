@@ -82,6 +82,8 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 
 We welcome any type of contribution (code contributions, pull requests, issues) to this easy-ui5 generator equally.
 
+Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-easy-ui5/blob/master/CONTRIBUTING.md).
+
 ## To-Do
 
 The following aspects/features are not yet implemented:
