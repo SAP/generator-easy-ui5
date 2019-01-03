@@ -13,7 +13,6 @@ This project leverages (among others) the following Open Source projects:
 * [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 
 ## Installation
-### Requirements
 
 1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher)
 2. Install the generator
@@ -25,19 +24,6 @@ This project leverages (among others) the following Open Source projects:
     yo
     ```
 	Make sure you see the `easy-ui5` generator listed.
-
-
-### Optional Steps
-Depending on your target platform you have to install the following tools:
-
-#### Deploy to Cloud Foundry
-1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud  account
-2. [Set your environment up](https://developers.sap.com/tutorials/hcp-cf-getting-started.html) and connect to your Cloud Foundry endpoint
-    ```sh
-    cf login
-    ```
-3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
-4. [Download](https://tools.hana.ondemand.com/additional/mta_archive_builder-1.1.7.jar) the Multi-Target Application Archive Builder
 
 
 ## Usage
@@ -68,8 +54,22 @@ yo easy-ui5:newcontrol
 ```
 
 
-### Deploy to SAP Cloud Platform, Cloud Foundry Environment
-Deploy the application to SAP Cloud Platform (Make sure you [set up](#deploy-to-cloud-foundry)  your environment correctly)
+## Deployment
+Depending on your target platform you'll need to install additional tools:
+
+### Cloud Foundry
+#### Required tools
+1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud  account
+2. [Set your environment up](https://developers.sap.com/tutorials/hcp-cf-getting-started.html) and connect to your Cloud Foundry endpoint
+    ```sh
+    cf login
+    ```
+3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
+4. [Download](https://tools.hana.ondemand.com/additional/mta_archive_builder-1.1.7.jar) the Multi-Target Application Archive Builder
+to SAP Cloud Platform, Cloud Foundry Environment
+
+#### Deploy
+Call this command from the root directory to deploy the application to Cloud Foundry
 ```
 npm run deploy-to-cf
 ```
