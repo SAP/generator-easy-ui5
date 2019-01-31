@@ -6,13 +6,8 @@ Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create 
 
 This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
-> **Disclaimer:** The purpose of this generator is to guide you on your first steps with SAPUI5 and SAP Cloud Platform deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
+The purpose of this generator is to guide you on your first steps with SAPUI5 and SAP Cloud Platform deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
-
-## Embedded Technologies
-This project leverages (among others) the following Open Source projects:
-* [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
-* [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 
 ## Installation
 
@@ -48,13 +43,11 @@ This sub-generator will create a new view (of the same type you specified during
 yo easy-ui5:newview
 ```
 
-
 ### Create a custom control
 Run the following command from your project's root to scaffold a custom control.
 ```
 yo easy-ui5:newcontrol
 ```
-
 
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
@@ -75,6 +68,12 @@ Call this command from the root directory to deploy the application to Cloud Fou
 ```
 npm run deploy-to-cf
 ```
+
+
+## Embedded Technologies
+This project leverages (among others) the following Open Source projects:
+* [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
+* [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 
 ## Support
 
@@ -100,5 +99,5 @@ Contributions are very much appreciated. 🥳
 
 ## License
 
-Copyright (c) 2018 SAP SE or an SAP affiliate company. All rights reserved.
+Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
