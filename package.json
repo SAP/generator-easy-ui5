@@ -3,7 +3,6 @@
   "version": "0.1.2",
   "description": "Generator for OpenUI5-based web-apps which use the official UI5 tooling and support deployment targets such as the SAP Cloud Platform",
   "main": "generators/app/index.js",
-  "name": "generator-git-init",
   "files": [
     "app",
     "newview",
