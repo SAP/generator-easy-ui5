@@ -1,7 +1,6 @@
 {
   "name": "<%= projectname %>",
   "version": "0.0.1",
-  "main": "app.js",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -23,7 +22,7 @@
     "@openui5/themelib_sap_belize": "^1.60.1"
   },
   "devDependencies": {
-      "@ui5/cli": "^0.2.1",
+      "@ui5/cli": "^1.1.0",
       "eslint": "^4.19.1",
       "karma": "^2.0.2",
       "karma-chrome-launcher": "^2.2.0",
