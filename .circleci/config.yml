@@ -9,13 +9,10 @@ workflows:
   version: 2
   test-deploy:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /^v.*/ #fix this
+      - build
       - deploy:
           requires:
-            - test
+            - build
           filters:
             tags:
               only: /^v.*/
@@ -23,7 +20,7 @@ workflows:
               ignore: /.*/
 
 jobs:
-  test:
+  build:
     <<: *defaults
     steps:
       - checkout
@@ -31,8 +28,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
-    # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v1-dependencies- # fallback to using the latest cache if no exact match is found
 
       - run: npm install
       - run:
