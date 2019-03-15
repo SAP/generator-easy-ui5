@@ -32,19 +32,19 @@ module.exports = class extends Generator {
     }
 
     writing() {
-        const sViewFileName = "webapp/view/$ViewType$ViewName.view.$ViewEnding"
-        const sControllerFileName = "webapp/controller/$ViewType$ViewName.controller.js"
+        const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding"
+        const sControllerFileName = "webapp/controller/$ViewName.controller.js"
 
         const sViewType = this.options.oneTimeConfig.viewtype;
         const sViewName = this.options.oneTimeConfig.viewname;
 
         var sOrigin = this.templatePath(sViewFileName);
-        var sTarget = this.destinationPath(sViewFileName.replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
+        var sTarget = this.destinationPath(sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 
         if (this.options.oneTimeConfig.createcontroller || this.options.isSubgeneratorCall) {
             sOrigin = this.templatePath(sControllerFileName);
-            sTarget = this.destinationPath(sControllerFileName.replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
+            sTarget = this.destinationPath(sControllerFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
             this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
         }
     }

@@ -1,4 +1,4 @@
-<% if (viewtype === 'XML') { %> <mvc:View controllerName="<%= namespace%>.<%=projectname%>.controller.<%=viewtype%><%=viewname%>"
+<% if (viewtype === 'XML') { %> <mvc:View controllerName="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>"
 	displayBlock="true"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
@@ -10,7 +10,7 @@
 		</pages>
 	</App>
 </mvc:View> <% } if (viewtype === 'HTML') { %>
-<template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewtype%><%=viewname%>">
+<template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>">
 	<div data-sap-ui-type="sap.m.App">
 		<div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
 			<div data-sap-ui-aggregation="content">
@@ -20,7 +20,7 @@
 </template> <% } if (viewtype === 'JSON') { %>
 {
 	"Type": "sap.ui.core.mvc.JSONView",
-	"controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewtype%><%=viewname%>",
+	"controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>",
 	"content": [{
 		"Type": "sap.m.App",
 		"pages": [{
@@ -30,10 +30,10 @@
 		}]
 	}]
 } <% } if (viewtype === 'JS') { %>
-sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewtype%><%=viewname%>", {
+sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewname%>", {
 
 	getControllerName: function () {
-		return "<%= namespace%>.<%=projectname%>.controller.<%=viewtype%><%=viewname%>";
+		return "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>";
 	},
 
 	createContent: function (oController) {
