@@ -6,13 +6,11 @@
     },
     "scripts": {
         "start": "ui5 serve -o index.html",
+        "lint": "eslint webapp",
+        "build-ui": "rimraf dist && ui5 build --a",
         "package-cf": "npm run build-ui && cp cf_deployment_resources/package.json dist/package.json && cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
         "deploy-cf": "npm run package-cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-        "cf_log": "cf logs <%= projectname %>",
-        "lint": "eslint webapp",
-        "watch": "start-server-and-test start http://localhost:8080 karma",
-        "test": "npm run lint && rimraf coverage && start-server-and-test start http://localhost:8080 karma-ci",
-        "build-ui": "rimraf dist && ui5 build --a"
+        "cf-log": "cf logs <%= projectname %>"
     },
     "dependencies": {
         "@ui5/cli": "^1.2.0",
@@ -21,11 +19,7 @@
         "@openui5/sap.ui.core": "^1.63.0",
         "@openui5/sap.ui.layout": "^1.63.0",
         "@openui5/themelib_sap_belize": "^1.63.0",
-        "cross-var": "^1.1.0"
-    },
-    "devDependencies": {
-        "eslint": "^5.15.0",
-        "qunitjs": "^2.4.1",
-        "start-server-and-test": "^1.4.1"
+        "cross-var": "^1.1.0",
+        "eslint": "^5.15.0"
     }
 }

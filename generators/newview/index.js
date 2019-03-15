@@ -38,7 +38,6 @@ module.exports = class extends Generator {
         const sViewType = this.options.oneTimeConfig.viewtype;
         const sViewName = this.options.oneTimeConfig.viewname;
 
-				debugger
         var sOrigin = this.templatePath(sViewFileName);
         var sTarget = this.destinationPath(sViewFileName.replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
