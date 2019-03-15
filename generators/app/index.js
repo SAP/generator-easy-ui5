@@ -44,11 +44,6 @@ module.exports = class extends Generator {
                 return 'Please use alpha numeric characters only for the view name.';
             },
             default: 'MainView'
-        }, {
-            type: 'input',
-            name: 'mtabuilder',
-            message: 'Under which path is the MTA builder located?',
-            default: '~/Platforms/mta_archive_builder-1.1.7.jar'
         }]).then((answers) => {
 						this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
             this.config.set(answers)

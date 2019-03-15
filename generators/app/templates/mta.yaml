@@ -1,20 +1,18 @@
 ID: <%= projectname %>
-_schema-version: '2.1'
+_schema-version: 3.2.0
 description: Enter description here
 version: 0.0.1
 
 modules:
  - name: <%= projectname %>
-   type: html5
+   type: nodejs
    path: dist
    parameters:
       disk-quota: 512M
-      memory: 128M
+      memory: 512M
    requires:
     - name: dest_<%= projectname %>
-
 resources:
-
  - name: dest_<%= projectname %>
    parameters:
       service-plan: lite
