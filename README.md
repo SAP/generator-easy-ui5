@@ -60,13 +60,15 @@ Depending on your target platform you'll need to install additional tools:
     cf login
     ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
-4. [Download](https://tools.hana.ondemand.com/additional/mta_archive_builder-1.1.7.jar) the Multi-Target Application Archive Builder
-to SAP Cloud Platform, Cloud Foundry Environment
+4. [Install](https://github.com/SAP/cloud-mta-build-tool) Multi-Target Application (MTA) build tool for Cloud Foundry
+```sh
+npm install -g mbt
+```
 
 #### Deploy
 Call this command from the root directory to deploy the application to Cloud Foundry
 ```
-npm run deploy-to-cf
+npm run deploy-cf
 ```
 
 

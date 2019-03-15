@@ -1,37 +1,31 @@
 {
-  "name": "<%= projectname %>",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=10.0.0"
-  },
-  "scripts": {
-    "start": "ui5 serve -o index.html",
-    "deploy-to-cf": "npm run build && cp cf_deployment_resources/package.json dist/package.json && cp cf_deployment_resources/xs-app.json dist/xs-app.json && java -jar <%= mtabuilder %> --build-target=CF build && cf deploy <%=namespace%>.<%=projectname%>.mtar",
-    "cf_log": "cf logs <%= projectname %>",
-    "lint": "eslint webapp",
-    "karma": "karma start",
-    "karma-ci": "karma start karma-ci.conf.js",
-    "watch": "start-server-and-test start http://localhost:8080 karma",
-    "test": "npm run lint && rimraf coverage && start-server-and-test start http://localhost:8080 karma-ci",
-    "build": "rimraf dist && ui5 build --a"
-  },
-  "dependencies": {
-    "@openui5/sap.m": "^1.60.1",
-    "@openui5/sap.ui.core": "^1.60.1",
-    "@openui5/sap.ui.layout": "^1.60.1",
-    "@openui5/themelib_sap_belize": "^1.60.1"
-  },
-  "devDependencies": {
-      "@ui5/cli": "^1.1.0",
-      "eslint": "^4.19.1",
-      "karma": "^2.0.2",
-      "karma-chrome-launcher": "^2.2.0",
-      "karma-coverage": "^1.1.2",
-      "karma-openui5": "^0.2.3",
-      "karma-phantomjs-launcher": "^1.0.4",
-      "karma-qunit": "^1.2.1",
-      "qunitjs": "^2.4.1",
-      "rimraf": "^2.6.2",
-      "start-server-and-test": "^1.4.1"
+    "name": "<%= projectname %>",
+    "version": "0.0.1",
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "scripts": {
+        "start": "ui5 serve -o index.html",
+        "package-cf": "npm run build-ui && cp cf_deployment_resources/package.json dist/package.json && cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
+        "deploy-cf": "npm run package-cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+        "cf_log": "cf logs <%= projectname %>",
+        "lint": "eslint webapp",
+        "watch": "start-server-and-test start http://localhost:8080 karma",
+        "test": "npm run lint && rimraf coverage && start-server-and-test start http://localhost:8080 karma-ci",
+        "build-ui": "rimraf dist && ui5 build --a"
+    },
+    "dependencies": {
+        "@ui5/cli": "^1.2.0",
+        "rimraf": "^2.6.2",
+        "@openui5/sap.m": "^1.63.0",
+        "@openui5/sap.ui.core": "^1.63.0",
+        "@openui5/sap.ui.layout": "^1.63.0",
+        "@openui5/themelib_sap_belize": "^1.63.0",
+        "cross-var": "^1.1.0"
+    },
+    "devDependencies": {
+        "eslint": "^5.15.0",
+        "qunitjs": "^2.4.1",
+        "start-server-and-test": "^1.4.1"
     }
 }

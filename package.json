@@ -34,6 +34,6 @@
   "homepage": "https://github.com/SAP/generator-easy-ui5#readme",
   "dependencies": {
     "glob": "^7.0.0",
-    "yeoman-generator": "^2.0.1"
+    "yeoman-generator": "^3.2.0"
   }
 }
