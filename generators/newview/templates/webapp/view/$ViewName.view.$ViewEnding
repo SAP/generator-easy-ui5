@@ -11,7 +11,7 @@
 	</App>
 </mvc:View> <% } if (viewtype === 'HTML') { %>
 <template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>">
-	<div data-sap-ui-type="sap.m.App">
+	<div data-sap-ui-type="sap.m.App" id="idAppControl">
 		<div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
 			<div data-sap-ui-aggregation="content">
 			</div>
@@ -23,6 +23,7 @@
 	"controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>",
 	"content": [{
 		"Type": "sap.m.App",
+		"id": "idAppControl",
 		"pages": [{
 			"Type": "sap.m.Page",
 			"title": "{i18n>title}",
@@ -41,7 +42,7 @@ sap.ui.define([
 		},
 
 		createContent: function (oController) {
-			return new sap.m.App("myApp", {
+			return new sap.m.App(this.createId("idAppControl"), {
 				pages: new sap.m.Page({
 					title: "{i18n>title}",
 					content: []
