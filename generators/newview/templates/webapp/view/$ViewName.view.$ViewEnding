@@ -30,19 +30,24 @@
 		}]
 	}]
 } <% } if (viewtype === 'JS') { %>
-sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewname%>", {
+sap.ui.define([
+    "sap/ui/core/mvc/JSView"
+], function(JSView) {
+"use strict";
+	sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewname%>", {
 
-	getControllerName: function () {
-		return "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>";
-	},
+		getControllerName: function () {
+			return "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>";
+		},
 
-	createContent: function (oController) {
-		return new sap.m.App("myApp", {
-			pages: new sap.m.Page({
-				title: "{i18n>title}",
-				content: []
-			})
-		});
-	}
+		createContent: function (oController) {
+			return new sap.m.App("myApp", {
+				pages: new sap.m.Page({
+					title: "{i18n>title}",
+					content: []
+				})
+			});
+		}
 
+	});
 }); <% } %>

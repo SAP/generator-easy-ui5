@@ -25,7 +25,7 @@ module.exports = class extends Generator {
                 }
                 return 'Please use alpha numeric characters and dots only to specifiy the super control.';
             },
-            default: 'sap.m.Text'
+            default: 'sap.ui.core.Control'
         }]).then((answers) => {
             this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.controlname = answers.controlname;
