@@ -10,7 +10,7 @@
     "newcontrol"
   ],
   "scripts": {
-    "test": "echo \"Warning: to be implemented\" "
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -35,5 +35,11 @@
   "dependencies": {
     "glob": "^7.0.0",
     "yeoman-generator": "^3.2.0"
+  },
+  "devDependencies": {
+    "execa": "^1.0.0",
+    "mocha": "^6.0.2",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^1.9.1"
   }
 }

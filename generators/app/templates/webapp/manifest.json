@@ -30,7 +30,7 @@
 
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewtype%><%=viewname%>",
+			"viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewname%>",
 			"type": "<%=viewtype%>",
 			"async": true,
 			"id": "app"
@@ -70,15 +70,15 @@
 				"async": true
 			},
 			"routes": [{
-				"name": "Route<%=viewtype%><%=viewname%>",
-				"pattern": "Route<%=viewtype%><%=viewname%>",
-				"target": ["Target<%=viewtype%><%=viewname%>"]
+				"name": "Route<%=viewname%>",
+				"pattern": "Route<%=viewname%>",
+				"target": ["Target<%=viewname%>"]
 			}],
 			"targets": {
-				"Target<%=viewtype%><%=viewname%>": {
+				"Target<%=viewname%>": {
 					"viewType": "XML",
 					"viewLevel": 1,
-					"viewName": "<%=viewtype%><%=viewname%>"
+					"viewName": "<%=viewname%>"
 				}
 			}
 		}
