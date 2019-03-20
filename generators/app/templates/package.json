@@ -7,7 +7,7 @@
     "scripts": {
         "start": "ui5 serve -o index.html",
         "serve": "ui5 serve",
-        "test": "mocha",
+        "test": "npm run lint && npm run karma",
         "karma-ci": "karma start karma-ci.conf.js",
         "karma": "rimraf coverage && start-server-and-test serve http://localhost:8080 karma-ci",
         "lint": "eslint webapp",
@@ -31,11 +31,8 @@
         "karma-openui5": "^0.2.3",
         "karma-qunit": "^1.2.1",
         "qunitjs": "^2.4.1",
-        "yeoman-assert": "^3.1.1",
         "cross-var": "^1.1.0",
         "eslint": "^5.15.0",
-        "execa": "^1.0.0",
-        "mocha": "^6.0.2",
         "start-server-and-test": "^1.7.12"
     }
 }
