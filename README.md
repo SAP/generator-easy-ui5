@@ -1,4 +1,8 @@
 # Easy UI5 Generator
+[![NPM version][npm-image]][npm-url]
+[![Build Status][circleci-image]][circleci-url]
+[![Dependency Status][daviddm-image]][daviddm-url]
+[![License Status][license-image]][license-url]
 
 ## Description
 
@@ -103,3 +107,13 @@ Contributions are very much appreciated. 🥳
 
 Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+
+
+[npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
+[npm-url]: https://www.npmjs.com/package/generator-easy-ui5
+[circleci-image]: https://img.shields.io/circleci/project/github/SAP/generator-easy-ui5.svg
+[circleci-url]: https://circleci.com/gh/SAP/generator-easy-ui5
+[daviddm-image]: https://img.shields.io/david/SAP/generator-easy-ui5.svg
+[daviddm-url]: https://david-dm.org/yeoman/yeoman-test
+[license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
+[license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
