@@ -9,7 +9,7 @@
         "serve": "ui5 serve",
         "test": "npm run lint && npm run karma",
         "karma-ci": "karma start karma-ci.conf.js",
-        "karma": "rimraf coverage && start-server-and-test serve http://localhost:8080 karma-ci",
+        "karma": "rimraf coverage && npm run karma-ci",
         "lint": "eslint webapp",
         "build:ui": "rimraf dist && ui5 build --a",
         "build:cf": "npm run build:ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
@@ -28,11 +28,8 @@
         "karma": "^4.1.0",
         "karma-chrome-launcher": "^2.2.0",
         "karma-coverage": "^1.1.2",
-        "karma-openui5": "^0.2.3",
-        "karma-qunit": "^3.1.2",
-        "qunitjs": "^2.4.1",
+        "karma-ui5": "^1.0.0",
         "cross-var": "^1.1.0",
-        "eslint": "^5.16.0",
-        "start-server-and-test": "^1.9.1"
+        "eslint": "^5.16.0"
     }
 }

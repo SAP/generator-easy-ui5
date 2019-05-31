@@ -1,15 +1,6 @@
-// Karma configuration
-// Generated on Wed Jun 13 2018 14:38:44 GMT+0200 (CEST)
-
 module.exports = function(config) {
 	require("./karma.conf")(config);
 	config.set({
-
-		client: {
-			qunit: {
-				showUI: false
-			}
-		},
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress', 'coverage'
