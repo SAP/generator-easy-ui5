@@ -72,7 +72,7 @@ npm install -g mbt
 #### Deploy
 Call this command from the root directory to deploy the application to Cloud Foundry
 ```
-npm run deploy-cf
+npm run deploy:cf
 ```
 
 

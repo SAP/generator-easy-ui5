@@ -11,10 +11,9 @@
         "karma-ci": "karma start karma-ci.conf.js",
         "karma": "rimraf coverage && start-server-and-test serve http://localhost:8080 karma-ci",
         "lint": "eslint webapp",
-        "build-ui": "rimraf dist && ui5 build --a",
-        "package-cf": "npm run build-ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
-        "deploy-cf": "npm run package-cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-        "cf-log": "cf logs <%= projectname %>"
+        "build:ui": "rimraf dist && ui5 build --a",
+        "build:cf": "npm run build:ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
+        "deploy:cf": "npm run build:cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar"
     },
     "dependencies": {
         "@openui5/sap.m": "^1.66.1",
