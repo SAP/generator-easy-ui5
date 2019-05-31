@@ -9,30 +9,27 @@
         "serve": "ui5 serve",
         "test": "npm run lint && npm run karma",
         "karma-ci": "karma start karma-ci.conf.js",
-        "karma": "rimraf coverage && start-server-and-test serve http://localhost:8080 karma-ci",
+        "karma": "rimraf coverage && npm run karma-ci",
         "lint": "eslint webapp",
-        "build-ui": "rimraf dist && ui5 build --a",
-        "package-cf": "npm run build-ui && cp cf_deployment_resources/package.json dist/package.json && cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
-        "deploy-cf": "npm run package-cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-        "cf-log": "cf logs <%= projectname %>"
+        "build:ui": "rimraf dist && ui5 build --a",
+        "build:cf": "npm run build:ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
+        "deploy:cf": "npm run build:cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar"
     },
     "dependencies": {
-        "@openui5/sap.m": "^1.63.0",
-        "@openui5/sap.ui.core": "^1.63.0",
-        "@openui5/sap.ui.layout": "^1.63.0",
-        "@openui5/themelib_sap_belize": "^1.63.0"
+        "@openui5/sap.m": "^1.66.1",
+        "@openui5/sap.ui.core": "^1.66.1",
+        "@openui5/sap.ui.layout": "^1.66.1",
+        "@openui5/themelib_sap_belize": "^1.66.1",
+        "shx": "^0.3.2"
     },
     "devDependencies": {
-        "@ui5/cli": "^1.2.0",
-        "rimraf": "^2.6.2",
-        "karma": "^3.1.3",
+        "@ui5/cli": "^1.4.4",
+        "rimraf": "^2.6.3",
+        "karma": "^4.1.0",
         "karma-chrome-launcher": "^2.2.0",
         "karma-coverage": "^1.1.2",
-        "karma-openui5": "^0.2.3",
-        "karma-qunit": "^1.2.1",
-        "qunitjs": "^2.4.1",
+        "karma-ui5": "^1.0.0",
         "cross-var": "^1.1.0",
-        "eslint": "^5.15.0",
-        "start-server-and-test": "^1.7.12"
+        "eslint": "^5.16.0"
     }
 }
