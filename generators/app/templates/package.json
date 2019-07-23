@@ -12,24 +12,24 @@
         "karma": "rimraf coverage && npm run karma-ci",
         "lint": "eslint webapp",
         "build:ui": "rimraf dist && ui5 build --a",
-        "build:cf": "npm run build:ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
+        "build:cf": "npm run build:ui && shx cp cf_deployment_resources/package.json dist/package.json && shx cp cf_deployment_resources/_.npmrc dist/.npmrc && shx cp cf_deployment_resources/xs-app.json dist/xs-app.json && mbt init && make -f Makefile.mta p=cf",
         "deploy:cf": "npm run build:cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar"
     },
     "dependencies": {
-        "@openui5/sap.m": "^1.66.1",
-        "@openui5/sap.ui.core": "^1.66.1",
-        "@openui5/sap.ui.layout": "^1.66.1",
-        "@openui5/themelib_sap_belize": "^1.66.1",
+        "@openui5/sap.m": "^1.68.1",
+        "@openui5/sap.ui.core": "^1.68.1",
+        "@openui5/sap.ui.layout": "^1.68.1",
+        "@openui5/themelib_sap_belize": "^1.68.1",
         "shx": "^0.3.2"
     },
     "devDependencies": {
-        "@ui5/cli": "^1.4.4",
+        "@ui5/cli": "^1.6.0",
         "rimraf": "^2.6.3",
-        "karma": "^4.1.0",
-        "karma-chrome-launcher": "^2.2.0",
+        "karma": "^4.2.0",
+        "karma-chrome-launcher": "^3.0.0",
         "karma-coverage": "^1.1.2",
-        "karma-ui5": "^1.0.0",
+        "karma-ui5": "^1.0.1",
         "cross-var": "^1.1.0",
-        "eslint": "^5.16.0"
+        "eslint": "^6.1.0"
     }
 }
