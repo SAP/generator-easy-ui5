@@ -28,6 +28,10 @@ describe('Basic project capabilities', function() {
 			return execa.commandSync('npm run test')
 		});
 
+		it('should create an buildable project', function() {
+			return execa.commandSync('npm run build:cf')
+		});
+
 	});
 
 
