@@ -6,7 +6,7 @@ const execa = require('execa');
 describe('Basic project capabilities', function() {
 
 	describe('Default Generator', function() {
-		this.timeout(90000);
+		this.timeout(200000);
 
 		it('should be able to create the project', function() {
 			return helpers.run(path.join(__dirname, '../generators/app'))
@@ -36,7 +36,7 @@ describe('Basic project capabilities', function() {
 
 
 	describe('JSON Generator', function() {
-		this.timeout(90000);
+		this.timeout(200000);
 
 		it('should be able to create the project', function() {
 			return helpers.run(path.join(__dirname, '../generators/app'))
@@ -55,11 +55,16 @@ describe('Basic project capabilities', function() {
 			return execa.commandSync('npm test')
 		});
 
+		it('should create an buildable project', function() {
+			return execa.commandSync('npm run build:cf')
+		});
+
+
 	});
 
 
 	describe('JS Generator', function() {
-		this.timeout(90000);
+		this.timeout(200000);
 
 		it('should be able to create the project', function() {
 			return helpers.run(path.join(__dirname, '../generators/app'))
@@ -78,11 +83,16 @@ describe('Basic project capabilities', function() {
 			return execa.commandSync('npm test')
 		});
 
+		it('should create an buildable project', function() {
+			return execa.commandSync('npm run build:cf')
+		});
+
+
 	});
 
 
 	describe('HTML Generator', function() {
-		this.timeout(90000);
+		this.timeout(200000);
 
 		it('should be able to create the project', function() {
 			return helpers.run(path.join(__dirname, '../generators/app'))
@@ -100,6 +110,11 @@ describe('Basic project capabilities', function() {
 		it('should create valid code (run inner test suite)', function() {
 			return execa.commandSync('npm test')
 		});
+
+		it('should create an buildable project', function() {
+			return execa.commandSync('npm run build:cf')
+		});
+
 
 	});
 
