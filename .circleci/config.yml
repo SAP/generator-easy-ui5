@@ -5,23 +5,6 @@ defaults: &defaults
   docker:
     - image: circleci/node:10.6.0-browsers
 
-workflows:
-  version: 2
-  test-deploy:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /^.*/
-      - deploy:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-
 jobs:
   build:
     <<: *defaults
@@ -58,3 +41,20 @@ jobs:
       - run:
           name: Publish package
           command: npm publish
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^.*/
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
