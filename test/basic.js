@@ -3,17 +3,16 @@ const path = require('path');
 const helpers = require('yeoman-test');
 const execa = require('execa');
 
-describe('Basic project capabilities', function() {
-
-	describe('Default Generator', function() {
+function createTest(sTestName, sFileType){
+	describe(sTestName, function() {
 		this.timeout(200000);
 
 		it('should be able to create the project', function() {
-			return helpers.run(path.join(__dirname, '../generators/app'))
+			return helpers.run(path.join(__dirname, '../generators/app')).withPrompts({ viewtype: sFileType });
 		});
 
 		it('should create the necessary ui5 files', function() {
-			return assert.file(['ui5.yaml', 'webapp/view/MainView.view.xml', 'webapp/index.html', 'webapp/manifest.json']); //incomplete list, extend if necessary
+			return assert.file(['ui5.yaml', `webapp/view/MainView.view.${sFileType.toLowerCase()}`, 'webapp/index.html', 'webapp/manifest.json']); //incomplete list, extend if necessary
 		});
 
 		it('should create the necessary cloud foundry files', function() {
@@ -33,89 +32,13 @@ describe('Basic project capabilities', function() {
 		});
 
 	});
+}
 
+describe('Basic project capabilities', function() {
 
-	describe('JSON Generator', function() {
-		this.timeout(200000);
-
-		it('should be able to create the project', function() {
-			return helpers.run(path.join(__dirname, '../generators/app'))
-				.withPrompts({ viewtype: 'JSON' })
-		});
-
-		it('should create the necessary ui5 files', function() {
-			return assert.file(['ui5.yaml', 'webapp/view/MainView.view.json']);
-		});
-
-		it('should create an installable project', function() {
-			return execa.commandSync('npm install')
-		});
-
-		it('should create valid code (run inner test suite)', function() {
-			return execa.commandSync('npm test')
-		});
-
-		it('should create an buildable project', function() {
-			return execa.commandSync('npm run build:cf')
-		});
-
-
-	});
-
-
-	describe('JS Generator', function() {
-		this.timeout(200000);
-
-		it('should be able to create the project', function() {
-			return helpers.run(path.join(__dirname, '../generators/app'))
-				.withPrompts({ viewtype: 'JS' })
-		});
-
-		it('should create the necessary ui5 files', function() {
-			return assert.file(['ui5.yaml', 'webapp/view/MainView.view.js']);
-		});
-
-		it('should create an installable project', function() {
-			return execa.commandSync('npm install')
-		});
-
-		it('should create valid code (run inner test suite)', function() {
-			return execa.commandSync('npm test')
-		});
-
-		it('should create an buildable project', function() {
-			return execa.commandSync('npm run build:cf')
-		});
-
-
-	});
-
-
-	describe('HTML Generator', function() {
-		this.timeout(200000);
-
-		it('should be able to create the project', function() {
-			return helpers.run(path.join(__dirname, '../generators/app'))
-				.withPrompts({ viewtype: 'HTML' })
-		});
-
-		it('should create the necessary ui5 files', function() {
-			return assert.file(['ui5.yaml', 'webapp/view/MainView.view.html']);
-		});
-
-		it('should create an installable project', function() {
-			return execa.commandSync('npm install')
-		});
-
-		it('should create valid code (run inner test suite)', function() {
-			return execa.commandSync('npm test')
-		});
-
-		it('should create an buildable project', function() {
-			return execa.commandSync('npm run build:cf')
-		});
-
-
-	});
+	createTest('XML Generator', 'XML');
+	createTest('JSON Generator','JSON');
+	createTest('XML Generator', 'JS' );
+	createTest('XML Generator', 'HTML');
 
 });
