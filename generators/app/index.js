@@ -34,6 +34,12 @@ module.exports = class extends Generator {
             choices: ['XML', 'JSON', 'JS', 'HTML'],
             default: 'XML'
         }, {
+            type: 'list',
+            name: 'ui5libs',
+            message: 'Where should your UI5 libs be served from?',
+            choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
+            default: 'Content delivery network (OpenUI5)'
+        }, {
             type: 'input',
             name: 'viewname',
             message: 'How do you want to name your main view?',
