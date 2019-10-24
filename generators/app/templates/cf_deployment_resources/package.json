@@ -5,7 +5,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "node -r dotenv/config node_modules/@sap/approuter/approuter.js"
+    "start": "node -r dotenv/config node_modules/@sap/approuter/approuter.js"
   },
   "dependencies": {
     "@sap/approuter": "^6.5.1",
