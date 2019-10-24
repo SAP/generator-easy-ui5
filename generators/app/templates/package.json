@@ -16,10 +16,12 @@
         "deploy:cf": "npm run build:cf && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar"
     },
     "dependencies": {
-        "@openui5/sap.m": "^1.71.1",
+        <% if(ui5libs === 'Local resources (OpenUI5)'){ %>
         "@openui5/sap.ui.core": "^1.71.1",
         "@openui5/sap.ui.layout": "^1.71.1",
-        "@openui5/themelib_sap_belize": "^1.71.1",
+        "@openui5/themelib_sap_belize": "^1.71.1", 
+        <% } %>
+        "@openui5/sap.m": "^1.71.1",
         "shx": "^0.3.2"
     },
     "devDependencies": {
