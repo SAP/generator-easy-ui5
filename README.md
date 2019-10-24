@@ -59,12 +59,12 @@ Depending on your target platform you'll need to install additional tools:
 ### Cloud Foundry
 #### Required tools
 1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud  account
-2. [Set your environment up](https://developers.sap.com/tutorials/hcp-cf-getting-started.html) and connect to your Cloud Foundry endpoint
+2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
     ```sh
     cf login
     ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
-4. [Install](https://github.com/SAP/cloud-mta-build-tool) Multi-Target Application (MTA) build tool for Cloud Foundry
+4. [Install](https://sap.github.io/cloud-mta-build-tool/download/) MTA Build Tool for Cloud Foundry
 ```sh
 npm install -g mbt
 ```
