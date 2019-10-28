@@ -5,10 +5,13 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "node -r dotenv/config node_modules/@sap/approuter/approuter.js"
+    "start": "node node_modules/@sap/approuter/approuter.js",
+    "local": "node -r dotenv/config node_modules/@sap/approuter/approuter.js"
   },
   "dependencies": {
-    "@sap/approuter": "^6.5.1",
+    "@sap/approuter": "^6.5.1"
+  },
+  "devDependencies": {
     "dotenv": "^8.2.0"
   }
 }
