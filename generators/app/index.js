@@ -51,7 +51,7 @@ module.exports = class extends Generator {
             },
             default: 'MainView'
         }]).then((answers) => {
-						this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
+            this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
             this.config.set(answers)
         });
     }
@@ -66,14 +66,14 @@ module.exports = class extends Generator {
             nodir: true
         }).forEach((file) => {
             const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace(/^_/, '').replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
+            const sTarget = this.destinationPath(file.replace(/^_/, '').replace(/\/_/, '/').replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
 
             this.fs.copyTpl(sOrigin, sTarget, this.config.getAll());
         });
 
-				const oSubGen = Object.assign({}, this.config.getAll());
-				oSubGen.isSubgeneratorCall = true;
-				oSubGen.cwd = this.destinationRoot();
+        const oSubGen = Object.assign({}, this.config.getAll());
+        oSubGen.isSubgeneratorCall = true;
+        oSubGen.cwd = this.destinationRoot();
 
         this.composeWith(require.resolve('../newview'), oSubGen);
 
@@ -88,13 +88,13 @@ module.exports = class extends Generator {
 
     end() {
         this.spawnCommandSync('git', ['init', '--quiet'], {
-          cwd: this.destinationPath()
+            cwd: this.destinationPath()
         });
         this.spawnCommandSync('git', ['add', '.'], {
-          cwd: this.destinationPath()
+            cwd: this.destinationPath()
         });
         this.spawnCommandSync('git', ['commit', '--allow-empty', '-m', 'Initialize repository with easy-ui5'], {
-          cwd: this.destinationPath()
+            cwd: this.destinationPath()
         });
     }
 };
