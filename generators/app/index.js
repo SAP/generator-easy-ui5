@@ -85,4 +85,16 @@ module.exports = class extends Generator {
             npm: true
         });
     }
+
+    end() {
+        this.spawnCommandSync('git', ['init', '--quiet'], {
+          cwd: this.destinationPath()
+        });
+        this.spawnCommandSync('git', ['add', '.'], {
+          cwd: this.destinationPath()
+        });
+        this.spawnCommandSync('git', ['commit', '--allow-empty', '-m', 'Initialize repository with easy-ui5'], {
+          cwd: this.destinationPath()
+        });
+    }
 };

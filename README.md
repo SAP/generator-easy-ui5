@@ -94,8 +94,6 @@ Please follow our instructions if you would like to [contribute](https://github.
 ## To-Do
 
 The following aspects/features are not yet implemented:
-* Tests / Continuous Integration Workflow
-* Call `git init` after project creation
 * Add more target platforms:
   * Neo env
   * SAP HANA
