@@ -14,15 +14,15 @@
 <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
         "create-xs-app":  "echo '{\"welcomeFile\": \"index.html\",\"routes\":[{\"source\":\"^(.*)\",\"target\": \"$1\",\"service\":\"html5-apps-repo-rt\"}]}' > dist/webapp/xs-app.json",
         "build:mta": "npm run build:ui && shx cp -r approuter/. dist/approuter && mbt build -p=cf",
-        "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar && npm run create-xs-app && cf html5-push dist/webapp",
+        "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar && npm run create-xs-app && cf html5-push dist/webapp",
 <% } else if(platform === 'Application Router @ Cloud Foundry'){%>
         "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=cf",
         "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){%>
         "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=xsa",
-        "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+        "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
 <% } %>
-        "build:ui": "rimraf dist && ui5 build  <%= (ui5libs === 'Local resources (OpenUI5)') ? ' --a ':  ''   %> --dest dist/webapp"
+        "build:ui": "rimraf dist && ui5 build  <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '' %>--dest dist/webapp"
     },
     "dependencies": {
 <% if(ui5libs === 'Local resources (OpenUI5)'){ %>

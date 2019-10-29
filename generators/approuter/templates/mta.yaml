@@ -17,7 +17,6 @@ modules:
 <% if(platform.includes('Cloud Foundry')){ %>
    requires:
       - name: dest_<%= projectname %>
-      - name: uaa_app_router
    <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
       - name: html5_repo_runtime
    <% } %>
@@ -33,12 +32,6 @@ resources:
      parameters:
        service-plan: app-runtime
        service: html5-apps-repo
-   - name: uaa_app_router
-     type: org.cloudfoundry.managed-service
-     parameters:
-       path: ./approuter/xs-security.json
-       service-plan: application
-       service: xsuaa
 
    <% } %>
 <% } %>

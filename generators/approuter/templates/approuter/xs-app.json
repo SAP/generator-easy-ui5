@@ -1,11 +1,11 @@
 {
   "welcomeFile": "<%=(platform === 'Cloud Foundry HTML5 Application Repository') ?(namespace+projectname).replace(/\./g, '') :  '/index.html'%>",
-  "authenticationMethod": "route",
+  "authenticationMethod": "none",
   "routes": [
     {
       "source": "^/(.*)$",
       "target": "$1",
-      "authenticationType": "xsuaa",
+      "authenticationType": "none",
       <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
       "service": "html5-apps-repo-rt"
       <% } else { %>
