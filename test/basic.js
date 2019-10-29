@@ -28,7 +28,7 @@ function createTest(sTestName, oPrompt){
 		});
 
 		it('should create an buildable project', function() {
-			return execa.commandSync('npm run build:cf')
+			return execa.commandSync('npm run build:mta') //TODO won't work in static router
 		});
 
 	});

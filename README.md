@@ -95,11 +95,10 @@ Please follow our instructions if you would like to [contribute](https://github.
 
 The following aspects/features are not yet implemented:
 * Add more target platforms:
-  * Neo env
-  * SAP HANA
+  * SAP Cloud Platform Neo environment
   * SAP NetWeaver
 
-Contributions are very much appreciated. 🥳
+Contributions are very much appreciated.
 
 ## License
 

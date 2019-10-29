@@ -7,7 +7,7 @@ module.exports = class extends Generator {
     prompting() {
         if (this.options.isSubgeneratorCall) {
             this.destinationRoot(this.options.cwd);
-						this.options.oneTimeConfig = this.config.getAll();
+            this.options.oneTimeConfig = this.config.getAll();
             return;
         }
         return this.prompt([{
@@ -26,8 +26,8 @@ module.exports = class extends Generator {
             message: 'Would you like to create a corresponding controller as well?'
         }]).then((answers) => {
             this.options.oneTimeConfig = this.config.getAll();
-						this.options.oneTimeConfig.viewname = answers.viewname;
-						this.options.oneTimeConfig.createcontroller = answers.createcontroller;
+            this.options.oneTimeConfig.viewname = answers.viewname;
+            this.options.oneTimeConfig.createcontroller = answers.createcontroller;
         });
     }
 

@@ -1,0 +1,44 @@
+ID: <%= projectname %>
+_schema-version: 3.2.0
+description: Enter description here
+version: 0.0.1
+
+modules:
+ - name: <%= projectname %>
+   type: nodejs
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
+   path: dist/approuter
+<% } else { %>
+   path: dist
+<% } %>
+   parameters:
+      disk-quota: 512M
+      memory: 512M
+<% if(platform.includes('Cloud Foundry')){ %>
+   requires:
+      - name: dest_<%= projectname %>
+      - name: uaa_app_router
+   <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
+      - name: html5_repo_runtime
+   <% } %>
+resources:
+   - name: dest_<%= projectname %>
+     type: org.cloudfoundry.managed-service
+     parameters:
+       service-plan: lite
+       service: destination
+   <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
+   - name: html5_repo_runtime
+     type: org.cloudfoundry.managed-service
+     parameters:
+       service-plan: app-runtime
+       service: html5-apps-repo
+   - name: uaa_app_router
+     type: org.cloudfoundry.managed-service
+     parameters:
+       path: ./approuter/xs-security.json
+       service-plan: application
+       service: xsuaa
+
+   <% } %>
+<% } %>

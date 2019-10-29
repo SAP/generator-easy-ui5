@@ -6,6 +6,18 @@ module.exports = class extends Generator {
 
     prompting() {
         return this.prompt([{
+            type: 'list',
+            name: 'platform',
+            message: 'On which platform would you like to host the application?',
+            choices: ['Static webserver', 'Application Router @ Cloud Foundry', 'Application Router @ SAP HANA XS Advanced', 'Cloud Foundry HTML5 Application Repository'],
+            default: 'Static webserver'
+        }, {
+            type: 'list',
+            name: 'ui5libs',
+            message: 'Where should your UI5 libs be served from?',
+            choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
+            default: 'Content delivery network (OpenUI5)'
+        }, {
             type: 'input',
             name: 'projectname',
             message: 'How do you want to name this project?',
@@ -33,12 +45,6 @@ module.exports = class extends Generator {
             message: 'Which view type do you want to use?',
             choices: ['XML', 'JSON', 'JS', 'HTML'],
             default: 'XML'
-        }, {
-            type: 'list',
-            name: 'ui5libs',
-            message: 'Where should your UI5 libs be served from?',
-            choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
-            default: 'Content delivery network (OpenUI5)'
         }, {
             type: 'input',
             name: 'viewname',
@@ -76,6 +82,9 @@ module.exports = class extends Generator {
         oSubGen.cwd = this.destinationRoot();
 
         this.composeWith(require.resolve('../newview'), oSubGen);
+        if (this.config.get('platform') !== 'Static webserver') {
+            this.composeWith(require.resolve('../approuter'), oSubGen);
+        }
 
     }
 
