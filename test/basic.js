@@ -3,8 +3,8 @@ const path = require('path');
 const helpers = require('yeoman-test');
 const execa = require('execa');
 
-function createTest(sTestName, oPrompt) {
-	describe(sTestName, function () {
+function createTest(oPrompt) {
+	describe(Object.values(oPrompt).join('-'), function () {
 		this.timeout(200000);
 
 		it('should be able to create the project', function () {
@@ -23,7 +23,7 @@ function createTest(sTestName, oPrompt) {
 			return execa.commandSync('npm run test');
 		});
 
-		if (oPrompt.platform !== 'Static webserver') {
+		if (!!oPrompt.platform && oPrompt.platform !== 'Static webserver') {
 			it('should create an buildable project', function () {
 				return execa.commandSync('npm run build:mta');
 			});
@@ -34,14 +34,14 @@ function createTest(sTestName, oPrompt) {
 
 describe('Basic project capabilities', function () {
 
-	createTest('XML Generator', { viewtype: 'XML', platform: 'Application Router @ Cloud Foundry' });
-	createTest('JSON Generator', { viewtype: 'JSON', ui5libs: 'Local resources (OpenUI5)' });
-	createTest('XML Generator', { viewtype: 'JS' });
-	createTest('XML Generator', { viewtype: 'HTML', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ Cloud Foundry' });
+	createTest({ viewtype: 'XML', platform: 'Application Router @ Cloud Foundry' });
+	createTest({ viewtype: 'JSON', ui5libs: 'Local resources (OpenUI5)' });
+	createTest({ viewtype: 'JS' });
+	createTest({ viewtype: 'HTML', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ Cloud Foundry' });
 
-	createTest('XML Generator', { viewtype: 'XML', platform: 'Application Router @ SAP HANA XS Advanced' });
-	createTest('JSON Generator', { viewtype: 'JSON', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ SAP HANA XS Advanced' });
-	createTest('XML Generator', { viewtype: 'JS', platform: 'Cloud Foundry HTML5 Application Repository' });
-	createTest('XML Generator', { viewtype: 'HTML', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ SAP HANA XS Advanced' });
+	createTest({ viewtype: 'XML', platform: 'Application Router @ SAP HANA XS Advanced' });
+	createTest({ viewtype: 'JSON', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ SAP HANA XS Advanced' });
+	createTest({ viewtype: 'JS', platform: 'Cloud Foundry HTML5 Application Repository' });
+	createTest({ viewtype: 'HTML', ui5libs: 'Local resources (OpenUI5)', platform: 'Application Router @ SAP HANA XS Advanced' });
 
 });

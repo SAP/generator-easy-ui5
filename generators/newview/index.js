@@ -10,7 +10,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             return;
         }
-        return this.prompt([{
+        var aPrompt = [{
             type: 'input',
             name: 'viewname',
             message: 'What is the name of the new view?',
@@ -24,10 +24,46 @@ module.exports = class extends Generator {
             type: 'confirm',
             name: 'createcontroller',
             message: 'Would you like to create a corresponding controller as well?'
-        }]).then((answers) => {
+        }];
+        if(!this.config.getAll().viewtype){
+            
+            aPrompt=aPrompt.concat([{
+                type: 'input',
+                name: 'projectname',
+                message: 'Seems like this project has not been generated with Easy-UI5. Please enter the name your project.',
+                validate: (s) => {
+                    if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
+                        return true;
+                    }
+                    return 'Please use alpha numeric characters only for the project name.';
+                },
+                default: 'myUI5App'
+            }, {
+                type: 'input',
+                name: 'namespace',
+                message: 'Please enter the namespace you use currently',
+                validate: (s) => {
+                    if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
+                        return true;
+                    }
+                    return 'Please use alpha numeric characters and dots only for the namespace.';
+                },
+                default: 'com.myorg'
+            }, {
+                type: 'list',
+                name: 'viewtype',
+                message: 'Which view type do you use?',
+                choices: ['XML', 'JSON', 'JS', 'HTML'],
+                default: 'XML'
+            }]);
+        }
+        return this.prompt(aPrompt).then((answers) => {
             this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.viewname = answers.viewname;
             this.options.oneTimeConfig.createcontroller = answers.createcontroller;
+            this.options.oneTimeConfig.projectname = answers.projectname;
+            this.options.oneTimeConfig.namespace = answers.namespace;
+            this.options.oneTimeConfig.viewtype = answers.viewtype;
         });
     }
 
