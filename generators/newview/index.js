@@ -25,9 +25,9 @@ module.exports = class extends Generator {
             name: 'createcontroller',
             message: 'Would you like to create a corresponding controller as well?'
         }];
-        if(!this.config.getAll().viewtype){
-            
-            aPrompt=aPrompt.concat([{
+        if (!this.config.getAll().viewtype) {
+
+            aPrompt = aPrompt.concat([{
                 type: 'input',
                 name: 'projectname',
                 message: 'Seems like this project has not been generated with Easy-UI5. Please enter the name your project.',
