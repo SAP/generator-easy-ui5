@@ -6,7 +6,7 @@
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js",
-    "local": "node -r dotenv/config node_modules/@sap/approuter/approuter.js"
+    "local": "node -r dotenv/config index.js"
   },
   "dependencies": {
     "@sap/approuter": "^6.5.1"
