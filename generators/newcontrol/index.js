@@ -27,7 +27,7 @@ module.exports = class extends Generator {
             },
             default: 'sap.ui.core.Control'
         }];
-        if(!this.config.getAll().viewtype){
+        if (!this.config.getAll().viewtype) {
             aPrompt = aPrompt.concat([{
                 type: 'input',
                 name: 'projectname',
@@ -56,8 +56,10 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.controlname = answers.controlname;
             this.options.oneTimeConfig.supercontrol = answers.supercontrol;
-            this.options.oneTimeConfig.projectname = answers.projectname;
-            this.options.oneTimeConfig.namespace = answers.namespace;
+            if (answers.projectname) {
+                this.options.oneTimeConfig.projectname = answers.projectname;
+                this.options.oneTimeConfig.namespace = answers.namespace;
+            }
         });
     }
 

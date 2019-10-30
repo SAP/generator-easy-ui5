@@ -61,9 +61,13 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.viewname = answers.viewname;
             this.options.oneTimeConfig.createcontroller = answers.createcontroller;
-            this.options.oneTimeConfig.projectname = answers.projectname;
-            this.options.oneTimeConfig.namespace = answers.namespace;
-            this.options.oneTimeConfig.viewtype = answers.viewtype;
+
+            if (answers.projectname) {
+                this.options.oneTimeConfig.projectname = answers.projectname;
+                this.options.oneTimeConfig.namespace = answers.namespace;
+                this.options.oneTimeConfig.viewtype = answers.viewtype;
+            }
+
         });
     }
 
