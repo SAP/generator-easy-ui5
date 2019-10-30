@@ -56,25 +56,52 @@ yo easy-ui5:newcontrol
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
-### Cloud Foundry
+### Cloud Foundry Embedded in Application Router
 #### Required tools
-1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud  account
+1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud account
 2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
     ```sh
     cf login
     ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
-4. [Install](https://sap.github.io/cloud-mta-build-tool/download/) MTA Build Tool for Cloud Foundry
-```sh
-npm install -g mbt
-```
+
 
 #### Deploy
 Call this command from the root directory to deploy the application to Cloud Foundry
 ```
-npm run deploy:cf
+npm run deploy
 ```
 
+### Cloud Foundry within the HTML5 Application Repository
+#### Required tools
+1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud account
+2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
+    ```sh
+    cf login
+    ```
+3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin `cf install-plugin -r CF-Community "multiapps"`
+3. [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin `cf install-plugin -r CF-Community "html5-plugin"`
+
+
+#### Deploy
+Call this command from the root directory to deploy the application to Cloud Foundry
+```
+npm run deploy
+```
+
+### HANA XSA
+#### Required tools
+1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
+2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
+    ```sh
+    xs login
+    ```
+
+#### Deploy
+Call this command from the root directory to deploy the application to HANA XSA
+```
+npm run deploy
+```
 
 ## Embedded Technologies
 This project leverages (among others) the following Open Source projects:
