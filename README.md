@@ -138,6 +138,6 @@ This project is licensed under the Apache Software License, Version 2.0 except a
 [circleci-image]: https://img.shields.io/circleci/project/github/SAP/generator-easy-ui5.svg
 [circleci-url]: https://circleci.com/gh/SAP/generator-easy-ui5
 [daviddm-image]: https://img.shields.io/david/SAP/generator-easy-ui5.svg
-[daviddm-url]: https://david-dm.org/yeoman/yeoman-test
+[daviddm-url]: https://david-dm.org/SAP/generator-easy-ui5
 [license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
 [license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
