@@ -18,6 +18,10 @@ module.exports = class extends Generator {
             choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
             default: 'Content delivery network (OpenUI5)'
         }, {
+            type: "confirm",
+            name: "newdir",
+            message: "Would you like to create a new directory for the project?"
+        }, {
             type: 'input',
             name: 'projectname',
             message: 'How do you want to name this project?',
@@ -57,7 +61,9 @@ module.exports = class extends Generator {
             },
             default: 'MainView'
         }]).then((answers) => {
-            this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
+            if (answers.newdir) {
+                this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
+            }
             this.config.set(answers)
         });
     }
