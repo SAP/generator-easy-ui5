@@ -29,23 +29,23 @@
         },
         "dependencies": {
 <% if(ui5libs === 'Local resources (OpenUI5)'){ %>
-        "@openui5/sap.ui.core": "^1.71.1",
-                        "@openui5/sap.ui.layout": "^1.71.1",
-                        "@openui5/themelib_sap_belize": "^1.71.1", 
+        "@openui5/sap.ui.core": "^1.73.1",
+                        "@openui5/sap.ui.layout": "^1.73.1",
+                        "@openui5/themelib_sap_belize": "^1.73.1", 
 <%
                 } %>
-        "@openui5/sap.m": "^1.71.1",
+        "@openui5/sap.m": "^1.73.1",
                 "shx": "^0.3.2"
         },
         "devDependencies": {
-                "@ui5/cli": "^1.10.0",
+                "@ui5/cli": "^1.12.1",
                 "rimraf": "^3.0.0",
                 "karma": "^4.4.1",
                 "karma-chrome-launcher": "^3.1.0",
                 "karma-coverage": "^2.0.1",
                 "karma-ui5": "^1.1.0",
                 "cross-var": "^1.1.0",
-                "mbt": "0.3.2",
-                "eslint": "^6.5.1"
+                "mbt": "1.0.4",
+                "eslint": "^6.7.2"
         }
 }
