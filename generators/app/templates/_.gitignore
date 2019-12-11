@@ -4,3 +4,5 @@ node_modules/
 *.mtar
 dist/
 package-lock.json
+mta_archives/
+ui_deployer/resources/

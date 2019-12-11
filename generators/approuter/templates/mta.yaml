@@ -6,32 +6,46 @@ version: 0.0.1
 modules:
  - name: <%= projectname %>
    type: nodejs
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
-   path: dist/approuter
-<% } else { %>
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+   path: approuter
+<% } else { -%>
    path: dist
-<% } %>
+<% } -%>
    parameters:
       disk-quota: 512M
       memory: 512M
-<% if(platform.includes('Cloud Foundry')){ %>
+<% if(platform.includes('Cloud Foundry')){ -%>
    requires:
       - name: dest_<%= projectname %>
-   <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
       - name: html5_repo_runtime
-   <% } %>
-resources:
-   - name: dest_<%= projectname %>
-     type: org.cloudfoundry.managed-service
-     parameters:
-       service-plan: lite
-       service: destination
-   <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
-   - name: html5_repo_runtime
-     type: org.cloudfoundry.managed-service
-     parameters:
-       service-plan: app-runtime
-       service: html5-apps-repo
+ - name: ui_deployer
+   type: com.sap.html5.application-content
+   path: deployer
+   requires:
+     - name: html5_repo_host
+   build-parameters:
+     builder: custom
+     commands:
+       - npm run build:ui --prefix ..
+<% } -%>
 
-   <% } %>
-<% } %>
+resources:
+ - name: dest_<%= projectname %>
+   type: org.cloudfoundry.managed-service
+   parameters:
+      service-plan: lite
+      service: destination
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+ - name: html5_repo_runtime
+   type: org.cloudfoundry.managed-service
+   parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+ - name: html5_repo_host
+   type: org.cloudfoundry.managed-service
+   parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+<% } -%>
+<% } -%>

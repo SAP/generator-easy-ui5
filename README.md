@@ -80,7 +80,7 @@ npm run deploy
     cf login
     ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin `cf install-plugin -r CF-Community "multiapps"`
-3. [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin `cf install-plugin -r CF-Community "html5-plugin"`
+
 
 
 #### Deploy
@@ -88,6 +88,15 @@ Call this command from the root directory to deploy the application to Cloud Fou
 ```
 npm run deploy
 ```
+
+
+> **Optional**: [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
+>
+> `cf install-plugin -r CF-Community "html5-plugin"`
+> 
+> With this tool you can update your web app without the need to deploy a new cloud application:
+> 
+> `cf html5-push -n html5_repo_host .`
 
 ### HANA XSA
 #### Required tools

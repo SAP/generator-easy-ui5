@@ -1,16 +1,14 @@
 {
-  "welcomeFile": "<%=(platform === 'Cloud Foundry HTML5 Application Repository') ?(namespace+projectname).replace(/\./g, '') :  '/index.html'%>",
+  "welcomeFile": "<%=(platform === 'Cloud Foundry HTML5 Application Repository') ? (namespace+projectname+'/').replace(/\./g, '') :  '/index.html'%>",
   "authenticationMethod": "none",
-  "routes": [
-    {
+  "routes": [{
       "source": "^/(.*)$",
       "target": "$1",
       "authenticationType": "none",
-      <% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
       "service": "html5-apps-repo-rt"
-      <% } else { %>
+<% } else { -%>
       "localDir": "webapp"
-      <% } %>
-    }
-  ]
+<% } -%>
+  }]
 }

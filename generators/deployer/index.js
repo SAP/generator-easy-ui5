@@ -10,23 +10,15 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             return;
         }
+        throw("This subgenerator is only intended for internal use. Please don't call it directly.")
     }
+
     writing() {
-        this.sourceRoot(path.join(__dirname, 'templates'));
         glob.sync('**', {
             cwd: this.sourceRoot(),
             nodir: true
-        }).forEach((file) => {
-            const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace(/^_/, '').replace(/\/_/, '/'));
-
-            this.fs.copyTpl(sOrigin, sTarget, this.config.getAll());
+        }).forEach( file => {
+            this.fs.copy(this.templatePath(file), this.destinationPath(file));
         });
-    }
-
-    end() {
-        if (this.options.isSubgeneratorCall) {
-            return;
-        }
     }
 };

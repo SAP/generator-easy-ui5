@@ -2,7 +2,7 @@
         "name": "<%= projectname %>",
         "version": "0.0.1",
         "engines": {
-                "node": ">=10.0.0"
+                "node": "12.x.x"
         },
         "scripts": {
                 "start": "ui5 serve -o index.html",
@@ -11,35 +11,34 @@
                 "karma-ci": "karma start karma-ci.conf.js",
                 "karma": "rimraf coverage && npm run karma-ci",
                 "lint": "eslint webapp",
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ %>
-        "create-xs-app": "echo '{\"welcomeFile\": \"index.html\",\"routes\":[{\"source\":\"^(.*)\",\"target\": \"$1\",\"service\":\"html5-apps-repo-rt\"}]}' > dist/webapp/xs-app.json",
-                        "build:mta": "npm run build:ui && shx cp -r approuter/. dist/approuter && mbt build -p=cf",
-                        "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar && npm run create-xs-app && cf html5-push dist/webapp",
-<%
-                } else if(platform === 'Application Router @ Cloud Foundry'){%>
-        "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=cf",
-                        "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-<%
-                } else if(platform === 'Application Router @ SAP HANA XS Advanced'){%>
-        "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=xsa",
-                        "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-<%
-                } %>
-        "build:ui": "rimraf dist && ui5 build  <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '' %>--dest dist/webapp"
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+                "create-xs-app": "echo '{\"welcomeFile\": \"index.html\",\"routes\":[{\"source\":\"^(.*)\",\"target\": \"$1\",\"service\":\"html5-apps-repo-rt\"}]}' > dist/webapp/xs-app.json",
+                "build:mta": "mbt build -p=cf",
+                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar && npm run create-xs-app && cf html5-push dist/webapp",
+<% } else if(platform === 'Application Router @ Cloud Foundry'){ -%>
+                "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=cf",
+                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+<% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
+                "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=xsa",
+                "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+<% } -%>
+<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+                "build:ui": "ui5 build --clean-dest --dest deployer/resources/webapp"
+<% }  else { -%>
+                "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '' %> --clean-dest --dest dist/webapp"
+<% }  -%>
         },
         "dependencies": {
-<% if(ui5libs === 'Local resources (OpenUI5)'){ %>
-        "@openui5/sap.ui.core": "^1.73.1",
-                        "@openui5/sap.ui.layout": "^1.73.1",
-                        "@openui5/themelib_sap_belize": "^1.73.1", 
-<%
-                } %>
-        "@openui5/sap.m": "^1.73.1",
+<% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
+                "@openui5/sap.ui.core": "^1.73.1",
+                "@openui5/sap.ui.layout": "^1.73.1",
+                "@openui5/themelib_sap_belize": "^1.73.1", 
+<%              } -%>
+                "@openui5/sap.m": "^1.73.1",
                 "shx": "^0.3.2"
         },
         "devDependencies": {
                 "@ui5/cli": "^1.12.1",
-                "rimraf": "^3.0.0",
                 "karma": "^4.4.1",
                 "karma-chrome-launcher": "^3.1.0",
                 "karma-coverage": "^2.0.1",

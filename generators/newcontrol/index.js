@@ -1,6 +1,4 @@
-const Generator = require('yeoman-generator'),
-    path = require('path'),
-    glob = require('glob');
+const Generator = require('yeoman-generator');
 
 module.exports = class extends Generator {
 

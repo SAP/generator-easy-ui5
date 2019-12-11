@@ -88,10 +88,14 @@ module.exports = class extends Generator {
         oSubGen.cwd = this.destinationRoot();
 
         this.composeWith(require.resolve('../newview'), oSubGen);
-        if (this.config.get('platform') !== 'Static webserver') {
+        const selectedPlatform = this.config.get('platform');
+        if (selectedPlatform !== 'Static webserver') {
             this.composeWith(require.resolve('../approuter'), oSubGen);
-        }
+            if(selectedPlatform === "Cloud Foundry HTML5 Application Repository"){
+                this.composeWith(require.resolve('../deployer'), oSubGen);
+            }
 
+        }
     }
 
     install() {
