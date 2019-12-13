@@ -6,10 +6,13 @@ version: 0.0.1
 modules:
  - name: <%= projectname %>
    type: nodejs
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
    path: approuter
-<% } else { -%>
-   path: dist
+<% if(platform !== 'Cloud Foundry HTML5 Application Repository'){ -%>
+   build-parameters:
+     builder: custom
+     commands:
+       - npm install
+       - npm run build:ui --prefix ..
 <% } -%>
    parameters:
       disk-quota: 512M

@@ -11,21 +11,17 @@
                 "karma-ci": "karma start karma-ci.conf.js",
                 "karma": "rimraf coverage && npm run karma-ci",
                 "lint": "eslint webapp",
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
-                "create-xs-app": "echo '{\"welcomeFile\": \"index.html\",\"routes\":[{\"source\":\"^(.*)\",\"target\": \"$1\",\"service\":\"html5-apps-repo-rt\"}]}' > dist/webapp/xs-app.json",
+<% if(platform.indexOf('Cloud Foundry') !== -1){ -%>
                 "build:mta": "mbt build -p=cf",
-                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar && npm run create-xs-app && cf html5-push dist/webapp",
-<% } else if(platform === 'Application Router @ Cloud Foundry'){ -%>
-                "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=cf",
-                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
-                "build:mta": "npm run build:ui && shx cp -r approuter/. dist/ && mbt build -p=xsa",
+                "build:mta": "mbt build -p=xsa",
                 "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-<% } -%>
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+<% }
+if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
                 "build:ui": "ui5 build --clean-dest --dest deployer/resources/webapp"
 <% }  else { -%>
-                "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '' %> --clean-dest --dest dist/webapp"
+                "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
 <% }  -%>
         },
         "dependencies": {
@@ -33,18 +29,20 @@
                 "@openui5/sap.ui.core": "^1.73.1",
                 "@openui5/sap.ui.layout": "^1.73.1",
                 "@openui5/themelib_sap_belize": "^1.73.1", 
-<%              } -%>
+<% } -%>
                 "@openui5/sap.m": "^1.73.1",
                 "shx": "^0.3.2"
         },
         "devDependencies": {
+<% if(platform !== 'Static webserver'){ -%>
+                "cross-var": "^1.1.0",
+                "mbt": "1.0.4",
+<% } -%>
                 "@ui5/cli": "^1.12.1",
                 "karma": "^4.4.1",
                 "karma-chrome-launcher": "^3.1.0",
                 "karma-coverage": "^2.0.1",
                 "karma-ui5": "^1.1.0",
-                "cross-var": "^1.1.0",
-                "mbt": "1.0.4",
                 "eslint": "^6.7.2"
         }
 }
