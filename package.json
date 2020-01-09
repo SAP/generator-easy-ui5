@@ -1,5 +1,5 @@
 {
-  "name": "generator-easy-ui5",
+  "name": "generator-qldh-ui5",
   "version": "1.0.3",
   "description": "Generator for OpenUI5-based web-apps which use the official UI5 tooling and support deployment targets such as the SAP Cloud Platform",
   "main": "generators/app/index.js",
@@ -7,14 +7,16 @@
     "generators",
     "app",
     "newview",
-    "newcontrol"
+    "newcontrol",
+    "newcomponent",
+    "newmodel"
   ],
   "scripts": {
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SAP/generator-easy-ui5.git"
+    "url": "git+https://github.com/kovboyjder/generator-easy-ui5.git"
   },
   "keywords": [
     "yeoman-generator",
@@ -26,12 +28,12 @@
     "generator",
     "scaffold"
   ],
-  "author": "SAP",
+  "author": "Jakob Kjaer",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/SAP/generator-easy-ui5/issues"
+    "url": "https://github.com/kovboyjder/generator-easy-ui5/issues"
   },
-  "homepage": "https://github.com/SAP/generator-easy-ui5#readme",
+  "homepage": "https://github.com/kovboyjder/generator-easy-ui5#readme",
   "dependencies": {
     "glob": "^7.1.6",
     "yeoman-generator": "^4.2.0"
