@@ -53,6 +53,17 @@ Run the following command from your project's root to scaffold a custom control.
 yo easy-ui5:newcontrol
 ```
 
+### Add a new model
+This sub-generator will create a new model in your manifest.
+```
+yo easy-ui5:newmodel
+```
+
+### Add a new compoent
+This sub-generator will add a new componentusage for component reuse to your manifest.
+```
+yo easy-ui5:newcomponent
+```
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
