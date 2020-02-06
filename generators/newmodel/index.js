@@ -41,7 +41,7 @@ module.exports = class extends Generator {
 				},
 				type: 'input',
 				name: 'url',
-				message: 'What is the data source url'
+				message: 'What is the data source url?'
 			},
 			{
 				when: function (props) {
