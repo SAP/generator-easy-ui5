@@ -66,7 +66,7 @@ module.exports = class extends Generator {
 
 				this.options.oneTimeConfig.url = answers.url;
 				this.options.oneTimeConfig.countMode = answers.countMode;
-				console.log(this.options.oneTimeConfig.countMode)
+				this.log(this.options.oneTimeConfig.countMode)
 			}
 
 
@@ -154,7 +154,7 @@ module.exports = class extends Generator {
 		}
 
 		f().catch((err) => {
-			console.log(err)
+			this.logg(err)
 		}).finally(() => {
 			this.log('Updated manifest file with the new model');
 		})
