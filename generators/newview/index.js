@@ -144,7 +144,7 @@ module.exports = class extends Generator {
 
 			let result = await promise; // wait until the promise resolves (*)
 
-			console.log(result); // "done!"
+			this.log(result); // "done!"
 		}
 	
 	f().catch(() => {}).finally(() => {
