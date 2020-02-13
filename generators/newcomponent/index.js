@@ -105,11 +105,11 @@ module.exports = class extends Generator {
 
 			let result = await promise; // wait until the promise resolves (*)
 
-			console.log(result); // "done!"
+			this.log(result); // "done!"
 		}
 	
 	f().catch((err) => {
-		console.log(err)
+		this.log(err)
 	}).finally(() => {
 		this.log('Updated manifest file with the new usage');
 	})
