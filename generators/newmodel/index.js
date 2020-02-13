@@ -156,7 +156,7 @@ module.exports = class extends Generator {
 		f().catch((err) => {
 			this.logg(err)
 		}).finally(() => {
-			this.log('Updated manifest file with the new model');
+			this.log('Updated manifest file with the new model.');
 		})
 
 	}
