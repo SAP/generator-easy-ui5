@@ -7,7 +7,9 @@
     "generators",
     "app",
     "newview",
-    "newcontrol"
+    "newcontrol",
+    "newcomponentusage",
+    "newmodel"
   ],
   "scripts": {
     "test": "mocha"
