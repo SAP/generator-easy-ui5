@@ -1,6 +1,6 @@
 {
   "name": "generator-easy-ui5",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Generator for OpenUI5-based web-apps which use the official UI5 tooling and support deployment targets such as the SAP Cloud Platform",
   "main": "generators/app/index.js",
   "files": [
