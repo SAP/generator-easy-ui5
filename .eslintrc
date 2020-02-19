@@ -19,7 +19,7 @@
     "no-underscore-dangle": 0,
     "quotes": [
       1,
-      "single"
+      "double"
     ],
     "key-spacing": [
       1,

@@ -1,6 +1,6 @@
-const Generator = require('yeoman-generator'),
-    path = require('path'),
-    glob = require('glob');
+const Generator = require("yeoman-generator"),
+    path = require("path"),
+    glob = require("glob");
 
 module.exports = class extends Generator {
 
@@ -12,13 +12,13 @@ module.exports = class extends Generator {
         }
     }
     writing() {
-        this.sourceRoot(path.join(__dirname, 'templates'));
-        glob.sync('**', {
+        this.sourceRoot(path.join(__dirname, "templates"));
+        glob.sync("**", {
             cwd: this.sourceRoot(),
             nodir: true
         }).forEach((file) => {
             const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace(/^_/, '').replace(/\/_/, '/'));
+            const sTarget = this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/"));
 
             this.fs.copyTpl(sOrigin, sTarget, this.config.getAll());
         });

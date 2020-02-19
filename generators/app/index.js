@@ -1,65 +1,65 @@
-const Generator = require('yeoman-generator'),
-    path = require('path'),
-    glob = require('glob');
+const Generator = require("yeoman-generator"),
+    path = require("path"),
+    glob = require("glob");
 
 module.exports = class extends Generator {
 
     prompting() {
         return this.prompt([{
-            type: 'list',
-            name: 'platform',
-            message: 'On which platform would you like to host the application?',
-            choices: ['Static webserver', 'Application Router @ Cloud Foundry', 'Application Router @ SAP HANA XS Advanced', 'Cloud Foundry HTML5 Application Repository'],
-            default: 'Static webserver'
+            type: "list",
+            name: "platform",
+            message: "On which platform would you like to host the application?",
+            choices: ["Static webserver", "Application Router @ Cloud Foundry", "Application Router @ SAP HANA XS Advanced", "Cloud Foundry HTML5 Application Repository"],
+            default: "Static webserver"
         }, {
-            type: 'list',
-            name: 'ui5libs',
-            message: 'Where should your UI5 libs be served from?',
-            choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
-            default: 'Content delivery network (OpenUI5)'
+            type: "list",
+            name: "ui5libs",
+            message: "Where should your UI5 libs be served from?",
+            choices: ["Content delivery network (OpenUI5)", "Content delivery network (SAPUI5)", "Local resources (OpenUI5)"],
+            default: "Content delivery network (OpenUI5)"
         }, {
-            type: 'confirm',
-            name: 'newdir',
-            message: 'Would you like to create a new directory for the project?'
+            type: "confirm",
+            name: "newdir",
+            message: "Would you like to create a new directory for the project?"
         }, {
-            type: 'input',
-            name: 'projectname',
-            message: 'How do you want to name this project?',
+            type: "input",
+            name: "projectname",
+            message: "How do you want to name this project?",
             validate: (s) => {
                 if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
                     return true;
                 }
-                return 'Please use alpha numeric characters only for the project name.';
+                return "Please use alpha numeric characters only for the project name.";
             },
-            default: 'myUI5App'
+            default: "myUI5App"
         }, {
-            type: 'input',
-            name: 'namespace',
-            message: 'Which namespace do you want to use?',
+            type: "input",
+            name: "namespace",
+            message: "Which namespace do you want to use?",
             validate: (s) => {
                 if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
                     return true;
                 }
-                return 'Please use alpha numeric characters and dots only for the namespace.';
+                return "Please use alpha numeric characters and dots only for the namespace.";
             },
-            default: 'com.myorg'
+            default: "com.myorg"
         }, {
-            type: 'list',
-            name: 'viewtype',
-            message: 'Which view type do you want to use?',
-            choices: ['XML', 'JSON', 'JS', 'HTML'],
-            default: 'XML'
+            type: "list",
+            name: "viewtype",
+            message: "Which view type do you want to use?",
+            choices: ["XML", "JSON", "JS", "HTML"],
+            default: "XML"
         }, {
-            type: 'input',
-            name: 'viewname',
-            message: 'How do you want to name your main view?',
+            type: "input",
+            name: "viewname",
+            message: "How do you want to name your main view?",
             validate: (s) => {
                 if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
                     return true;
                 }
-                return 'Please use alpha numeric characters only for the view name.';
+                return "Please use alpha numeric characters only for the view name.";
             },
-            default: 'MainView'
+            default: "MainView"
         }]).then((answers) => {
             if (answers.newdir) {
                 this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
@@ -69,16 +69,16 @@ module.exports = class extends Generator {
     }
 
     writing() {
-        const sViewName = this.config.get('viewname');
-        const sViewType = this.config.get('viewtype');
+        const sViewName = this.config.get("viewname");
+        const sViewType = this.config.get("viewtype");
 
-        this.sourceRoot(path.join(__dirname, 'templates'));
-        glob.sync('**', {
+        this.sourceRoot(path.join(__dirname, "templates"));
+        glob.sync("**", {
             cwd: this.sourceRoot(),
             nodir: true
         }).forEach((file) => {
             const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace(/^_/, '').replace(/\/_/, '/').replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
+            const sTarget = this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/").replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
 
             this.fs.copyTpl(sOrigin, sTarget, this.config.getAll());
         });
@@ -87,12 +87,12 @@ module.exports = class extends Generator {
         oSubGen.isSubgeneratorCall = true;
         oSubGen.cwd = this.destinationRoot();
 
-        this.composeWith(require.resolve('../newview'), oSubGen);
-        const selectedPlatform = this.config.get('platform');
-        if (selectedPlatform !== 'Static webserver') {
-            this.composeWith(require.resolve('../approuter'), oSubGen);
-            if (selectedPlatform === 'Cloud Foundry HTML5 Application Repository') {
-                this.composeWith(require.resolve('../deployer'), oSubGen);
+        this.composeWith(require.resolve("../newview"), oSubGen);
+        const selectedPlatform = this.config.get("platform");
+        if (selectedPlatform !== "Static webserver") {
+            this.composeWith(require.resolve("../approuter"), oSubGen);
+            if (selectedPlatform === "Cloud Foundry HTML5 Application Repository") {
+                this.composeWith(require.resolve("../deployer"), oSubGen);
             }
         }
     }
@@ -105,13 +105,13 @@ module.exports = class extends Generator {
     }
 
     end() {
-        this.spawnCommandSync('git', ['init', '--quiet'], {
+        this.spawnCommandSync("git", ["init", "--quiet"], {
             cwd: this.destinationPath()
         });
-        this.spawnCommandSync('git', ['add', '.'], {
+        this.spawnCommandSync("git", ["add", "."], {
             cwd: this.destinationPath()
         });
-        this.spawnCommandSync('git', ['commit', '--quiet', '--allow-empty', '-m', 'Initialize repository with easy-ui5'], {
+        this.spawnCommandSync("git", ["commit", "--quiet", "--allow-empty", "-m", "Initialize repository with easy-ui5"], {
             cwd: this.destinationPath()
         });
     }

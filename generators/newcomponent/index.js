@@ -1,5 +1,5 @@
-const Generator = require('yeoman-generator');
-const fs = require('fs');
+const Generator = require("yeoman-generator");
+const fs = require("fs");
 
 module.exports = class extends Generator {
 
@@ -10,36 +10,36 @@ module.exports = class extends Generator {
 			return [];
 		}
 		var aPrompt = [{
-			type: 'input',
-			name: 'usagesName',
-			message: 'What is the name of your usage?',
+			type: "input",
+			name: "usagesName",
+			message: "What is the name of your usage?",
 			validate: (s) => {
 				if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
 					return true;
 				}
-				return 'Please use alpha numeric characters only for the view name.';
+				return "Please use alpha numeric characters only for the view name.";
 			}
 		},
 		{
-			type: 'input',
-			name: 'componentName',
-			message: 'What is the name of the component you want to reference?',
+			type: "input",
+			name: "componentName",
+			message: "What is the name of the component you want to reference?",
 			validate: (s) => {
 				if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
 					return true;
 				}
-				return 'Please use alpha numeric characters only for the view name.';
+				return "Please use alpha numeric characters only for the view name.";
 			}
 		},
 		{
-			type: 'input',
-			name: 'componentData',
-			message: 'Write your component data as a json object'
+			type: "input",
+			name: "componentData",
+			message: "Write your component data as a json object"
 
 		}, {
-			type: 'confirm',
-			name: 'lazy',
-			message: 'Should the component be lazy loaded?'
+			type: "confirm",
+			name: "lazy",
+			message: "Should the component be lazy loaded?"
 		}];
 
 		return this.prompt(aPrompt).then((answers) => {
@@ -67,28 +67,27 @@ module.exports = class extends Generator {
 		async function f() {
 
 			let promise = new Promise((resolve, reject) => {
-				const filePath = process.cwd() + '/webapp/manifest.json';
+				const filePath = process.cwd() + "/webapp/manifest.json";
 				try {
 					fs.readFile(filePath, function (readError, data) {
 						let json = JSON.parse(data)
-						let ui5Config = json['sap.ui5'],
+						let ui5Config = json["sap.ui5"],
 							usages = ui5Config.componentUsages || {};
 
 						usages[sUsageName] = {
-							'name': sComponentName,
-							'settings': {},
-							'componentData': (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
-							'lazy': sLazy
+							"name": sComponentName,
+							"settings": {},
+							"componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
+							"lazy": sLazy
 						}
 
 						ui5Config.componentUsages = usages;
-						json['sap.ui5'] = ui5Config;
+						json["sap.ui5"] = ui5Config;
 
 						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
 							if (writeError) throw writeError;
-							resolve('Add the new usage in your view with the following \
-								\n<core:ComponentContainer width="100%" usage="'+ sUsageName + '" propagateModel="true" lifecycle="Container"></core:ComponentContainer> \
-								');
+							resolve("Add the new usage in your view with the following \n \
+								<core:ComponentContainer width='100%' usage='"+ sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer> \n");
 						});
 					})
 				}
@@ -106,7 +105,7 @@ module.exports = class extends Generator {
 		f().catch((err) => {
 			this.log(err)
 		}).finally(() => {
-			this.log('Updated manifest file with the new usage');
+			this.log("Updated manifest file with the new usage");
 		})
 
 	}

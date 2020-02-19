@@ -1,5 +1,5 @@
-const Generator = require('yeoman-generator');
-const fs = require('fs');
+const Generator = require("yeoman-generator");
+const fs = require("fs");
 
 module.exports = class extends Generator {
 
@@ -10,48 +10,48 @@ module.exports = class extends Generator {
 			return [];
 		}
 		var aPrompt = [{
-			type: 'input',
-			name: 'modelName',
-			message: 'What is the name of your model, press enter if it is the default model?',
+			type: "input",
+			name: "modelName",
+			message: "What is the name of your model, press enter if it is the default model?",
 			validate: (s) => {
 				if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
 					return true;
 				}
-				return 'Please use alpha numeric characters only for the view name.';
+				return "Please use alpha numeric characters only for the view name.";
 			},
-			default: ''
+			default: ""
 		},
 		{
-			type: 'list',
-			name: 'modelType',
-			message: 'Which type of model do you want to add?',
-			choices: ['OData', 'JSON'],
-			default: 'OData'
+			type: "list",
+			name: "modelType",
+			message: "Which type of model do you want to add?",
+			choices: ["OData", "JSON"],
+			default: "OData"
 		},
 		{
-			type: 'list',
-			name: 'bindingMode',
-			message: 'Which binding mode do you want to use?',
-			choices: ['TwoWay', 'OneWay'],
-			default: 'TwoWay'
+			type: "list",
+			name: "bindingMode",
+			message: "Which binding mode do you want to use?",
+			choices: ["TwoWay", "OneWay"],
+			default: "TwoWay"
 		},
 		{
 			when: function (props) {
-				return props.modelType === 'OData';
+				return props.modelType === "OData";
 			},
-			type: 'input',
-			name: 'url',
-			message: 'What is the data source url?'
+			type: "input",
+			name: "url",
+			message: "What is the data source url?"
 		},
 		{
 			when: function (props) {
-				return props.modelType === 'OData';
+				return props.modelType === "OData";
 			},
-			type: 'list',
-			name: 'countMode',
-			message: 'Which count mode do you want to use?',
-			choices: ['Inline', 'Request'],
-			default: 'Inline'
+			type: "list",
+			name: "countMode",
+			message: "Which count mode do you want to use?",
+			choices: ["Inline", "Request"],
+			default: "Inline"
 		}
 		];
 
@@ -62,7 +62,7 @@ module.exports = class extends Generator {
 			this.options.oneTimeConfig.modelName = answers.modelName;
 			this.options.oneTimeConfig.modelType = answers.modelType;
 			this.options.oneTimeConfig.bindingMode = answers.bindingMode;
-			if (answers.modelType === 'OData') {
+			if (answers.modelType === "OData") {
 
 				this.options.oneTimeConfig.url = answers.url;
 				this.options.oneTimeConfig.countMode = answers.countMode;
@@ -87,50 +87,50 @@ module.exports = class extends Generator {
 		let sDataSource;
 		let sCountMode;
 		if (sUrl) {
-			sDataSource = sUrl.replace('/sap/opu/odata/sap/', '');
-			sDataSource.replace('/', '');
+			sDataSource = sUrl.replace("/sap/opu/odata/sap/", "");
+			sDataSource.replace("/", "");
 			sCountMode = this.options.oneTimeConfig.countMode;
 		}
 
 		async function f() {
 
 			let promise = new Promise((resolve, reject) => {
-				const filePath = process.cwd() + '/webapp/manifest.json';
+				const filePath = process.cwd() + "/webapp/manifest.json";
 				try {
 					fs.readFile(filePath, function (readError, data) {
 						let json = JSON.parse(data)
 
-						let ui5Config = json['sap.ui5'],
+						let ui5Config = json["sap.ui5"],
 							models = ui5Config.models || {};
 
 						models[sModelName] = {
-							'type': (sModelType === 'OData') ? 'sap.ui.model.odata.v2.ODataModel' : 'sap.ui.model.json.JSONModel',
-							'settings': (sModelType === 'OData') ? {
-								'defaultOperationMode': 'Server',
-								'defaultBindingMode': sBindingMode,
-								'defaultCountMode': sCountMode,
-								'preload': true
+							"type": (sModelType === "OData") ? "sap.ui.model.odata.v2.ODataModel" : "sap.ui.model.json.JSONModel",
+							"settings": (sModelType === "OData") ? {
+								"defaultOperationMode": "Server",
+								"defaultBindingMode": sBindingMode,
+								"defaultCountMode": sCountMode,
+								"preload": true
 							} : {}
 						}
 						ui5Config.models = models;
-						json['sap.ui5'] = ui5Config;
+						json["sap.ui5"] = ui5Config;
 
-						if (sModelType === 'OData') {
+						if (sModelType === "OData") {
 							models[sModelName].dataSource = sDataSource
 
-							let appConfig = json['sap.app'],
+							let appConfig = json["sap.app"],
 								dataSources = appConfig.dataSources || {};
 
 							dataSources[sDataSource] = {
-								'uri': sUrl,
-								'type': sModelType,
-								'settings': {
-									'localUri': 'localService/' + sUrl + '/metadata.xml'
+								"uri": sUrl,
+								"type": sModelType,
+								"settings": {
+									"localUri": "localService/" + sUrl + "/metadata.xml"
 								}
 							}
 
 							appConfig.dataSources = dataSources;
-							json['sap.app'] = appConfig;
+							json["sap.app"] = appConfig;
 						}
 
 						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
@@ -151,7 +151,7 @@ module.exports = class extends Generator {
 		f().catch((err) => {
 			this.logg(err)
 		}).finally(() => {
-			this.log('Updated manifest file with the new model.');
+			this.log("Updated manifest file with the new model.");
 		})
 
 	}

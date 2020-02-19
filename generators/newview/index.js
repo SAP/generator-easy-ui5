@@ -1,5 +1,5 @@
-const Generator = require('yeoman-generator');
-const fs = require('fs');
+const Generator = require("yeoman-generator");
+const fs = require("fs");
 
 module.exports = class extends Generator {
 
@@ -10,56 +10,56 @@ module.exports = class extends Generator {
 			return [];
 		}
 		var aPrompt = [{
-			type: 'input',
-			name: 'viewname',
-			message: 'What is the name of the new view?',
+			type: "input",
+			name: "viewname",
+			message: "What is the name of the new view?",
 			validate: (s) => {
 				if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
 					return true;
 				}
-				return 'Please use alpha numeric characters only for the view name.';
+				return "Please use alpha numeric characters only for the view name.";
 			}
 		}, {
-			type: 'confirm',
-			name: 'createcontroller',
-			message: 'Would you like to create a corresponding controller as well?'
+			type: "confirm",
+			name: "createcontroller",
+			message: "Would you like to create a corresponding controller as well?"
 		}];
 		if (!this.config.getAll().viewtype) {
 
 			aPrompt = aPrompt.concat([{
-				type: 'input',
-				name: 'projectname',
-				message: 'Seems like this project has not been generated with Easy-UI5. Please enter the name your project.',
+				type: "input",
+				name: "projectname",
+				message: "Seems like this project has not been generated with Easy-UI5. Please enter the name your project.",
 				validate: (s) => {
 					if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
 						return true;
 					}
-					return 'Please use alpha numeric characters only for the project name.';
+					return "Please use alpha numeric characters only for the project name.";
 				},
-				default: 'myUI5App'
+				default: "myUI5App"
 			}, {
-				type: 'input',
-				name: 'namespace',
-				message: 'Please enter the namespace you use currently',
+				type: "input",
+				name: "namespace",
+				message: "Please enter the namespace you use currently",
 				validate: (s) => {
 					if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
 						return true;
 					}
-					return 'Please use alpha numeric characters and dots only for the namespace.';
+					return "Please use alpha numeric characters and dots only for the namespace.";
 				},
-				default: 'com.myorg'
+				default: "com.myorg"
 			}, {
-				type: 'list',
-				name: 'viewtype',
-				message: 'Which view type do you use?',
-				choices: ['XML', 'JSON', 'JS', 'HTML'],
-				default: 'XML'
+				type: "list",
+				name: "viewtype",
+				message: "Which view type do you use?",
+				choices: ["XML", "JSON", "JS", "HTML"],
+				default: "XML"
 			}]);
 		}
 		aPrompt = aPrompt.concat([{
-			type: 'confirm',
-			name: 'addToRoute',
-			message: 'Would you like to create a route in the manifest?'
+			type: "confirm",
+			name: "addToRoute",
+			message: "Would you like to create a route in the manifest?"
 		}]);
 		return this.prompt(aPrompt).then((answers) => {
 			this.options.oneTimeConfig = this.config.getAll();
@@ -77,8 +77,8 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		const sViewFileName = 'webapp/view/$ViewName.view.$ViewEnding'
-		const sControllerFileName = 'webapp/controller/$ViewName.controller.js'
+		const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding"
+		const sControllerFileName = "webapp/controller/$ViewName.controller.js"
 
 		const sViewType = this.options.oneTimeConfig.viewtype;
 		const sViewName = this.options.oneTimeConfig.viewname;
@@ -107,15 +107,15 @@ module.exports = class extends Generator {
 
 			let promise = new Promise((resolve, reject) => {
 				if (localOptions.oneTimeConfig.addToRoute) {
-					const filePath = process.cwd() + '/webapp/manifest.json';
+					const filePath = process.cwd() + "/webapp/manifest.json";
 					fs.readFile(filePath, function (readError, data) {
 						let json = JSON.parse(data)
-						let ui5Config = json['sap.ui5'],
+						let ui5Config = json["sap.ui5"],
 							routing = ui5Config.routing,
 							routes = routing.routes;
 
-						const routeName = 'Route' + sViewName,
-							targetName = 'Target' + sViewName;
+						const routeName = "Route" + sViewName,
+							targetName = "Target" + sViewName;
 
 						let route = {
 							name: sViewName,
@@ -130,11 +130,11 @@ module.exports = class extends Generator {
 						};
 
 						ui5Config.routing = routing;
-						json['sap.ui5'] = ui5Config;
+						json["sap.ui5"] = ui5Config;
 
 						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
 							if (writeError) throw writeError;
-							resolve('Updated manifest file with routing, remember to update the pattern');
+							resolve("Updated manifest file with routing, remember to update the pattern");
 						});
 					})
 				} else {
@@ -144,11 +144,11 @@ module.exports = class extends Generator {
 
 			let result = await promise; // wait until the promise resolves (*)
 
-			this.log(result); // 'done!'
+			this.log(result); // "done!"
 		}
 
 		f().catch(() => { }).finally(() => {
-			this.log('Created a new view!');
+			this.log("Created a new view!");
 		})
 
 	}
