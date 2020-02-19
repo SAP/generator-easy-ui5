@@ -1,5 +1,5 @@
 const Generator = require("yeoman-generator");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 module.exports = class extends Generator {
 
@@ -53,10 +53,7 @@ module.exports = class extends Generator {
 		});
 	}
 
-	writing() {
-	}
-
-	end() {
+	async end() {
 		if (this.options.isSubgeneratorCall) {
 			return;
 		}
@@ -64,49 +61,29 @@ module.exports = class extends Generator {
 		const sComponentName = this.options.oneTimeConfig.componentName;
 		const sComponentData = this.options.oneTimeConfig.componentData || {};
 		const sLazy = this.options.oneTimeConfig.lazy;
-		async function f() {
 
-			let promise = new Promise((resolve, reject) => {
-				const filePath = process.cwd() + "/webapp/manifest.json";
-				try {
-					fs.readFile(filePath, function (readError, data) {
-						let json = JSON.parse(data)
-						let ui5Config = json["sap.ui5"],
-							usages = ui5Config.componentUsages || {};
 
-						usages[sUsageName] = {
-							"name": sComponentName,
-							"settings": {},
-							"componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
-							"lazy": sLazy
-						}
+		try {
+			const filePath = process.cwd() + "/webapp/manifest.json";
+			const json = await fs.readJson(filePath);
+			const ui5Config = json["sap.ui5"];
 
-						ui5Config.componentUsages = usages;
-						json["sap.ui5"] = ui5Config;
+			ui5Config.componentUsages = ui5Config.componentUsages || {};
+			ui5Config.componentUsages[sUsageName] = {
+				"name": sComponentName,
+				"settings": {},
+				"componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
+				"lazy": sLazy
+			}
 
-						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
-							if (writeError) throw writeError;
-							resolve("Add the new usage in your view with the following \n \
-								<core:ComponentContainer width='100%' usage='"+ sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer> \n");
-						});
-					})
-				}
-				catch (err) {
-					reject(err);
-				}
-
-			});
-
-			let result = await promise; // wait until the promise resolves (*)
-
-			this.log(result); // "done!"
+			fs.writeJsonSync(filePath, json, { spaces: 2 })
+		} catch (e) {
+			this.log("Error during the manipulation of the manifest: ", e)
+			throw e
 		}
 
-		f().catch((err) => {
-			this.log(err)
-		}).finally(() => {
-			this.log("Updated manifest file with the new usage");
-		})
+		this.log("Add the new usage in your view with the following code: \n '<core:ComponentContainer width='100%' usage='" + sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer>'")
+		this.log("Updated manifest file with the new usage.")
 
 	}
 };

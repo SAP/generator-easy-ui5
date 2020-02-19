@@ -1,5 +1,5 @@
 const Generator = require("yeoman-generator");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 module.exports = class extends Generator {
 
@@ -92,10 +92,9 @@ module.exports = class extends Generator {
 			sTarget = this.destinationPath(sControllerFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
 			this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 		}
-
 	}
 
-	end() {
+	async end() {
 		if (this.options.isSubgeneratorCall) {
 			return;
 		}
@@ -103,53 +102,31 @@ module.exports = class extends Generator {
 		const localOptions = this.options;
 		const sViewType = this.options.oneTimeConfig.viewtype;
 		const sViewName = this.options.oneTimeConfig.viewname;
-		async function f() {
 
-			let promise = new Promise((resolve, reject) => {
-				if (localOptions.oneTimeConfig.addToRoute) {
-					const filePath = process.cwd() + "/webapp/manifest.json";
-					fs.readFile(filePath, function (readError, data) {
-						let json = JSON.parse(data)
-						let ui5Config = json["sap.ui5"],
-							routing = ui5Config.routing,
-							routes = routing.routes;
+		if (localOptions.oneTimeConfig.addToRoute) {
+			try {
+				const filePath = process.cwd() + "/webapp/manifest.json";
+				const json = await fs.readJson(filePath);
+				const ui5Config = json["sap.ui5"];
+				const targetName = "Target" + sViewName
 
-						const routeName = "Route" + sViewName,
-							targetName = "Target" + sViewName;
+				ui5Config.routing.routes.push({
+					name: sViewName,
+					pattern: "Route" + sViewName,
+					target: [targetName]
+				});
+				ui5Config.routing.targets[targetName] = {
+					viewType: sViewType,
+					viewName: sViewName
+				};
 
-						let route = {
-							name: sViewName,
-							pattern: routeName,
-							target: [targetName]
-						}
-						routes.push(route);
-
-						routing.targets[targetName] = {
-							viewType: sViewType,
-							viewName: sViewName
-						};
-
-						ui5Config.routing = routing;
-						json["sap.ui5"] = ui5Config;
-
-						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
-							if (writeError) throw writeError;
-							resolve("Updated manifest file with routing, remember to update the pattern");
-						});
-					})
-				} else {
-					reject();
-				}
-			});
-
-			let result = await promise; // wait until the promise resolves (*)
-
-			this.log(result); // "done!"
+				fs.writeJsonSync(filePath, json, { spaces: 2 })
+			} catch (e) {
+				this.log("Error during the manipulation of the manifest: ", e)
+				throw e
+			}
 		}
 
-		f().catch(() => { }).finally(() => {
-			this.log("Created a new view!");
-		})
-
+		this.log("Created a new view.")
 	}
 };

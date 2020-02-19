@@ -1,5 +1,5 @@
 const Generator = require("yeoman-generator");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 module.exports = class extends Generator {
 
@@ -52,10 +52,7 @@ module.exports = class extends Generator {
 			message: "Which count mode do you want to use?",
 			choices: ["Inline", "Request"],
 			default: "Inline"
-		}
-		];
-
-
+		}];
 
 		return this.prompt(aPrompt).then((answers) => {
 			this.options.oneTimeConfig = this.config.getAll();
@@ -63,23 +60,19 @@ module.exports = class extends Generator {
 			this.options.oneTimeConfig.modelType = answers.modelType;
 			this.options.oneTimeConfig.bindingMode = answers.bindingMode;
 			if (answers.modelType === "OData") {
-
 				this.options.oneTimeConfig.url = answers.url;
 				this.options.oneTimeConfig.countMode = answers.countMode;
 				this.log(this.options.oneTimeConfig.countMode)
 			}
 
-
 		});
 	}
 
-	writing() {
-	}
-
-	end() {
+	async end() {
 		if (this.options.isSubgeneratorCall) {
 			return;
 		}
+
 		const sModelType = this.options.oneTimeConfig.modelType;
 		const sModelName = this.options.oneTimeConfig.modelName;
 		const sBindingMode = this.options.oneTimeConfig.bindingMode;
@@ -92,67 +85,46 @@ module.exports = class extends Generator {
 			sCountMode = this.options.oneTimeConfig.countMode;
 		}
 
-		async function f() {
+		try {
+			const filePath = process.cwd() + "/webapp/manifest.json";
+			const json = await fs.readJson(filePath);
+			const ui5Config = json["sap.ui5"],
+				appConfig = json["sap.app"];
 
-			let promise = new Promise((resolve, reject) => {
-				const filePath = process.cwd() + "/webapp/manifest.json";
-				try {
-					fs.readFile(filePath, function (readError, data) {
-						let json = JSON.parse(data)
+			ui5Config.models = ui5Config.models || {};
+			appConfig.dataSources = appConfig.dataSources || {};
 
-						let ui5Config = json["sap.ui5"],
-							models = ui5Config.models || {};
-
-						models[sModelName] = {
-							"type": (sModelType === "OData") ? "sap.ui.model.odata.v2.ODataModel" : "sap.ui.model.json.JSONModel",
-							"settings": (sModelType === "OData") ? {
-								"defaultOperationMode": "Server",
-								"defaultBindingMode": sBindingMode,
-								"defaultCountMode": sCountMode,
-								"preload": true
-							} : {}
-						}
-						ui5Config.models = models;
-						json["sap.ui5"] = ui5Config;
-
-						if (sModelType === "OData") {
-							models[sModelName].dataSource = sDataSource
-
-							let appConfig = json["sap.app"],
-								dataSources = appConfig.dataSources || {};
-
-							dataSources[sDataSource] = {
-								"uri": sUrl,
-								"type": sModelType,
-								"settings": {
-									"localUri": "localService/" + sUrl + "/metadata.xml"
-								}
-							}
-
-							appConfig.dataSources = dataSources;
-							json["sap.app"] = appConfig;
-						}
-
-						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
-							if (writeError) throw writeError;
-							resolve();
-						});
-					})
-				} catch (err) {
-					reject(err);
+			if (sModelType === "OData") {
+				ui5Config.models[sModelName] = {
+					"type": "sap.ui.model.odata.v2.ODataModel",
+					"settings": {
+						"defaultOperationMode": "Server",
+						"defaultBindingMode": sBindingMode,
+						"defaultCountMode": sCountMode,
+						"preload": true
+					},
+					"dataSource": sDataSource
 				}
+				appConfig.dataSources[sDataSource] = {
+					"uri": sUrl,
+					"type": sModelType,
+					"settings": {
+						"localUri": "localService/" + sUrl + "/metadata.xml"
+					}
+				}
+			} else {
+				ui5Config.models[sModelName] = {
+					"type": "sap.ui.model.json.JSONModel",
+					"settings": {}
+				}
+			}
 
-			});
-
-			await promise;
-
+			fs.writeJsonSync(filePath, json, { spaces: 2 })
+		} catch (e) {
+			this.log("Error during the manipulation of the manifest: ", e)
+			throw e
 		}
 
-		f().catch((err) => {
-			this.logg(err)
-		}).finally(() => {
-			this.log("Updated manifest file with the new model.");
-		})
-
+		this.log("Updated manifest file with the new model.")
 	}
 };
