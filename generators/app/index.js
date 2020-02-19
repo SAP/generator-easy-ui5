@@ -20,7 +20,8 @@ module.exports = class extends Generator {
         }, {
             type: "confirm",
             name: "newdir",
-            message: "Would you like to create a new directory for the project?"
+            message: "Would you like to create a new directory for the project?",
+            default: true
         }, {
             type: "input",
             name: "projectname",
