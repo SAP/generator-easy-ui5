@@ -9,7 +9,7 @@
 			</Page>
 		</pages>
 	</App>
-</mvc:View> <% } if (viewtype === 'HTML') { %>
+</mvc:View><% } if (viewtype === 'HTML') { -%>
 <template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>">
 	<div data-sap-ui-type="sap.m.App" id="idAppControl">
 		<div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
@@ -17,7 +17,7 @@
 			</div>
 		</div>
 	</div>
-</template> <% } if (viewtype === 'JSON') { %>
+</template><% } if (viewtype === 'JSON') { -%>
 {
 	"Type": "sap.ui.core.mvc.JSONView",
 	"controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>",
@@ -30,7 +30,7 @@
 			"content": []
 		}]
 	}]
-} <% } if (viewtype === 'JS') { %>
+}<% } if (viewtype === 'JS') { -%>
 sap.ui.define([
     "sap/ui/core/mvc/JSView"
 ], function(JSView) {
@@ -49,6 +49,5 @@ sap.ui.define([
 				})
 			});
 		}
-
 	});
-}); <% } %>
+});<% } -%>

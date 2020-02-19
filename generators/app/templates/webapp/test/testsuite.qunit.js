@@ -1,5 +1,3 @@
-/* global window, parent, location */
-
 // eslint-disable-next-line
 window.suite = function() {
 	"use strict";

@@ -10,15 +10,14 @@
     "test": "npm run lint && npm run karma",
     "karma-ci": "karma start karma-ci.conf.js",
     "karma": "rimraf coverage && npm run karma-ci",
-    "lint": "eslint webapp",
+    "lint": "eslint .",
 <% if(platform.indexOf('Cloud Foundry') !== -1){ -%>
     "build:mta": "mbt build -p=cf",
     "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
     "build:mta": "mbt build -p=xsa",
     "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-<% }
-if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
+<% } if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
     "build:ui": "ui5 build --clean-dest --dest deployer/resources/webapp"
 <% }  else { -%>
     "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
@@ -28,17 +27,16 @@ if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
 <% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
     "@openui5/sap.ui.core": "^1.74.0",
     "@openui5/sap.ui.layout": "^1.74.0",
-    "@openui5/themelib_sap_belize": "^1.74.0",
 <% } -%>
     "@openui5/sap.m": "^1.74.0",
+    "@openui5/themelib_sap_belize": "^1.74.0",
     "shx": "^0.3.2"
   },
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
     "mbt": "1.0.9",
-<%
-} -%>
+<% } -%>
     "@ui5/cli": "^1.13.1",
     "ui5-middleware-livereload": "^0.1.5",
     "karma": "^4.4.1",
@@ -52,11 +50,10 @@ if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
 <% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
       "@openui5/sap.ui.core",
       "@openui5/sap.ui.layout",
-      "@openui5/themelib_sap_fiori_3",
 <% } -%>
       "@openui5/sap.m",
+      "@openui5/themelib_sap_belize",
       "ui5-middleware-livereload"
     ]
   }
-
 }
