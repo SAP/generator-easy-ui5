@@ -18,9 +18,9 @@ module.exports = class extends Generator {
             choices: ['Content delivery network (OpenUI5)', 'Content delivery network (SAPUI5)', 'Local resources (OpenUI5)'],
             default: 'Content delivery network (OpenUI5)'
         }, {
-            type: "confirm",
-            name: "newdir",
-            message: "Would you like to create a new directory for the project?"
+            type: 'confirm',
+            name: 'newdir',
+            message: 'Would you like to create a new directory for the project?'
         }, {
             type: 'input',
             name: 'projectname',
@@ -91,10 +91,9 @@ module.exports = class extends Generator {
         const selectedPlatform = this.config.get('platform');
         if (selectedPlatform !== 'Static webserver') {
             this.composeWith(require.resolve('../approuter'), oSubGen);
-            if(selectedPlatform === "Cloud Foundry HTML5 Application Repository"){
+            if (selectedPlatform === 'Cloud Foundry HTML5 Application Repository') {
                 this.composeWith(require.resolve('../deployer'), oSubGen);
             }
-
         }
     }
 

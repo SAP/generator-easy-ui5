@@ -7,7 +7,7 @@ module.exports = class extends Generator {
 		if (this.options.isSubgeneratorCall) {
 			this.destinationRoot(this.options.cwd);
 			this.options.oneTimeConfig = this.config.getAll();
-			return;
+			return [];
 		}
 		var aPrompt = [{
 			type: 'input',
@@ -35,13 +35,13 @@ module.exports = class extends Generator {
 			type: 'input',
 			name: 'componentData',
 			message: 'Write your component data as a json object'
-			
+
 		}, {
 			type: 'confirm',
 			name: 'lazy',
 			message: 'Should the component be lazy loaded?'
 		}];
-		
+
 		return this.prompt(aPrompt).then((answers) => {
 			this.options.oneTimeConfig = this.config.getAll();
 			this.options.oneTimeConfig.usagesName = answers.usagesName;
@@ -54,65 +54,60 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		
-
-		
-
 	}
 
 	end() {
 		if (this.options.isSubgeneratorCall) {
 			return;
-        }
-        const sUsageName = this.options.oneTimeConfig.usagesName;
+		}
+		const sUsageName = this.options.oneTimeConfig.usagesName;
 		const sComponentName = this.options.oneTimeConfig.componentName;
 		const sComponentData = this.options.oneTimeConfig.componentData || {};
 		const sLazy = this.options.oneTimeConfig.lazy;
-        const localOptions = this.options;
-     	async function f() {
+		async function f() {
 
 			let promise = new Promise((resolve, reject) => {
-					const filePath = process.cwd() + '/webapp/manifest.json';
-					try {
-						fs.readFile(filePath, function (err, data) {
-							let json = JSON.parse(data)
-							let ui5Config = json['sap.ui5'],
-								usages = ui5Config.componentUsages || {};
-	
-							usages[sUsageName] = {
-								"name": sComponentName,
-								"settings": {},
-								"componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
-								"lazy": sLazy
-							}
-	
-							ui5Config.componentUsages = usages;
-							json['sap.ui5'] = ui5Config;
-	
-							fs.writeFile(filePath, JSON.stringify(json, null, 4), function (err) {
-								if (err) throw err;
-								resolve('Add the new usage in your view with the following \
-								\n<core:ComponentContainer width="100%" usage="'+sUsageName +'" propagateModel="true" lifecycle="Container"></core:ComponentContainer> \
+				const filePath = process.cwd() + '/webapp/manifest.json';
+				try {
+					fs.readFile(filePath, function (readError, data) {
+						let json = JSON.parse(data)
+						let ui5Config = json['sap.ui5'],
+							usages = ui5Config.componentUsages || {};
+
+						usages[sUsageName] = {
+							'name': sComponentName,
+							'settings': {},
+							'componentData': (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
+							'lazy': sLazy
+						}
+
+						ui5Config.componentUsages = usages;
+						json['sap.ui5'] = ui5Config;
+
+						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
+							if (writeError) throw writeError;
+							resolve('Add the new usage in your view with the following \
+								\n<core:ComponentContainer width="100%" usage="'+ sUsageName + '" propagateModel="true" lifecycle="Container"></core:ComponentContainer> \
 								');
-							});
-						})
-					}
-					catch(err) {
-						reject(err);
-					}
-				
+						});
+					})
+				}
+				catch (err) {
+					reject(err);
+				}
+
 			});
 
 			let result = await promise; // wait until the promise resolves (*)
 
 			this.log(result); // "done!"
 		}
-	
-	f().catch((err) => {
-		this.log(err)
-	}).finally(() => {
-		this.log('Updated manifest file with the new usage');
-	})
 
-}
+		f().catch((err) => {
+			this.log(err)
+		}).finally(() => {
+			this.log('Updated manifest file with the new usage');
+		})
+
+	}
 };

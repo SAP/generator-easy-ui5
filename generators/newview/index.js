@@ -7,7 +7,7 @@ module.exports = class extends Generator {
 		if (this.options.isSubgeneratorCall) {
 			this.destinationRoot(this.options.cwd);
 			this.options.oneTimeConfig = this.config.getAll();
-			return;
+			return [];
 		}
 		var aPrompt = [{
 			type: 'input',
@@ -77,8 +77,8 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding"
-		const sControllerFileName = "webapp/controller/$ViewName.controller.js"
+		const sViewFileName = 'webapp/view/$ViewName.view.$ViewEnding'
+		const sControllerFileName = 'webapp/controller/$ViewName.controller.js'
 
 		const sViewType = this.options.oneTimeConfig.viewtype;
 		const sViewName = this.options.oneTimeConfig.viewname;
@@ -98,17 +98,17 @@ module.exports = class extends Generator {
 	end() {
 		if (this.options.isSubgeneratorCall) {
 			return;
-        }
-        
-        const localOptions = this.options;
-        const sViewType = this.options.oneTimeConfig.viewtype;
+		}
+
+		const localOptions = this.options;
+		const sViewType = this.options.oneTimeConfig.viewtype;
 		const sViewName = this.options.oneTimeConfig.viewname;
 		async function f() {
 
 			let promise = new Promise((resolve, reject) => {
 				if (localOptions.oneTimeConfig.addToRoute) {
 					const filePath = process.cwd() + '/webapp/manifest.json';
-					fs.readFile(filePath, function (err, data) {
+					fs.readFile(filePath, function (readError, data) {
 						let json = JSON.parse(data)
 						let ui5Config = json['sap.ui5'],
 							routing = ui5Config.routing,
@@ -132,8 +132,8 @@ module.exports = class extends Generator {
 						ui5Config.routing = routing;
 						json['sap.ui5'] = ui5Config;
 
-						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (err) {
-							if (err) throw err;
+						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
+							if (writeError) throw writeError;
 							resolve('Updated manifest file with routing, remember to update the pattern');
 						});
 					})
@@ -144,12 +144,12 @@ module.exports = class extends Generator {
 
 			let result = await promise; // wait until the promise resolves (*)
 
-			this.log(result); // "done!"
+			this.log(result); // 'done!'
 		}
-	
-	f().catch(() => {}).finally(() => {
-		this.log('Created a new view!');
-	})
 
-}
+		f().catch(() => { }).finally(() => {
+			this.log('Created a new view!');
+		})
+
+	}
 };

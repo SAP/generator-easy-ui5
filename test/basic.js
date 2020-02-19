@@ -11,6 +11,7 @@ function createTest(oPrompt) {
 			return helpers.run(path.join(__dirname, '../generators/app')).withPrompts(oPrompt);
 		});
 
+
 		it('should create the necessary ui5 files', function () {
 			return assert.file(['ui5.yaml', `webapp/view/MainView.view.${oPrompt.viewtype.toLowerCase()}`, 'webapp/index.html', 'webapp/manifest.json']);
 		});

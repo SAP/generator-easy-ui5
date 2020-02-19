@@ -1,5 +1,4 @@
 const Generator = require('yeoman-generator'),
-    path = require('path'),
     glob = require('glob');
 
 module.exports = class extends Generator {
@@ -10,14 +9,14 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             return;
         }
-        throw("This subgenerator is only intended for internal use. Please don't call it directly.")
+        throw ('This subgenerator is only intended for internal use. Please don\'t call it directly.')
     }
 
     writing() {
         glob.sync('**', {
             cwd: this.sourceRoot(),
             nodir: true
-        }).forEach( file => {
+        }).forEach(file => {
             this.fs.copy(this.templatePath(file), this.destinationPath(file));
         });
     }

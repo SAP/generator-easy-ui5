@@ -7,52 +7,52 @@ module.exports = class extends Generator {
 		if (this.options.isSubgeneratorCall) {
 			this.destinationRoot(this.options.cwd);
 			this.options.oneTimeConfig = this.config.getAll();
-			return;
+			return [];
 		}
 		var aPrompt = [{
-				type: 'input',
-				name: 'modelName',
-				message: 'What is the name of your model, press enter if it is the default model?',
-				validate: (s) => {
-					if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
-						return true;
-					}
-					return 'Please use alpha numeric characters only for the view name.';
-				},
-				default: ""
+			type: 'input',
+			name: 'modelName',
+			message: 'What is the name of your model, press enter if it is the default model?',
+			validate: (s) => {
+				if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
+					return true;
+				}
+				return 'Please use alpha numeric characters only for the view name.';
 			},
-			{
-				type: 'list',
-				name: 'modelType',
-				message: 'Which type of model do you want to add?',
-				choices: ['OData', 'JSON'],
-				default: 'OData'
+			default: ''
+		},
+		{
+			type: 'list',
+			name: 'modelType',
+			message: 'Which type of model do you want to add?',
+			choices: ['OData', 'JSON'],
+			default: 'OData'
+		},
+		{
+			type: 'list',
+			name: 'bindingMode',
+			message: 'Which binding mode do you want to use?',
+			choices: ['TwoWay', 'OneWay'],
+			default: 'TwoWay'
+		},
+		{
+			when: function (props) {
+				return props.modelType === 'OData';
 			},
-			{
-				type: 'list',
-				name: 'bindingMode',
-				message: 'Which binding mode do you want to use?',
-				choices: ['TwoWay', 'OneWay'],
-				default: 'TwoWay'
+			type: 'input',
+			name: 'url',
+			message: 'What is the data source url?'
+		},
+		{
+			when: function (props) {
+				return props.modelType === 'OData';
 			},
-			{
-				when: function (props) {
-					return props.modelType === "OData";
-				},
-				type: 'input',
-				name: 'url',
-				message: 'What is the data source url?'
-			},
-			{
-				when: function (props) {
-					return props.modelType === "OData";
-				},
-				type: 'list',
-				name: 'countMode',
-				message: 'Which count mode do you want to use?',
-				choices: ['Inline', 'Request'],
-				default: 'Inline'
-			}
+			type: 'list',
+			name: 'countMode',
+			message: 'Which count mode do you want to use?',
+			choices: ['Inline', 'Request'],
+			default: 'Inline'
+		}
 		];
 
 
@@ -74,10 +74,6 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-
-
-
-
 	}
 
 	end() {
@@ -91,30 +87,29 @@ module.exports = class extends Generator {
 		let sDataSource;
 		let sCountMode;
 		if (sUrl) {
-			sDataSource = sUrl.replace("/sap/opu/odata/sap/", "");
-			sDataSource.replace("/", "");
+			sDataSource = sUrl.replace('/sap/opu/odata/sap/', '');
+			sDataSource.replace('/', '');
 			sCountMode = this.options.oneTimeConfig.countMode;
 		}
 
-		const localOptions = this.options;
 		async function f() {
 
 			let promise = new Promise((resolve, reject) => {
 				const filePath = process.cwd() + '/webapp/manifest.json';
 				try {
-					fs.readFile(filePath, function (err, data) {
+					fs.readFile(filePath, function (readError, data) {
 						let json = JSON.parse(data)
 
 						let ui5Config = json['sap.ui5'],
 							models = ui5Config.models || {};
 
 						models[sModelName] = {
-							"type": (sModelType === 'OData') ? "sap.ui.model.odata.v2.ODataModel" : "sap.ui.model.json.JSONModel",
-							"settings": (sModelType === 'OData') ? {
-								"defaultOperationMode": "Server",
-								"defaultBindingMode": sBindingMode,
-								"defaultCountMode": sCountMode,
-								"preload": true
+							'type': (sModelType === 'OData') ? 'sap.ui.model.odata.v2.ODataModel' : 'sap.ui.model.json.JSONModel',
+							'settings': (sModelType === 'OData') ? {
+								'defaultOperationMode': 'Server',
+								'defaultBindingMode': sBindingMode,
+								'defaultCountMode': sCountMode,
+								'preload': true
 							} : {}
 						}
 						ui5Config.models = models;
@@ -127,10 +122,10 @@ module.exports = class extends Generator {
 								dataSources = appConfig.dataSources || {};
 
 							dataSources[sDataSource] = {
-								"uri": sUrl,
-								"type": sModelType,
-								"settings": {
-									"localUri": "localService/" + sUrl + "/metadata.xml"
+								'uri': sUrl,
+								'type': sModelType,
+								'settings': {
+									'localUri': 'localService/' + sUrl + '/metadata.xml'
 								}
 							}
 
@@ -138,8 +133,8 @@ module.exports = class extends Generator {
 							json['sap.app'] = appConfig;
 						}
 
-						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (err) {
-							if (err) throw err;
+						fs.writeFile(filePath, JSON.stringify(json, null, 4), function (writeError) {
+							if (writeError) throw writeError;
 							resolve();
 						});
 					})
@@ -149,7 +144,7 @@ module.exports = class extends Generator {
 
 			});
 
-			let result = await promise; // wait until the promise resolves (*)
+			await promise;
 
 		}
 
