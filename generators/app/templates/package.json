@@ -1,48 +1,62 @@
 {
-        "name": "<%= projectname %>",
-        "version": "0.0.1",
-        "engines": {
-                "node": "12.x.x"
-        },
-        "scripts": {
-                "start": "ui5 serve -o index.html",
-                "serve": "ui5 serve",
-                "test": "npm run lint && npm run karma",
-                "karma-ci": "karma start karma-ci.conf.js",
-                "karma": "rimraf coverage && npm run karma-ci",
-                "lint": "eslint webapp",
+  "name": "<%= projectname %>",
+  "version": "0.0.1",
+  "engines": {
+    "node": "12.X"
+  },
+  "scripts": {
+    "start": "ui5 serve -o index.html",
+    "serve": "ui5 serve",
+    "test": "npm run lint && npm run karma",
+    "karma-ci": "karma start karma-ci.conf.js",
+    "karma": "rimraf coverage && npm run karma-ci",
+    "lint": "eslint webapp",
 <% if(platform.indexOf('Cloud Foundry') !== -1){ -%>
-                "build:mta": "mbt build -p=cf",
-                "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
+    "build:mta": "mbt build -p=cf",
+    "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
-                "build:mta": "mbt build -p=xsa",
-                "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+    "build:mta": "mbt build -p=xsa",
+    "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
 <% }
 if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
-                "build:ui": "ui5 build --clean-dest --dest deployer/resources/webapp"
+    "build:ui": "ui5 build --clean-dest --dest deployer/resources/webapp"
 <% }  else { -%>
-                "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
+    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
 <% }  -%>
-        },
-        "dependencies": {
+  },
+  "dependencies": {
 <% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
-                "@openui5/sap.ui.core": "^1.73.1",
-                "@openui5/sap.ui.layout": "^1.73.1",
-                "@openui5/themelib_sap_belize": "^1.73.1", 
+    "@openui5/sap.ui.core": "^1.74.0",
+    "@openui5/sap.ui.layout": "^1.74.0",
+    "@openui5/themelib_sap_belize": "^1.74.0",
 <% } -%>
-                "@openui5/sap.m": "^1.73.1",
-                "shx": "^0.3.2"
-        },
-        "devDependencies": {
+    "@openui5/sap.m": "^1.74.0",
+    "shx": "^0.3.2"
+  },
+  "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
-                "cross-var": "^1.1.0",
-                "mbt": "1.0.4",
+    "cross-var": "^1.1.0",
+    "mbt": "1.0.9",
+<%
+} -%>
+    "@ui5/cli": "^1.13.1",
+    "ui5-middleware-livereload": "^0.1.5",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.1",
+    "karma-ui5": "^1.1.0",
+    "eslint": "^6.8.0"
+  },
+  "ui5": {
+    "dependencies": [
+<% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
+      "@openui5/sap.ui.core",
+      "@openui5/sap.ui.layout",
+      "@openui5/themelib_sap_fiori_3",
 <% } -%>
-                "@ui5/cli": "^1.12.1",
-                "karma": "^4.4.1",
-                "karma-chrome-launcher": "^3.1.0",
-                "karma-coverage": "^2.0.1",
-                "karma-ui5": "^1.1.0",
-                "eslint": "^6.7.2"
-        }
+      "@openui5/sap.m",
+      "ui5-middleware-livereload"
+    ]
+  }
+
 }
