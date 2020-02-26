@@ -77,7 +77,7 @@ module.exports = class extends Generator {
             if (answers.newdir) {
                 this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
             }
-            this.config.set(answers)
+            this.config.set(answers);
         });
     }
 

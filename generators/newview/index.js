@@ -75,8 +75,8 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding"
-    const sControllerFileName = "webapp/controller/$ViewName.controller.js"
+    const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding";
+    const sControllerFileName = "webapp/controller/$ViewName.controller.js";
 
     const sViewType = this.options.oneTimeConfig.viewtype;
     const sViewName = this.options.oneTimeConfig.viewname;
@@ -100,7 +100,7 @@ module.exports = class extends Generator {
         const filePath = process.cwd() + "/webapp/manifest.json";
         const json = await this.fs.readJSON(filePath);
         const ui5Config = json["sap.ui5"];
-        const targetName = "Target" + sViewName
+        const targetName = "Target" + sViewName;
 
         ui5Config.routing.routes.push({
           name: sViewName,
@@ -112,12 +112,12 @@ module.exports = class extends Generator {
           viewName: sViewName
         };
 
-        this.fs.writeJSON(filePath, json)
+        this.fs.writeJSON(filePath, json);
       } catch (e) {
-        this.log("Error during the manipulation of the manifest: ", e)
-        throw e
+        this.log("Error during the manipulation of the manifest: " + e);
+        throw e;
       }
     }
-    this.log("Created a new view.")
+    this.log("Created a new view.");
   }
 };

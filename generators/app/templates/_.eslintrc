@@ -21,6 +21,10 @@
 		"no-unused-vars": 2,
 		"no-trailing-spaces": 2,
 		"no-debugger": 2,
+		"semi": [
+			1,
+			"always"
+		],
 		"quotes": [
 			1,
 			"double"

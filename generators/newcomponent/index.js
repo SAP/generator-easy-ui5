@@ -70,15 +70,15 @@ module.exports = class extends Generator {
         "settings": {},
         "componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
         "lazy": sLazy
-      }
+      };
 
-      this.fs.writeJSON(filePath, json)
+      this.fs.writeJSON(filePath, json);
     } catch (e) {
-      this.log("Error during the manipulation of the manifest: ", e)
-      throw e
+      this.log("Error during the manipulation of the manifest: " + e);
+      throw e;
     }
 
-    this.log("Add the new usage in your view with the following code: \n '<core:ComponentContainer width='100%' usage='" + sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer>'")
-    this.log("Updated manifest file with the new usage.")
+    this.log("Add the new usage in your view with the following code: \n '<core:ComponentContainer width='100%' usage='" + sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer>'");
+    this.log("Updated manifest file with the new usage.");
   }
 };

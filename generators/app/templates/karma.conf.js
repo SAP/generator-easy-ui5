@@ -1,11 +1,11 @@
 module.exports = function (config) {
-  "use strict"
+	"use strict";
 
-  config.set({
-    frameworks: ["ui5"],
-    browsers: ["Chrome"],
-    browserConsoleLogOptions: {
-      level: "error"
-    }
-  });
+	config.set({
+		frameworks: ["ui5"],
+		browsers: ["Chrome"],
+		browserConsoleLogOptions: {
+			level: "error"
+		}
+	});
 };

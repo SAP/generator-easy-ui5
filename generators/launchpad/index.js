@@ -17,7 +17,7 @@ module.exports = class extends Generator {
                 this.options.oneTimeConfig.tilename = answers.tilename;
             });
         }
-        throw ("This subgenerator is only intended for internal use. Please don't call it directly.")
+        throw ("This subgenerator is only intended for internal use. Please don't call it directly.");
     }
 
     async writing() {
@@ -48,13 +48,13 @@ module.exports = class extends Generator {
                 "title": title,
                 "description": "App Description",
                 "icon": "sap-icon://add"
-            }
+            };
 
             this.fs.writeJSON(filePath, json);
             !this.options.isSubgeneratorCall && this.log("Updated manifest file with the new inbound navigation.");
         } catch (e) {
-            this.log("Error during the manipulation of the manifest: " + e)
-            throw e
+            this.log("Error during the manipulation of the manifest: " + e);
+            throw e;
         }
 
         try {
@@ -66,7 +66,7 @@ module.exports = class extends Generator {
             xsapp.routes = xsapp.routes.filter((route) => !route.localDir);
 
             this.fs.writeJSON(filePath, xsapp);
-            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.")
+            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.");
         } catch (e) {
             this.log("Error during the manipulation of the approuter/xs-app.json file: " + e);
             throw e;
@@ -79,7 +79,7 @@ module.exports = class extends Generator {
             xsapp.welcomeFile = "/flpSandbox.html";
 
             this.fs.writeJSON(filePath, xsapp);
-            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.")
+            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.");
         } catch (e) {
             this.log("Error during the manipulation of the webapp/xs-app.json file: " + e);
             throw e;
@@ -92,7 +92,7 @@ module.exports = class extends Generator {
             descriptor.scripts.start = "ui5 serve -o flpSandbox.html";
 
             this.fs.writeJSON(filePath, descriptor);
-            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.")
+            !this.options.isSubgeneratorCall && this.log("Updated xs-app.json file.");
         } catch (e) {
             this.log("Error during the manipulation of the package.json file: " + e);
             throw e;
@@ -101,9 +101,9 @@ module.exports = class extends Generator {
         try {
             const filePath = process.cwd() + "/mta.yaml";
             const mta = yaml.parse(this.fs.read(filePath));
-            const approuter = mta.modules.find((module) => module.name === projectname );
+            const approuter = mta.modules.find((module) => module.name === projectname);
 
-            approuter.requires.push({name: projectname + "_portal"})
+            approuter.requires.push({ name: projectname + "_portal" });
             mta.modules.push({
                 name: projectname + "_launchpad_deployer",
                 type: "com.sap.portal.content",
@@ -123,11 +123,11 @@ module.exports = class extends Generator {
                     "service-plan": "standard",
                     "service": "portal"
                 }
-            })
+            });
 
             this.fs.write(filePath, yaml.stringify(mta));
 
-            !this.options.isSubgeneratorCall && this.log("Updated the mta.yaml file with the new resources.")
+            !this.options.isSubgeneratorCall && this.log("Updated the mta.yaml file with the new resources.");
         } catch (e) {
             this.log("Error during the manipulation of the mta.yaml file: " + e);
             throw e;

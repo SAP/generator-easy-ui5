@@ -61,7 +61,7 @@ module.exports = class extends Generator {
       if (answers.modelType === "OData") {
         this.options.oneTimeConfig.url = answers.url;
         this.options.oneTimeConfig.countMode = answers.countMode;
-        this.log(this.options.oneTimeConfig.countMode)
+        this.log(this.options.oneTimeConfig.countMode);
       }
 
     });
@@ -103,27 +103,27 @@ module.exports = class extends Generator {
             "preload": true
           },
           "dataSource": sDataSource
-        }
+        };
         appConfig.dataSources[sDataSource] = {
           "uri": sUrl,
           "type": sModelType,
           "settings": {
             "localUri": "localService/" + sUrl + "/metadata.xml"
           }
-        }
+        };
       } else {
         ui5Config.models[sModelName] = {
           "type": "sap.ui.model.json.JSONModel",
           "settings": {}
-        }
+        };
       }
 
-      this.fs.writeJSON(filePath, json)
+      this.fs.writeJSON(filePath, json);
     } catch (e) {
-      this.log("Error during the manipulation of the manifest: ", e)
-      throw e
+      this.log("Error during the manipulation of the manifest: " + e);
+      throw e;
     }
 
-    this.log("Updated manifest file with the new model.")
+    this.log("Updated manifest file with the new model.");
   }
 };

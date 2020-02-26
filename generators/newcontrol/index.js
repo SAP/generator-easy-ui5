@@ -63,7 +63,7 @@ module.exports = class extends Generator {
 
     writing() {
         const sOrigin = this.templatePath("webapp/control/template.js");
-        const sTarget = `webapp/control/${this.options.oneTimeConfig.controlname}.js`
+        const sTarget = `webapp/control/${this.options.oneTimeConfig.controlname}.js`;
 
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     }
