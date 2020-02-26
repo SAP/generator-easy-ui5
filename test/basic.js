@@ -38,11 +38,14 @@ describe("Basic project capabilities", function () {
 	createTest({ viewtype: "XML", platform: "Application Router @ Cloud Foundry" });
 	createTest({ viewtype: "JSON", ui5libs: "Local resources (OpenUI5)" });
 	createTest({ viewtype: "JS" });
+	createTest({ viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository" });
 	createTest({ viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" });
 	createTest({ viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" });
 	createTest({ viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" });
 	createTest({ viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository" });
 	createTest({ viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository" });
 	createTest({ viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" });
+	createTest({ viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository" });
+
 
 });

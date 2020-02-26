@@ -20,7 +20,7 @@
 		"no-console": 2,
 		"no-unused-vars": 2,
 		"no-trailing-spaces": 2,
-		"no-underscore-dangle": 0,
+		"no-debugger": 2,
 		"quotes": [
 			1,
 			"double"

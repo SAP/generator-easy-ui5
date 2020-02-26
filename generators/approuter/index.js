@@ -24,9 +24,4 @@ module.exports = class extends Generator {
         });
     }
 
-    end() {
-        if (this.options.isSubgeneratorCall) {
-            return;
-        }
-    }
 };

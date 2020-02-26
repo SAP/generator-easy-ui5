@@ -7,7 +7,7 @@ modules:
  - name: <%= projectname %>
    type: nodejs
    path: approuter
-<% if(platform !== 'Cloud Foundry HTML5 Application Repository'){ -%>
+<% if(platform !== 'Cloud Foundry HTML5 Application Repository' && platform !== 'Fiori Launchpad on Cloud Foundry'){ -%>
    build-parameters:
      builder: custom
      commands:
@@ -19,14 +19,15 @@ modules:
       memory: 512M
 <% if(platform.includes('Cloud Foundry')){ -%>
    requires:
-      - name: dest_<%= projectname %>
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
-      - name: html5_repo_runtime
- - name: ui_deployer
+      - name: <%= projectname %>_destination
+<% if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
+      - name: <%= projectname %>_uaa
+      - name: <%= projectname %>_html5_repo_runtime
+ - name: <%= projectname %>_deployer
    type: com.sap.html5.application-content
    path: deployer
    requires:
-     - name: html5_repo_host
+     - name: <%= projectname %>_html5_repo_host
    build-parameters:
      builder: custom
      commands:
@@ -34,21 +35,29 @@ modules:
 <% } -%>
 
 resources:
- - name: dest_<%= projectname %>
+ - name: <%= projectname %>_destination
    type: org.cloudfoundry.managed-service
    parameters:
       service-plan: lite
       service: destination
-<% if(platform === 'Cloud Foundry HTML5 Application Repository'){ -%>
- - name: html5_repo_runtime
+<% if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
+ - name: <%= projectname %>_uaa
+   type: org.cloudfoundry.managed-service
+   parameters:
+     path: ./xs-security.json
+     service-plan: application
+     service: xsuaa
+ - name: <%= projectname %>_html5_repo_runtime
    type: org.cloudfoundry.managed-service
    parameters:
       service-plan: app-runtime
       service: html5-apps-repo
- - name: html5_repo_host
+ - name: <%= projectname %>_html5_repo_host
    type: org.cloudfoundry.managed-service
    parameters:
       service-plan: app-host
       service: html5-apps-repo
+      config:
+        sizeLimit: 5
 <% } -%>
 <% } -%>

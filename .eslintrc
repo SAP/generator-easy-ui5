@@ -12,11 +12,11 @@
     "camelcase": 1,
     "consistent-return": 1,
     "no-warning-comments": 1,
+    "no-debugger": 2,
     "default-case": 1,
     "no-console": 2,
     "no-unused-vars": 2,
     "no-trailing-spaces": 2,
-    "no-underscore-dangle": 0,
     "quotes": [
       1,
       "double"

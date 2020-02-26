@@ -1,0 +1,83 @@
+{
+  "_version": "3.0.0",
+  "identification": {
+    "id": "c9aae627-9601-4a11-83c3-41b94a3c8026-1576776549699",
+    "entityType": "bundle"
+  },
+  "payload": {
+    "catalogs": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "defaultCatalogId",
+          "title": "CatalogTitle",
+          "entityType": "catalog"
+        },
+        "payload": {
+          "viz": []
+        }
+      }
+    ],
+    "groups": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "defaultGroupId",
+          "title": "GroupTitle",
+          "entityType": "group"
+        },
+        "payload": {
+          "viz": [
+            {
+              "id": "<%=namespace%>.<%=projectname%>-0-1576776620655",
+              "appId": "<%=namespace%>.<%=projectname%>",
+              "vizId": "data-display"
+            }
+          ]
+        }
+      }
+    ],
+    "sites": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "b9ad73bb-384c-4740-b39a-7f0fad5e6acc-1576776549700",
+          "entityType": "site",
+          "title": "SAP Fiori launchpad site on Cloud Foundry",
+          "description": ""
+        },
+        "payload": {
+          "config": {
+            "ushellConfig": {
+              "renderers": {
+                "fiori2": {
+                  "componentData": {
+                    "config": {
+                      "applications": {
+                        "Shell-home": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "groupsOrder": [
+            "defaultGroupId"
+          ],
+          "sap.cloud.portal": {
+            "config": {
+              "theme.id": "sap_belize",
+              "theme.active": [
+                "sap_belize",
+                "sap_fiori_3",
+                "sap_belize_hcb",
+                "sap_belize_hcw"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

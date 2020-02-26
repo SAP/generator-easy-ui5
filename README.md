@@ -24,7 +24,7 @@ The purpose of this generator is to guide you on your first steps with SAPUI5 an
     ```sh
     yo
     ```
-	Make sure you see the `easy-ui5` generator listed.
+  Make sure you see the `easy-ui5` generator listed.
 
 
 ## Usage

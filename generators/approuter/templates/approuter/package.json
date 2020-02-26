@@ -9,7 +9,7 @@
     "local": "node -r dotenv/config index.js"
   },
   "dependencies": {
-    "@sap/approuter": "^6.7.0"
+    "@sap/approuter": "^6.8.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"
