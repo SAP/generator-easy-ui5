@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/SAP/generator-easy-ui5#readme",
   "dependencies": {
-    "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "yaml": "^1.7.2",
     "yeoman-generator": "^4.2.0"
