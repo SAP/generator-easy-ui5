@@ -10,7 +10,7 @@ module.exports = class extends Generator {
                 type: "input",
                 name: "tilename",
                 message: "What name should be displayed on the Fiori Launchpad tile?",
-                default: "Open Fiori App"
+                default: "Fiori App"
             }]).then((answers) => {
                 this.destinationRoot(this.options.cwd);
                 this.options.oneTimeConfig = this.config.getAll();
@@ -46,9 +46,8 @@ module.exports = class extends Generator {
                 "semanticObject": "data",
                 "action": "display",
                 "title": title,
-                "info": "",
-                "icon": "sap-icon://add",
-                "subTitle": ""
+                "description": "App Description",
+                "icon": "sap-icon://add"
             }
 
             this.fs.writeJSON(filePath, json);

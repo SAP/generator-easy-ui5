@@ -23,7 +23,7 @@
         "_version": "3.0.0",
         "identification": {
           "id": "defaultGroupId",
-          "title": "GroupTitle",
+          "title": "My Home",
           "entityType": "group"
         },
         "payload": {
@@ -49,6 +49,14 @@
         "payload": {
           "config": {
             "ushellConfig": {
+              "bootstrapPlugins": {
+								"KeyUserPlugin": {
+									"component": "sap.ushell.plugins.rta"
+								},
+								"PersonalizePlugin": {
+									"component": "sap.ushell.plugins.rta-personalize"
+								}
+							},
               "renderers": {
                 "fiori2": {
                   "componentData": {
@@ -67,10 +75,11 @@
           ],
           "sap.cloud.portal": {
             "config": {
-              "theme.id": "sap_belize",
+              "theme.id": "sap_fiori_3",
               "theme.active": [
-                "sap_belize",
                 "sap_fiori_3",
+                "sap_fiori_3_dark",
+                "sap_belize",
                 "sap_belize_hcb",
                 "sap_belize_hcw"
               ]

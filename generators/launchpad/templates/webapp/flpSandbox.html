@@ -10,7 +10,10 @@
     <script>
         window["sap-ushell-config"] = {
             defaultRenderer: "fiori2",
-            bootstrapPlugins: {
+            bootstrapPlugins: {               
+                "KeyUserPlugin": {
+                    "component": "sap.ushell.plugins.rta"
+                },
                 "PersonalizePlugin": {
                     "component": "sap.ushell.plugins.rta-personalize"
                 }
@@ -18,7 +21,8 @@
             applications: {
                 "display-data": {
                     title: "<%= tilename %>",
-                    description: "This is my new Fiori elements application",
+                    description: "App Description",
+                    icon: "sap-icon://add",
                     additionalInformation: "SAPUI5.Component=<%=namespace%>.<%=projectname%>",
                     applicationType: "URL",
                     url: "./",
@@ -45,7 +49,7 @@
         data-sap-ui-resourceroots='{
                 "<%=namespace%>.<%=projectname%>": "./"
             }' 
-        data-sap-ui-theme="sap_belize" 
+        data-sap-ui-theme="sap_fiori_3" 
         data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true" 
         data-sap-ui-frameOptions="allow">
