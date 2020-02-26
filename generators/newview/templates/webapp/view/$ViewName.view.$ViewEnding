@@ -31,9 +31,7 @@
     }]
   }]
 }<% } if (viewtype === 'JS') { -%>
-sap.ui.define([
-    "sap/ui/core/mvc/JSView"
-], function(JSView) {
+sap.ui.define([ ], function() {
 "use strict";
   sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewname%>", {
 
@@ -41,7 +39,7 @@ sap.ui.define([
       return "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>";
     },
 
-    createContent: function (oController) {
+    createContent: function () {
       return new sap.m.App(this.createId("idAppControl"), {
         pages: new sap.m.Page({
           title: "{i18n>title}",

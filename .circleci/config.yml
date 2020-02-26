@@ -11,6 +11,10 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Configure git to supress warnings
+          command: git config --global user.email "circleci@example.com" && git config --global user.name "Your Name"
+
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
