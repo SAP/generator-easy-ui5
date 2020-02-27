@@ -23,7 +23,7 @@ function createTest(oPrompt) {
       try {
         await execa.commandSync("npm run test");
       } catch (e) {
-        throw e.stdout + "\n" + e.stderr;
+        throw new Error(e.stdout + "\n" + e.stderr);
       }
     });
 
@@ -32,7 +32,7 @@ function createTest(oPrompt) {
         try {
           await execa.commandSync("npm run build:mta");
         } catch (e) {
-          throw e.stdout + "\n" + e.stderr;
+          throw new Error(e.stdout + "\n" + e.stderr);
         }
       });
     }
