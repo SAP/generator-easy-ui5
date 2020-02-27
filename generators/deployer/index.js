@@ -17,7 +17,7 @@ module.exports = class extends Generator {
             cwd: this.sourceRoot(),
             nodir: true
         }).forEach(file => {
-            this.fs.copy(this.templatePath(file), this.destinationPath(file));
+            this.fs.copy(this.templatePath(file), this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/")));
         });
     }
 };

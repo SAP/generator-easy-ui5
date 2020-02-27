@@ -25,7 +25,7 @@ module.exports = class extends Generator {
             cwd: this.sourceRoot(),
             nodir: true
         }).forEach(file => {
-            this.fs.copyTpl(this.templatePath(file), this.destinationPath(file), this.options.oneTimeConfig);
+            this.fs.copyTpl(this.templatePath(file), this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/")), this.options.oneTimeConfig);
         });
         const projectname = this.options.oneTimeConfig.projectname,
             title = this.options.oneTimeConfig.tilename;
