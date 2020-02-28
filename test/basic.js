@@ -36,23 +36,38 @@ function createTest(oPrompt) {
         }
       });
     }
-
   });
 }
 
 describe("Basic project capabilities", function () {
+  const testConfigurations = [
+    { viewtype: "XML", platform: "Application Router @ Cloud Foundry" },
+    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)" },
+    { viewtype: "JS" },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" },
+    { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry" },
+    { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository" },
+    { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository" },
+    { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository" },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository" }
+  ];
 
-  createTest({ viewtype: "XML", platform: "Application Router @ Cloud Foundry" });
-  createTest({ viewtype: "JSON", ui5libs: "Local resources (OpenUI5)" });
-  createTest({ viewtype: "JS" });
-  createTest({ viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" });
-  createTest({ viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry" });
-  createTest({ viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository" });
-  createTest({ viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" });
-  createTest({ viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" });
-  createTest({ viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository" });
-  createTest({ viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository" });
-  createTest({ viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" });
-  createTest({ viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository" });
+  const runningInCircleCI = process.env.CI;
 
+  testConfigurations.forEach((testConfig, index) => {
+    if (!runningInCircleCI) {
+      createTest(testConfig);
+      return;
+    }
+    const testsPerNode = Math.ceil(testConfigurations.length / process.env.CIRCLE_NODE_TOTAL);
+    const lowerBound = testsPerNode * process.env.CIRCLE_NODE_INDEX;
+    const upperBound = testsPerNode * (process.env.CIRCLE_NODE_INDEX + 1);
+
+    if ((lowerBound <= index) && (index < upperBound)) {
+      createTest(testConfig);
+    }
+  });
 });

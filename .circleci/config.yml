@@ -4,6 +4,7 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:10.6.0-browsers
+  parallelism: 4
 
 jobs:
   build:
