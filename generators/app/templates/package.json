@@ -22,9 +22,22 @@
     "deploy": "run-s build:mta deploy:xs",
 <% } if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
     "build:ui": "ui5 build --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp"
+<% } else if(scss){ -%>
+    "build:ui": "npm run scss:build && ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '' %> --clean-dest --dest <%=(cordova) ? 'cordova_app/www':  'approuter/webapp' %>"
 <% }  else { -%>
-    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)' || ui5libs === 'Local resources (SAPUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
+    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)' || ui5libs === 'Local resources (SAPUI5)') ? '--a':  '' %> --clean-dest --dest <%=(cordova) ? 'cordova_app/www':  'approuter/webapp' %>"
 <% }  -%>
+<% if(cordova){ -%>,
+  "cordova:add-android": "(cd ./cordova_app/ && cordova platform add android && cd ..)",
+  "cordova:run": "(cd ./cordova_app/ && cordova run --emulator && cd ..)",
+  "cordova:build": "npm run build:ui && (cd ./cordova_app/ && cordova compile && cd ..)",
+  "cordova:prepare": "npm run build:ui && (cd ./cordova_app/ && cordova prepare && cd ..)"
+  <% }  -%>
+<% if(scss){ -%>,
+  "scss:build": "node-sass webapp/scss -o webapp/css",
+  "scss:watch": "node-sass --watch webapp/scss -o webapp/css",
+  "dev": "concurrently --kill-others \"npm run scss:watch\" \"npm run start\""
+  <% }  -%>
   },
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
@@ -41,6 +54,10 @@
     "karma-ui5": "^2.1.0",
     "npm-run-all": "^4.1.5",
     "eslint": "^6.8.0"
+    <% if(scss){ -%>,
+      "concurrently": "^5.1.0",
+      "node-sass": "^4.13.1"
+      <% }  -%>
   },
   "ui5": {
     "dependencies": [

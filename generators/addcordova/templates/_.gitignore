@@ -1,0 +1,12 @@
+bin/*
+!/plugins
+!/plugins/android.json
+!/plugins/fetch.json
+plugins/*
+platforms/*
+
+node_modules
+www/index.js
+js/**/*.js
+js/**/*.js.map
+www

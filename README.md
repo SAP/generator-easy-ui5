@@ -1,12 +1,10 @@
 # Easy UI5 Generator
-[![NPM version][npm-image]][npm-url]
 [![Build Status][circleci-image]][circleci-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
-[![License Status][license-image]][license-url]
 
 ## Description
 
-Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps within seconds.
+msc-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps within seconds.
 
 This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
@@ -31,15 +29,19 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 ## Installation
 
 1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher)
-2. Install the generator
+2. Install the generator globally
     ```sh
-    npm install -g yo generator-easy-ui5
+    npm install -g yo
+    ```
+2. Install the generator, from the generator folder do
+    ```sh
+    npm link
     ```
 3. Verify your installation to see if Yeoman has been installed correctly
     ```sh
     yo
     ```
-  Make sure you see the `easy-ui5` generator listed.
+  Make sure you see the `msc-ui5` generator listed.
 
 
 ## Bootstrapping a new UI5 project
@@ -47,7 +49,7 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 
 1. Scaffold your OpenUI5 project
     ```
-    yo easy-ui5
+    yo msc-ui5
     ```
 2. Answer the prompts to create your OpenUI5 project
 3. Run it locally
@@ -63,26 +65,33 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 ### Add a new view
 This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route.
 ```
-yo easy-ui5:newview
+yo msc-ui5:newview
 ```
 
 ### Create a custom control
 Run the following command from your project's root to scaffold a custom control.
 ```
-yo easy-ui5:newcontrol
+yo msc-ui5:newcontrol
 ```
 
 ### Add a new model
 This sub-generator will create a new model in your manifest.  Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 ```
-yo easy-ui5:newmodel
+yo msc-ui5:newmodel
 ```
 
 ### Add a new component usage
 This sub-generator will add a new component usage for component reuse to your manifest.
 ```
-yo easy-ui5:newcomponentusage
+yo msc-ui5:newcomponentusage
 ```
+
+### Add a new fragment
+This sub-generator will create a new fragment.
+```
+yo msc-ui5:newfragment
+```
+
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
@@ -137,9 +146,9 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 
 ## Contributing
 
-We welcome any type of contribution (code contributions, pull requests, issues) to this easy-ui5 generator equally.
+We welcome any type of contribution (code contributions, pull requests, issues) to this sap-ui5 generator equally.
 
-Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-easy-ui5/blob/master/CONTRIBUTING.md).
+Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-sap-ui5/blob/master/CONTRIBUTING.md).
 
 ## To-Do
 
@@ -155,11 +164,8 @@ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
 
 
-[npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
-[npm-url]: https://www.npmjs.com/package/generator-easy-ui5
-[circleci-image]: https://img.shields.io/circleci/project/github/SAP/generator-easy-ui5.svg
-[circleci-url]: https://circleci.com/gh/SAP/generator-easy-ui5
-[daviddm-image]: https://img.shields.io/david/SAP/generator-easy-ui5.svg
-[daviddm-url]: https://david-dm.org/SAP/generator-easy-ui5
-[license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
-[license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
+[circleci-image]: https://circleci.com/gh/lbouriez/generator-easy-ui5.svg
+[circleci-url]: https://circleci.com/gh/lbouriez/generator-easy-ui5
+[daviddm-image]: https://david-dm.org/lbouriez/generator-easy-ui5/status.svg
+[daviddm-url]: https://david-dm.org/lbouriez/generator-easy-ui5
+

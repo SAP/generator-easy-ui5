@@ -26,7 +26,7 @@ module.exports = class extends Generator {
                 }
                 return "Please use alpha numeric characters and dots only for the namespace.";
             },
-            default: "com.myorg"
+            default: "msc"
         }, {
             type: "list",
             name: "platform",
@@ -73,6 +73,14 @@ module.exports = class extends Generator {
             name: "newdir",
             message: "Would you like to create a new directory for the project?",
             default: true
+        }, {
+            type: "confirm",
+            name: "cordova",
+            message: "Is it a Cordova project?"
+        }, {
+            type: "confirm",
+            name: "scss",
+            message: "Will you use SCSS?"
         }]).then((answers) => {
             if (answers.newdir) {
                 this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
@@ -103,6 +111,9 @@ module.exports = class extends Generator {
         oSubGen.cwd = this.destinationRoot();
 
         this.composeWith(require.resolve("../newview"), oSubGen);
+        if (this.config.get("cordova")) {
+            this.composeWith(require.resolve("../addcordova"), oSubGen);
+        }
         const selectedPlatform = this.config.get("platform");
         if (selectedPlatform !== "Static webserver") {
             this.composeWith(require.resolve("../approuter"), oSubGen);
@@ -121,6 +132,14 @@ module.exports = class extends Generator {
             bower: false,
             npm: true
         });
+        if (process.platform !== "win32") {
+            // eslint-disable-next-line no-console
+            console.warn("Install @ui5/cli => `sudo npm install --global @ui5/cli`");
+        } else {
+            this.npmInstall(["@ui5/cli"], {
+                "global": true
+            });
+        }
     }
 
     end() {

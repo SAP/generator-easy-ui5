@@ -1,4 +1,5 @@
 sap.ui.define([
+  "./common/BaseController"
   "<%= controllerToExtend%>"
 ], function(Controller) {
   "use strict";

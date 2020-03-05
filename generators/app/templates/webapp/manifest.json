@@ -54,11 +54,12 @@
       }
     },
     "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ]
+      "js": [{
+				"uri": "util/Console.js"
+			}],
+      "css": [{
+        "uri": "css/style.css"
+      }]
     },
     "routing": {
       "config": {
@@ -67,7 +68,11 @@
         "viewPath": "<%= namespace%>.<%=projectname%>.view",
         "controlId": "idAppControl",
         "controlAggregation": "pages",
-        "async": true
+        "async": true,
+        "bypassed": {
+					"target": "TargetNotFound"
+				}
+
       },
       "routes": [
         {
@@ -79,6 +84,11 @@
         }
       ],
       "targets": {
+        "TargetNotFound": {
+          "viewPath": "<%=namespace%>.<%=projectname%>.view.common",
+          "viewName": "NotFound",
+          "transition": "show"
+        },
         "Target<%=viewname%>": {
           "viewType": "XML",
           "viewLevel": 1,

@@ -1,0 +1,12 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="<%= namespace%>.<%=projectname%>.controller.common.NotFound">
+	<MessagePage
+	title="{i18n>404.title}"
+	text ="{i18n>404.text}" 
+	description="">
+		<customDescription>
+			<Link
+				text="{i18n>404.description}"
+				press="onNavToHome" />
+		</customDescription>
+	</MessagePage>
+</core:View>

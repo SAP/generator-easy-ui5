@@ -1,0 +1,10 @@
+<% if (viewtype === 'XML') { %> <core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+	<content></content>
+</core:FragmentDefinition> <% } if (viewtype === 'HTML') { %>
+HTML Fragment not implemented <% } if (viewtype === 'JSON') { %>
+{
+	"JSON Fragment not implemented": "sap.ui.core.mvc.JSONView"
+} <% } if (viewtype === 'JS') { %>
+JS Fragment not implemented <% } %>

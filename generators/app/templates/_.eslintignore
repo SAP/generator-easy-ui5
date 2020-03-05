@@ -2,3 +2,6 @@ templates/
 deployer/resources/
 node_modules/
 approuter/webapp/
+webapp/libs/*.js
+webapp/libs/**/*.js
+cordova_app/**
