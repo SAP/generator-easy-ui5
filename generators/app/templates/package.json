@@ -53,7 +53,7 @@
     "karma-coverage": "^2.0.2",
     "karma-ui5": "^2.1.0",
     "npm-run-all": "^4.1.5",
-    "eslint": "^6.8.0"
+    "http-proxy": "^1.18.0"
     <% if(scss){ -%>,
       "concurrently": "^5.1.0",
       "node-sass": "^4.13.1"

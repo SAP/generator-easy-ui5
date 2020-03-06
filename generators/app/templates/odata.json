@@ -1,0 +1,6 @@
+{
+    "sap":{
+        "target":"https://msd.v15.con4pas.cz",
+        "auth":"username:password"
+    }
+}
