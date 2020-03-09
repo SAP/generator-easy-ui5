@@ -1,10 +1,12 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/base/strings/formatMessage"
-], function(Controller, JSONModel, formatMessage) {
+    "sap/base/strings/formatMessage",
+    "../../util/Formatter"
+], function(Controller, JSONModel, formatMessage, Formatter) {
 
     return Controller.extend("<%= namespace%>.<%=projectname%>.controller.common.BaseController", {
+        formatter: Formatter,
 
         getRouter: function() {
             return this.getOwnerComponent().getRouter();

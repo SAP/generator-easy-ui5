@@ -39,6 +39,15 @@
   "dev": "concurrently --kill-others \"npm run scss:watch\" \"npm run start\""
   <% }  -%>
   },
+  "dependencies": {
+<% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
+    "@openui5/sap.ui.core": "^1.75.0",
+    "@openui5/sap.ui.layout": "^1.75.0",
+<% } -%>
+    "@openui5/sap.m": "^1.75.0",
+    "@openui5/themelib_sap_fiori_3": "^1.75.0",
+    "shx": "^0.3.2"
+  },
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
@@ -64,6 +73,8 @@
 <% if(platform !== 'Static webserver'){ -%>
       "ui5-middleware-cfdestination",
 <% } -%>
+      "@openui5/sap.m",
+      "@openui5/themelib_sap_fiori_3",
       "ui5-middleware-livereload"
     ]
   }

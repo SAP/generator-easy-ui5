@@ -164,8 +164,8 @@ Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
 
 
-[circleci-image]: https://circleci.com/gh/lbouriez/generator-easy-ui5.svg
-[circleci-url]: https://circleci.com/gh/lbouriez/generator-easy-ui5
+[circleci-image]: https://circleci.com/gh/msc-mobile/generator-easy-ui5.svg
+[circleci-url]: https://circleci.com/gh/msc-mobile/generator-easy-ui5
 [daviddm-image]: https://david-dm.org/lbouriez/generator-easy-ui5/status.svg
 [daviddm-url]: https://david-dm.org/lbouriez/generator-easy-ui5
 

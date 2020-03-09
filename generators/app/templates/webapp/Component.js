@@ -36,6 +36,22 @@ sap.ui.define([
          */
         _loadMessageManager: function() {
             this._oMessageManager = new MessageManager(this);
-        }
+        },
+
+        /**
+         * Determines the content density css class
+         * Add this in the main (top) controller of your application:
+         * this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass())
+         */
+        getContentDensityClass: function () {
+			if (!this._sContentDensityClass) {
+				if (!this.getModel("device").getProperty("/support/touch")) {
+					this._sContentDensityClass = "sapUiSizeCompact";
+				} else {
+					this._sContentDensityClass = "sapUiSizeCozy";
+				}
+			}
+			return this._sContentDensityClass;
+		}
     });
 });
