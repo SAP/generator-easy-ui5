@@ -62,9 +62,11 @@ describe("Basic project capabilities", function () {
       createTest(testConfig);
       return;
     }
-    const testsPerNode = Math.ceil(testConfigurations.length / process.env.CIRCLE_NODE_TOTAL);
-    const lowerBound = testsPerNode * process.env.CIRCLE_NODE_INDEX;
-    const upperBound = testsPerNode * (process.env.CIRCLE_NODE_INDEX + 1);
+    const totalNodes = Number(process.env.CIRCLE_NODE_TOTAL);
+    const nodeIdx = Number(process.env.CIRCLE_NODE_INDEX);
+    const testsPerNode = Math.ceil(testConfigurations.length / totalNodes);
+    const lowerBound = testsPerNode * nodeIdx;
+    const upperBound = testsPerNode * (nodeIdx + 1);
 
     if ((lowerBound <= index) && (index < upperBound)) {
       createTest(testConfig);
