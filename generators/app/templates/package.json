@@ -7,16 +7,19 @@
   "scripts": {
     "start": "ui5 serve -o index.html",
     "serve": "ui5 serve",
-    "test": "npm run lint && npm run karma",
+    "test": "run-s lint karma",
     "karma-ci": "karma start karma-ci.conf.js",
-    "karma": "rimraf coverage && npm run karma-ci",
+    "clearCoverage": "shx rm -rf coverage",
+    "karma": "run-s clearCoverage karma-ci",
     "lint": "eslint .",
 <% if(platform.indexOf('Cloud Foundry') !== -1){ -%>
-    "build:mta": "mbt build -p=cf",
-    "deploy": "npm run build:mta && cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
+    "build:mta": "mbt build",
+    "deploy:cf": "cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
+    "deploy": "run-s build:mta deploy:cf",
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
     "build:mta": "mbt build -p=xsa",
-    "deploy": "npm run build:mta && cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+    "deploy:xs": "cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
+    "deploy": "run-s build:mta deploy:cf",
 <% } if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
     "build:ui": "ui5 build --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp"
 <% }  else { -%>
@@ -36,7 +39,7 @@
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
-    "mbt": "1.0.10",
+    "mbt": "1.0.11",
 <% } -%>
     "@ui5/cli": "^1.14.0",
     "ui5-middleware-livereload": "^0.1.6",
@@ -44,6 +47,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.1",
     "karma-ui5": "^1.1.0",
+    "npm-run-all": "^4.1.5",
     "eslint": "^6.8.0"
   },
   "ui5": {

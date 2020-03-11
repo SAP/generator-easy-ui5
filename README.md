@@ -13,6 +13,21 @@ This generator has been created to simplify the creation of your OpenUI5 prototy
 The purpose of this generator is to guide you on your first steps with SAPUI5 and SAP Cloud Platform deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
 
+## Target platforms
+During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
+
+### Static webserver 
+This is the most basic option. Choose this option if you want to deploy the web app in your custom environment or host it on an arbitrary server.
+### Application Router @ Cloud Foundry 
+This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+### Application Router @ SAP HANA XS Advanced 
+This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+### Cloud Foundry HTML5 Application Repository 
+This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
+### Fiori Launchpad on Cloud Foundry
+Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **Cloud Foundry HTML5 Application Repository** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository. 
+
+
 ## Installation
 
 1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher)
@@ -27,8 +42,8 @@ The purpose of this generator is to guide you on your first steps with SAPUI5 an
   Make sure you see the `easy-ui5` generator listed.
 
 
-## Usage
-### Create your first OpenUI5 App within a few seconds!
+## Bootstrapping a new UI5 project
+> Create your first OpenUI5 App within a few seconds!
 
 1. Scaffold your OpenUI5 project
     ```
@@ -41,8 +56,12 @@ The purpose of this generator is to guide you on your first steps with SAPUI5 an
     npm start
     ```
 
+
+
+## Sub-generators to avoid recurring tasks
+
 ### Add a new view
-This sub-generator will create a new view (of the same type you specified during the creating of your project)  and a new controller.
+This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route.
 ```
 yo easy-ui5:newview
 ```
@@ -54,12 +73,12 @@ yo easy-ui5:newcontrol
 ```
 
 ### Add a new model
-This sub-generator will create a new model in your manifest.
+This sub-generator will create a new model in your manifest.  Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 ```
 yo easy-ui5:newmodel
 ```
 
-### Add a new compoent usage
+### Add a new component usage
 This sub-generator will add a new component usage for component reuse to your manifest.
 ```
 yo easy-ui5:newcomponentusage
@@ -67,7 +86,7 @@ yo easy-ui5:newcomponentusage
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
-### Cloud Foundry Embedded in Application Router
+### Cloud Foundry
 #### Required tools
 1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud account
 2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
@@ -83,25 +102,9 @@ Call this command from the root directory to deploy the application to Cloud Fou
 npm run deploy
 ```
 
-### Cloud Foundry within the HTML5 Application Repository
-#### Required tools
-1. [Create a free](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) SAP Cloud Platform Cloud account
-2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
-    ```sh
-    cf login
-    ```
-3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin `cf install-plugin -r CF-Community "multiapps"`
 
-
-
-#### Deploy
-Call this command from the root directory to deploy the application to Cloud Foundry
-```
-npm run deploy
-```
-
-
-> **Optional**: [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
+> #### Optional: When using the HTML5 Applications Repository
+> [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
 >
 > `cf install-plugin -r CF-Community "html5-plugin"`
 > 
@@ -109,7 +112,7 @@ npm run deploy
 > 
 > `cf html5-push -n html5_repo_host .`
 
-### HANA XSA
+### SAP HANA XSA
 #### Required tools
 1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
 2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
@@ -141,15 +144,14 @@ Please follow our instructions if you would like to [contribute](https://github.
 ## To-Do
 
 The following aspects/features are not yet implemented:
-* Add more target platforms:
-  * SAP Cloud Platform Neo environment
-  * SAP NetWeaver
+* Add SAP NetWeaver as a target platform
+* Decouple the sub-generators from the main flow. E.g. so that app router modules can be added after the generation of the UI5 web app.
 
 Contributions are very much appreciated.
 
 ## License
 
-Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved.
 This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
 
 
