@@ -2,7 +2,7 @@
   displayBlock="true"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc">
-  <App id="idAppControl">
+  <App <%- isSubgeneratorCall ? 'id="idAppControl"' : '' %> >
     <pages>
       <Page title="{i18n>title}">
         <content></content>
@@ -11,7 +11,7 @@
   </App>
 </mvc:View><% } if (viewtype === 'HTML') { -%>
 <template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>">
-  <div data-sap-ui-type="sap.m.App" id="idAppControl">
+  <div data-sap-ui-type="sap.m.App" <%- isSubgeneratorCall ? 'id="idAppControl"' : ''%>   >
     <div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
       <div data-sap-ui-aggregation="content">
       </div>
@@ -23,7 +23,7 @@
   "controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>",
   "content": [{
     "Type": "sap.m.App",
-    "id": "idAppControl",
+    <%- isSubgeneratorCall ? ' "id": "idAppControl",' : '' %> 
     "pages": [{
       "Type": "sap.m.Page",
       "title": "{i18n>title}",
@@ -40,7 +40,7 @@ sap.ui.define([ ], function() {
     },
 
     createContent: function () {
-      return new sap.m.App(this.createId("idAppControl"), {
+      return new sap.m.App(<%- isSubgeneratorCall ? 'this.createId("idAppControl"), ' : '' %>  {
         pages: new sap.m.Page({
           title: "{i18n>title}",
           content: []

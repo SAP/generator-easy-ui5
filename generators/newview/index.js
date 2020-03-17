@@ -80,6 +80,7 @@ module.exports = class extends Generator {
 
     const sViewType = this.options.oneTimeConfig.viewtype;
     const sViewName = this.options.oneTimeConfig.viewname;
+    this.options.oneTimeConfig.isSubgeneratorCall = this.options.isSubgeneratorCall;
 
     var sOrigin = this.templatePath(sViewFileName);
     var sTarget = this.destinationPath(sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));

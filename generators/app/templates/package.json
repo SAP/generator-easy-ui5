@@ -40,6 +40,7 @@
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
     "mbt": "1.0.11",
+    "ui5-middleware-cfdestination": "^0.1.4",
 <% } -%>
     "@ui5/cli": "^1.14.0",
     "ui5-middleware-livereload": "^0.1.6",
@@ -55,6 +56,9 @@
 <% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
       "@openui5/sap.ui.core",
       "@openui5/sap.ui.layout",
+<% } -%>
+<% if(platform !== 'Static webserver'){ -%>
+      "ui5-middleware-cfdestination",
 <% } -%>
       "@openui5/sap.m",
       "@openui5/themelib_sap_belize",

@@ -10,7 +10,6 @@
     "title": "{{appTitle}}",
     "description": "{{appDescription}}"
   },
-
   "sap.ui": {
     "technology": "UI5",
     "icons": {
@@ -27,13 +26,12 @@
       "phone": true
     }
   },
-
   "sap.ui5": {
     "rootView": {
       "viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewname%>",
       "type": "<%=viewtype%>",
       "async": true,
-      "id": "app"
+      "id": "idAppControl"
     },
     "dependencies": {
       "minUI5Version": "1.60.0",
@@ -56,24 +54,30 @@
       }
     },
     "resources": {
-      "css": [{
-        "uri": "css/style.css"
-      }]
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
     },
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "<%= namespace%>.<%=projectname%>.view",
-        "controlId": "app",
+        "controlId": "idAppControl",
         "controlAggregation": "pages",
         "async": true
       },
-      "routes": [{
-        "name": "Route<%=viewname%>",
-        "pattern": "Route<%=viewname%>",
-        "target": ["Target<%=viewname%>"]
-      }],
+      "routes": [
+        {
+          "name": "Route<%=viewname%>",
+          "pattern": "Route<%=viewname%>",
+          "target": [
+            "Target<%=viewname%>"
+          ]
+        }
+      ],
       "targets": {
         "Target<%=viewname%>": {
           "viewType": "XML",

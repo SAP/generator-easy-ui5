@@ -41,9 +41,10 @@ function createTest(oPrompt) {
 
 describe("Basic project capabilities", function () {
   const testConfigurations = [
-    { viewtype: "XML", platform: "Application Router @ Cloud Foundry" },
+
+    { viewtype: "XML" },
+    { viewtype: "JS", platform: "Application Router @ Cloud Foundry" },
     { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)" },
-    { viewtype: "JS" },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" },
     { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry" },
     { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository" },
