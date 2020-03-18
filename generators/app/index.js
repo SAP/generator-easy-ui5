@@ -85,6 +85,8 @@ module.exports = class extends Generator {
         const sViewName = this.config.get("viewname");
         const sViewType = this.config.get("viewtype");
 
+        this.config.set("namespaceURI",this.config.get("namespace").split(".").join("/"));
+
         this.sourceRoot(path.join(__dirname, "templates"));
         glob.sync("**", {
             cwd: this.sourceRoot(),
@@ -115,10 +117,10 @@ module.exports = class extends Generator {
     }
 
     install() {
-        this.installDependencies({
-            bower: false,
-            npm: true
-        });
+        // this.installDependencies({
+        //     bower: false,
+        //     npm: true
+        // });
     }
 
     end() {
