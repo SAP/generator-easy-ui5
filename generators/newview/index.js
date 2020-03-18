@@ -82,6 +82,14 @@ module.exports = class extends Generator {
     const sViewName = this.options.oneTimeConfig.viewname;
     this.options.oneTimeConfig.isSubgeneratorCall = this.options.isSubgeneratorCall;
 
+    const bBaseControllerExists = await this.fs.exists("webapp/controller/BaseController.js");
+    var sControllerToExtend = "sap/ui/core/mvc/Controller";
+    if (bBaseControllerExists) {
+      sControllerToExtend = this.config.get("namespace").split(".").join("/") + "/" + this.options.oneTimeConfig.projectname + "/controller/BaseController"
+    }
+    console.log("Base " + sControllerToExtend);
+    this.options.oneTimeConfig.controllerToExtend = sControllerToExtend;
+
     var sOrigin = this.templatePath(sViewFileName);
     var sTarget = this.destinationPath(sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
     this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
