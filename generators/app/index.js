@@ -4,8 +4,9 @@ const Generator = require("yeoman-generator"),
 
 module.exports = class extends Generator {
 
-    prompting() {
-        return this.prompt([{
+    async prompting() {
+        
+        var basic =  await this.prompt([{
             type: "input",
             name: "projectname",
             message: "How do you want to name this project?",
@@ -26,8 +27,39 @@ module.exports = class extends Generator {
                 }
                 return "Please use alpha numeric characters and dots only for the namespace.";
             },
-            default: "com.myorg"
-        }, {
+           default: "com.myorg"
+        },{
+            type: "input",
+            name: "clone",
+            message: "Clone repository? (y,n) ",
+            default: "n"
+        }
+        ]).then((answers) => {
+            this.config.set(answers)
+            return answers
+        });
+
+        if(this.config.get("clone") === "y"){
+            var git =  await this.prompt([{
+                    type: "input",
+                    name: "repo",
+                    message: "Insert repository:",
+                },
+                {
+                    type: "input",
+                    name: "branch",
+                    message: "Insert branch:",
+                    default: "master"
+                }
+            ]).then((git) => {
+                    this.config.set("repo", git.repo);
+                    this.config.set("branch", git.branch);
+                    return git;
+            })
+            
+        }
+        
+      return await this.prompt([{
             type: "list",
             name: "platform",
             message: "On which platform would you like to host the application?",
@@ -74,11 +106,34 @@ module.exports = class extends Generator {
             message: "Would you like to create a new directory for the project?",
             default: true
         }]).then((answers) => {
+            
             if (answers.newdir) {
-                this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
+                this.destinationRoot(`${basic.namespace}.${basic.projectname}`);
             }
-            this.config.set(answers);
+            this.config.set(Object.assign(basic, git, answers));
         });
+       
+    }
+
+    clone(){
+        
+        if(this.config.get("clone") === "y"){
+            const sPathTemplate = this.sourceRoot(path.join(__dirname, "templates"));
+            const sRepo         = this.config.get("repo");
+            const sBranch       = this.config.get("branch");
+            console.log(sRepo)
+            this.spawnCommandSync("rimraf", [sPathTemplate]);
+
+            if(sBranch === "master"){
+                this.spawnCommandSync("git",  ["clone", sRepo, sPathTemplate], {
+                    cwd: this.destinationPath()
+                });
+            }else{
+                this.spawnCommandSync("git", ["clone", sRepo, "--single-branch", "--branch", sBranch, sPathTemplate], {
+                    cwd: this.destinationPath()
+                });
+            }
+        }
     }
 
     writing() {
@@ -133,3 +188,4 @@ module.exports = class extends Generator {
         });
     }
 };
+
