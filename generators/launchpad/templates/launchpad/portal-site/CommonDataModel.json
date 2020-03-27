@@ -10,8 +10,9 @@
         "_version": "3.0.0",
         "identification": {
           "id": "defaultCatalogId",
-          "title": "CatalogTitle",
-          "entityType": "catalog"
+          "title": "{{catalogs.title}}",
+          "entityType": "catalog",
+          "i18n": "i18n/i18n.properties"
         },
         "payload": {
           "viz": [
@@ -28,8 +29,9 @@
         "_version": "3.0.0",
         "identification": {
           "id": "defaultGroupId",
-          "title": "My Home",
-          "entityType": "group"
+          "title": "{{groups.title}}",
+          "entityType": "group",
+          "i18n": "i18n/i18n.properties"
         },
         "payload": {
           "viz": [
