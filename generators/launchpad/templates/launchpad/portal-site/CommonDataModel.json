@@ -14,7 +14,12 @@
           "entityType": "catalog"
         },
         "payload": {
-          "viz": []
+          "viz": [
+            {
+              "id": "<%=namespace%>.<%=projectname%>",
+              "vizId": "data-display"
+            }
+          ]
         }
       }
     ],
