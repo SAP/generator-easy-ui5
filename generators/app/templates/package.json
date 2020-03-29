@@ -39,7 +39,7 @@
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
-    "mbt": "1.0.11",
+    "mbt": "1.0.9",
     "ui5-middleware-cfdestination": "^0.1.5",
 <% } -%>
     "@ui5/cli": "^1.14.0",
