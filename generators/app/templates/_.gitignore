@@ -6,3 +6,5 @@ dist/
 package-lock.json
 mta_archives/
 deployer/resources/
+Makefile*
+mta-*
