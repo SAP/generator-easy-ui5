@@ -9,6 +9,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+<% if(platform !== 'Static webserver'){ -%>
     - name: ui5-middleware-cfdestination
       afterMiddleware: compression
       configuration:
@@ -16,3 +17,4 @@ server:
         port: 1091
         xsappJson: approuter/xs-app.json
         destinations: []
+<% } -%>
