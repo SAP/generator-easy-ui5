@@ -19,7 +19,7 @@
 <% } else if(platform === 'Application Router @ SAP HANA XS Advanced'){ -%>
     "build:mta": "mbt build -p=xsa",
     "deploy:xs": "cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
-    "deploy": "run-s build:mta deploy:cf",
+    "deploy": "run-s build:mta deploy:xs",
 <% } if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
     "build:ui": "ui5 build --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp"
 <% }  else { -%>
