@@ -44,14 +44,16 @@ describe("Basic project capabilities", function () {
 
     { viewtype: "XML" },
     { viewtype: "JS", platform: "Application Router @ Cloud Foundry" },
-    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)" },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" },
     { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry" },
     { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository" },
     { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository" },
     { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
     { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository" },
     { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
     { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository" }
   ];

@@ -23,46 +23,30 @@
 <% } if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
     "build:ui": "ui5 build --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp"
 <% }  else { -%>
-    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
+    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)' || ui5libs === 'Local resources (SAPUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
 <% }  -%>
-  },
-  "dependencies": {
-<% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
-    "@openui5/sap.ui.core": "^1.75.0",
-    "@openui5/sap.ui.layout": "^1.75.0",
-<% } -%>
-    "@openui5/sap.m": "^1.75.0",
-    "@openui5/themelib_sap_belize": "^1.75.0",
-    "@openui5/themelib_sap_fiori_3": "^1.75.0",
-    "shx": "^0.3.2"
   },
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>
     "cross-var": "^1.1.0",
-    "mbt": "1.0.9",
-    "ui5-middleware-cfdestination": "^0.1.5",
+    "mbt": "1.0.14",
+    "ui5-middleware-cfdestination": "^0.1.7",
 <% } -%>
-    "@ui5/cli": "^1.14.0",
-    "ui5-middleware-livereload": "^0.1.7",
-    "karma": "^4.4.1",
+    "shx": "^0.3.2",
+    "@ui5/cli": "^2.0.3",
+    "ui5-middleware-livereload": "^0.1.10",
+    "karma": "^5.0.2",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-coverage": "^2.0.1",
-    "karma-ui5": "^1.1.0",
+    "karma-coverage": "^2.0.2",
+    "karma-ui5": "^2.1.0",
     "npm-run-all": "^4.1.5",
     "eslint": "^6.8.0"
   },
   "ui5": {
     "dependencies": [
-<% if(ui5libs === 'Local resources (OpenUI5)'){ -%>
-      "@openui5/sap.ui.core",
-      "@openui5/sap.ui.layout",
-<% } -%>
 <% if(platform !== 'Static webserver'){ -%>
       "ui5-middleware-cfdestination",
 <% } -%>
-      "@openui5/sap.m",
-      "@openui5/themelib_sap_belize",
-      "@openui5/themelib_sap_fiori_3",
       "ui5-middleware-livereload"
     ]
   }

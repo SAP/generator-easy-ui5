@@ -60,7 +60,7 @@ module.exports = class extends Generator {
             message: "Where should your UI5 libs be served from?",
             choices: (props) => {
                 return (props.platform !== "Fiori Launchpad on Cloud Foundry") ?
-                    ["Content delivery network (OpenUI5)", "Content delivery network (SAPUI5)", "Local resources (OpenUI5)"] :
+                    ["Content delivery network (OpenUI5)", "Content delivery network (SAPUI5)", "Local resources (OpenUI5)", "Local resources (SAPUI5)"] :
                     ["Content delivery network (SAPUI5)"];
             },
             default: (props) => {
