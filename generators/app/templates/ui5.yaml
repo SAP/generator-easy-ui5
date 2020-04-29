@@ -3,8 +3,8 @@ metadata:
   name: <%= projectname %>
 type: application
 framework:
-  name: SAPUI5
-  version: 1.77.0
+  name: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Content delivery network (OpenUI5)") ? "OpenUI5" : "SAPUI5" %>
+  version: 1.76.0
   libraries:
     - name: sap.ui.core
     - name: sap.m
