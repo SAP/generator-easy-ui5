@@ -40,7 +40,7 @@ sap.ui.define([ ], function() {
     },
 
     createContent: function () {
-      return new sap.m.App(this.createId("<%= isSubgeneratorCall ? 'idAppControl' : viewname %> "),  {
+      return new sap.m.App(this.createId("<%= isSubgeneratorCall ? 'idAppControl' : viewname %>"),  {
         pages: new sap.m.Page({
           title: "{i18n>title}",
           content: []
