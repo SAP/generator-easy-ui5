@@ -1,7 +1,7 @@
 {
   "_version": "1.12.0",
   "sap.app": {
-    "id": "<%=projectname%>",
+    "id": "<%=namespace%>.<%=projectname%>",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -82,6 +82,7 @@
         "Target<%=viewname%>": {
           "viewType": "XML",
           "viewLevel": 1,
+          "viewId": "idAppControl",
           "viewName": "<%=viewname%>"
         }
       }

@@ -117,6 +117,7 @@ module.exports = class extends Generator {
         });
         ui5Config.routing.targets[targetName] = {
           viewType: sViewType,
+          viewId: sViewName,
           viewName: sViewName
         };
 
