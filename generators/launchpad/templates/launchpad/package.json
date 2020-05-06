@@ -5,7 +5,7 @@
 		"node": "10.X"
 	},
 	"dependencies": {
-		"@sap/portal-cf-content-deployer": "3.32.0-20200312112659"
+		"@sap/portal-cf-content-deployer": "4.1.0-20200401113308"
 	},
 	"scripts": {
 		"start": "node node_modules/@sap/portal-cf-content-deployer/src/index.js"
