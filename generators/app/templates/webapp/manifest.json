@@ -70,27 +70,27 @@
                 "controlAggregation": "pages",
                 "async": true,
                 "bypassed": {
-                    "target": "TargetNotFound"
+                    "target": "notFound"
                 }
 
             },
             "routes": [{
-                "name": "Route<%=viewname%>",
-                "pattern": "Route<%=viewname%>",
+                "name": "home",
+                "pattern": "",
                 "target": [
-                    "Target<%=viewname%>"
+                    "home"
                 ]
             }],
             "targets": {
-                "TargetNotFound": {
+                "notFound": {
                     "viewPath": "<%=namespace%>.<%=projectname%>.view",
                     "viewName": "NotFound",
                     "transition": "show"
                 },
-                "Target<%=viewname%>": {
+                "home": {
                     "viewType": "XML",
                     "viewLevel": 1,
-                    "viewId": "idAppControl",
+                    "viewId": "<%=viewname%>",
                     "viewName": "<%=viewname%>"
                 }
             }
