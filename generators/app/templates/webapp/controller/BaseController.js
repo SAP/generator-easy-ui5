@@ -47,7 +47,7 @@ sap.ui.define([
          * @param {mapping} mParameters? Parameters for navigation
          * @param {boolean} bReplace? Defines if the hash should be replaced (no browser history entry) or set (browser history entry)
          */
-        navTo: function(sTarget, mParameters, Replace) {
+        navTo: function(sTarget, mParameters, bReplace) {
             this.getRouter().navTo(sTarget, mParameters, bReplace);
         },
 
