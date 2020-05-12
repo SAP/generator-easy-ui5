@@ -1,13 +1,8 @@
-sap.ui.define([],
-  function () {
+sap.ui.define([], function() {
     "use strict";
-
-    let Formatter = {};
-
-    Formatter.test = function (sIn) {
-      const sOut = `${sIn} - transformed`;
-      return sOut;
+    return {
+        test: function() {
+            return "test";
+        }
     };
-
-    return Formatter;
-  }, true);
+});
