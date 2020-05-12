@@ -2,7 +2,7 @@ sap.ui.define([
     "./BaseController"
 ], function(Controller) {
 
-    return Controller.extend("<%= namespace%>.<%=projectname%>.controller.common.NotFound", {
+    return Controller.extend("<%= namespace%>.<%=projectname%>.controller.NotFound", {
         onInit: function() {}
     });
 });
