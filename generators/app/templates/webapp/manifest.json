@@ -28,8 +28,8 @@
     },
     "sap.ui5": {
         "rootView": {
-            "viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewname%>",
-            "type": "<%=viewtype%>",
+            "viewName": "<%=namespace%>.<%=projectname%>.view.App",
+            "type": "XML",
             "async": true,
             "id": "idAppControl"
         },
