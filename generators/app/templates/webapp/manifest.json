@@ -1,99 +1,101 @@
 {
-    "_version": "1.12.0",
-    "sap.app": {
-        "id": "<%=namespace%>.<%=projectname%>",
-        "type": "application",
-        "i18n": "i18n/i18n.properties",
-        "applicationVersion": {
-            "version": "1.0.0"
-        },
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}"
+  "_version": "1.12.0",
+  "sap.app": {
+    "id": "<%=namespace%>.<%=projectname%>",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
     },
-    "sap.ui": {
-        "technology": "UI5",
-        "icons": {
-            "icon": "",
-            "favIcon": "",
-            "phone": "",
-            "phone@2": "",
-            "tablet": "",
-            "tablet@2": ""
-        },
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        }
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}"
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
     },
-    "sap.ui5": {
-        "rootView": {
-            "viewName": "<%=namespace%>.<%=projectname%>.view.App",
-            "type": "XML",
-            "async": true,
-            "id": "idAppControl"
-        },
-        "dependencies": {
-            "minUI5Version": "1.60.0",
-            "libs": {
-                "sap.ui.core": {},
-                "sap.m": {},
-                "sap.ui.layout": {}
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
-        },
-        "models": {
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "<%=namespace%>.<%=projectname%>.i18n.i18n"
-                }
-            }
-        },
-        "resources": {
-            "js": [{
-                "uri": "util/Console.js"
-            }],
-            "css": [{
-                "uri": "css/style.css"
-            }]
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "viewPath": "<%= namespace%>.<%=projectname%>.view",
-                "controlId": "idAppControl",
-                "controlAggregation": "pages",
-                "async": true,
-                "bypassed": {
-                    "target": "notFound"
-                }
-
-            },
-            "routes": [{
-                "name": "home",
-                "pattern": "",
-                "target": [
-                    "home"
-                ]
-            }],
-            "targets": {
-                "notFound": {
-                    "viewPath": "<%=namespace%>.<%=projectname%>.view",
-                    "viewName": "NotFound",
-                    "transition": "show"
-                },
-                "home": {
-                    "viewType": "XML",
-                    "viewLevel": 1,
-                    "viewId": "<%=viewname%>",
-                    "viewName": "<%=viewname%>"
-                }
-            }
-        }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
     }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewname%>",
+      "type": "<%=viewtype%>",
+      "async": true,
+      "id": "idAppControl"
+    },
+    "dependencies": {
+      "minUI5Version": "1.60.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "<%=namespace%>.<%=projectname%>.i18n.i18n"
+        }
+      }
+    },
+    "resources": {
+      "js": [{
+        "uri": "util/Console.js"
+      }],
+      "css": [{
+        "uri": "css/style.css"
+      }]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "<%= namespace%>.<%=projectname%>.view",
+        "controlId": "idAppControl",
+        "controlAggregation": "pages",
+        "async": true,
+        "bypassed": {
+          "target": "notFound"
+        }
+
+      },
+      "routes": [
+        {
+          "name": "Route<%=viewname%>",
+          "pattern": "Route<%=viewname%>",
+          "target": [
+            "Target<%=viewname%>"
+          ]
+        }
+      ],
+      "targets": {
+        "notFound": {
+          "viewPath": "<%=namespace%>.<%=projectname%>.view",
+          "viewName": "NotFound",
+          "transition": "show"
+        },
+        "Target<%=viewname%>": {
+          "viewType": "XML",
+          "viewLevel": 1,
+          "viewId": "idAppControl",
+          "viewName": "<%=viewname%>"
+        }
+      }
+    }
+  }
 }
