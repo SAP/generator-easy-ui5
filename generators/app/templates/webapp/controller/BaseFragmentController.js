@@ -3,7 +3,7 @@ sap.ui.define([
     "sap/ui/core/Fragment"
 ], function(BaseObject, Fragment) {
 
-    var BaseFragmentController = BaseObject.extend("<%= namespace%>.<%=projectname%>.common.controller.BaseFragmentController", {
+    var BaseFragmentController = BaseObject.extend("<%= namespace%>.<%=projectname%>.controller.BaseFragmentController", {
 
         _sFragmentId: null,
 
@@ -98,19 +98,6 @@ sap.ui.define([
          */
         getOwnerComponent: function() {
             return this._oCallingController.getOwnerComponent();
-        },
-
-        /**
-         * Add the close if clicking on the background
-         */
-        closePopupOnClick: function() {
-            document.addEventListener("click",
-                function closeDialog(oEvent) {
-                    if (oEvent.target.id === "sap-ui-blocklayer-popup") {
-                        this._oFragment.close();
-                        document.removeEventListener("click", closeDialog);
-                    }
-                }.bind(this));
         }
 
     });

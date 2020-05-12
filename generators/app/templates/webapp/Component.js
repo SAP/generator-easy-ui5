@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
+    "sap/ui/Device",
     "./util/MessageManager",
     "<%= namespace.replace(/\./g, '/')%>/<%=projectname.replace('.', '/')%>/model/models"
-], function(UIComponent, MessageManager, models) {
+], function(UIComponent, Device, MessageManager, models) {
     "use strict";
 
     return UIComponent.extend("<%=namespace%>.<%=projectname%>.Component", {
@@ -43,15 +44,15 @@ sap.ui.define([
          * Add this in the main (top) controller of your application:
          * this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass())
          */
-        getContentDensityClass: function () {
-			if (!this._sContentDensityClass) {
-				if (!this.getModel("device").getProperty("/support/touch")) {
-					this._sContentDensityClass = "sapUiSizeCompact";
-				} else {
-					this._sContentDensityClass = "sapUiSizeCozy";
-				}
-			}
-			return this._sContentDensityClass;
-		}
+        getContentDensityClass: function() {
+            if (!this._sContentDensityClass) {
+                if (!Device.support.touch) {
+                    this._sContentDensityClass = "sapUiSizeCompact";
+                } else {
+                    this._sContentDensityClass = "sapUiSizeCozy";
+                }
+            }
+            return this._sContentDensityClass;
+        }
     });
 });

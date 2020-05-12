@@ -55,8 +55,8 @@
     },
     "resources": {
       "js": [{
-				"uri": "util/Console.js"
-			}],
+        "uri": "util/Console.js"
+      }],
       "css": [{
         "uri": "css/style.css"
       }]
@@ -70,8 +70,8 @@
         "controlAggregation": "pages",
         "async": true,
         "bypassed": {
-					"target": "TargetNotFound"
-				}
+          "target": "notFound"
+        }
 
       },
       "routes": [
@@ -84,8 +84,8 @@
         }
       ],
       "targets": {
-        "TargetNotFound": {
-          "viewPath": "<%=namespace%>.<%=projectname%>.view.common",
+        "notFound": {
+          "viewPath": "<%=namespace%>.<%=projectname%>.view",
           "viewName": "NotFound",
           "transition": "show"
         },
