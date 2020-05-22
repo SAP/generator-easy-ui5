@@ -2,8 +2,9 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
     "sap/ui/core/UIComponent",
+    "sap/ui/model/json/JSONModel",
     "<%= namespaceURI%>/<%=projectname%>/util/formatter"
-], function(Controller, History, UIComponent, formatter) {
+], function(Controller, History, UIComponent, JSONModel, formatter) {
     "use strict";
 
     return Controller.extend("<%= namespace%>.<%=projectname%>.controller.BaseController", {
@@ -29,6 +30,23 @@ sap.ui.define([
          */
         setModel: function(oModel, sName) {
             return this.getView().setModel(oModel, sName);
+        },
+
+        /**
+         * Convenience method to fetch the view model of the current view controller.
+         * The view model will be created if it doesn't exist.
+         * @returns {sap.ui.model.json.JSONModel} the view model
+         */
+        getViewModel: function() {;
+            let oViewModel = this.getModel("view");
+            if (!oViewModel) {
+                oViewModel = new JSONModel({
+                    busy: false,
+                    delay: 0
+                });
+                this.setModel(oViewModel, "view");
+            }
+            return oViewModel;
         },
 
         /**
