@@ -17,6 +17,8 @@ server:
       configuration:
         port: 35729
         path: webapp
+    - name: odataProxy
+      beforeMiddleware: serveResources
 <% if(platform !== 'Static webserver'){ -%>
     - name: ui5-middleware-cfdestination
       afterMiddleware: compression
@@ -26,3 +28,11 @@ server:
         xsappJson: approuter/xs-app.json
         destinations: []
 <% } -%>
+---
+specVersion: "1.0"
+kind: extension
+type: server-middleware
+metadata:
+  name: odataProxy
+middleware:
+  path: lib/middleware/odataProxy.js
