@@ -1,9 +1,6 @@
 {
   "name": "<%= projectname %>",
   "version": "0.0.1",
-  "engines": {
-    "node": "12.X"
-  },
   "scripts": {
     "start": "ui5 serve -o index.html",
     "serve": "ui5 serve",

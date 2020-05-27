@@ -1,9 +1,9 @@
 {
 	"name": "launchpad-site-content",
 	"description": "Portal site content deployer package",
-	"engines": {
-		"node": "10.X"
-	},
+  "engines": {
+    "node": "12.X"
+  },
 	"dependencies": {
 		"@sap/portal-cf-content-deployer": "4.1.0-20200401113308"
 	},

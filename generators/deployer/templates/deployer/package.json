@@ -1,7 +1,7 @@
 {
     "name": "webapp-deployer",
     "engines": {
-        "node": "12.x.x"
+      "node": "12.X"
     },
     "dependencies": {
         "@sap/html5-app-deployer": "2.1.0"
