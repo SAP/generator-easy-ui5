@@ -50,7 +50,7 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.componentName = answers.componentName;
       this.options.oneTimeConfig.componentData = answers.componentData;
       this.options.oneTimeConfig.lazy = answers.lazy;
-      this.options.oneTimeConfig.modulename = answers.modulename
+      this.options.oneTimeConfig.modulename = answers.modulename;
 
     });
   }

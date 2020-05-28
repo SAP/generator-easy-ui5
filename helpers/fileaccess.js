@@ -5,7 +5,6 @@ yaml = require("yaml");
 exports.manipulateJSON = async function(filePath, override){
   try {
     const fullFilePath = process.cwd() + filePath;
-    debugger
     const oldContent = await this.fs.readJSON(fullFilePath);
 
     const newContent = typeof override === "function" ?
@@ -25,7 +24,7 @@ exports.manipulateJSON = async function(filePath, override){
 exports.manipulateYAML = async function(filePath, override){
   try {
     const fullFilePath = process.cwd() + filePath;
-    const oldContent = await this.fs.readJSON(fullFilePath);
+    const oldContent = yaml.parse(this.fs.read(fullFilePath));
 
     const newContent = typeof override === "function" ?
     override(oldContent) :
@@ -38,4 +37,4 @@ exports.manipulateYAML = async function(filePath, override){
     this.log(`Error during the manipulation of the ${filePath} file: ${e}`);
     throw e;
   }
-}
+};

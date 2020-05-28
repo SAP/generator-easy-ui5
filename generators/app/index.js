@@ -99,7 +99,6 @@ module.exports = class extends Generator {
         oSubGen.isSubgeneratorCall = true;
         oSubGen.cwd = this.destinationRoot();
         oSubGen.modulename = "uimodule";
-        debugger
 
         this.composeWith(require.resolve("../newuimodule"), oSubGen);
         const selectedPlatform = this.config.get("platform");

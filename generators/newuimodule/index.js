@@ -12,7 +12,7 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.modulename = this.options.modulename;
       return [];
     }
-    var aPrompt = [ {
+    var aPrompt = [{
       type: "input",
       name: "modulename",
       message: "What is the name the module?",
@@ -22,7 +22,7 @@ module.exports = class extends Generator {
         }
         return "Please use alpha numeric characters only for the module name.";
       }
-    },{
+    }, {
       type: "input",
       name: "viewname",
       message: "What is the name of the new view?",
@@ -71,13 +71,13 @@ module.exports = class extends Generator {
 
       this.options.oneTimeConfig = this.config.getAll();
       this.options.oneTimeConfig.viewname = answers.viewname;
-      this.options.oneTimeConfig.modulename = answers.modulename
+      this.options.oneTimeConfig.modulename = answers.modulename;
 
       if (answers.projectname) {
         this.options.oneTimeConfig.projectname = answers.projectname;
         this.options.oneTimeConfig.namespace = answers.namespace;
 
-    // this.config.set("namespaceURI", this.config.get("namespace").split(".").join("/"));
+        // this.config.set("namespaceURI", this.config.get("namespace").split(".").join("/"));
         // save in
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
@@ -105,7 +105,7 @@ module.exports = class extends Generator {
     const additionalBuildOption = (this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" || this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)") ? "--a" : "--clean-dest --dest approuter/webapp";
     const platformIsCF = this.options.oneTimeConfig.platform.includes("Cloud Foundry");
     await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
-      packge.scripts.start =  "ui5 serve --config=" + sModuleName + "/ui5.yaml  --open index.html";
+      packge.scripts.start = "ui5 serve --config=" + sModuleName + "/ui5.yaml  --open index.html";
       packge.scripts["serve:" + sModuleName] = "ui5 serve--config=" + sModuleName + "/ui5.yaml";
       if (platformIsCF) {
         packge.scripts["build:" + sModuleName] = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp";

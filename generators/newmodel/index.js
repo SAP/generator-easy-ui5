@@ -61,7 +61,7 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.modelName = answers.modelName;
       this.options.oneTimeConfig.modelType = answers.modelType;
       this.options.oneTimeConfig.bindingMode = answers.bindingMode;
-      this.options.oneTimeConfig.modulename = answers.modulename
+      this.options.oneTimeConfig.modulename = answers.modulename;
 
       if (answers.modelType === "OData") {
         this.options.oneTimeConfig.url = answers.url;
@@ -85,7 +85,7 @@ module.exports = class extends Generator {
       sap: {
         ui5: {
           models: {
-            [sModelName]:  {
+            [sModelName]: {
               "type": "sap.ui.model.json.JSONModel",
               "settings": {}
             }
@@ -130,7 +130,7 @@ module.exports = class extends Generator {
             }
           }
         }
-      }
+      };
     }
 
     await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", override);
