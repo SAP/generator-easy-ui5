@@ -12,7 +12,7 @@ function createTest(oPrompt) {
     });
 
     it("should create the necessary ui5 files", function () {
-      return assert.file(["ui5.yaml", `webapp/view/MainView.view.${oPrompt.viewtype.toLowerCase()}`, "webapp/index.html", "webapp/manifest.json"]);
+      return assert.file(["uimodule/ui5.yaml", `uimodule/webapp/view/MainView.view.${oPrompt.viewtype.toLowerCase()}`, "uimodule/webapp/index.html", "uimodule/webapp/manifest.json"]);
     });
 
     it("should create an installable project", function () {

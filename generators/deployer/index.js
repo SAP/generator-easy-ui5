@@ -32,31 +32,31 @@ module.exports = class extends Generator {
       }
     });
 
-    await fileaccess.manipulateYAML.call(this, "/mta.yaml", function (mta) {
-      const approuter = mta.modules.find((module) => module.name === projectname);
-      approuter.requires.push({ name: projectname + "_portal" });
-      mta.modules.push({
-        name: projectname + "_launchpad_deployer",
-        type: "com.sap.portal.content",
-        path: "launchpad",
-        requires: [{
-          name: projectname + "_portal"
-        }, {
-          name: projectname + "_html5_repo_host"
-        }, {
-          name: projectname + "_uaa"
-        }]
-      });
-      mta.resources.push({
-        name: projectname + "_portal",
-        type: "org.cloudfoundry.managed-service",
-        parameters: {
-          "service-plan": "standard",
-          "service": "portal"
-        }
-      });
-      return mta;
-    });
+    // await fileaccess.manipulateYAML.call(this, "/mta.yaml", function (mta) { TODO add deployer app instead?
+    //   const approuter = mta.modules.find((module) => module.name === projectname);
+    //   approuter.requires.push({ name: projectname + "_portal" });
+    //   mta.modules.push({
+    //     name: projectname + "_launchpad_deployer",
+    //     type: "com.sap.portal.content",
+    //     path: "launchpad",
+    //     requires: [{
+    //       name: projectname + "_portal"
+    //     }, {
+    //       name: projectname + "_html5_repo_host"
+    //     }, {
+    //       name: projectname + "_uaa"
+    //     }]
+    //   });
+    //   mta.resources.push({
+    //     name: projectname + "_portal",
+    //     type: "org.cloudfoundry.managed-service",
+    //     parameters: {
+    //       "service-plan": "standard",
+    //       "service": "portal"
+    //     }
+    //   });
+    //   return mta;
+    // });
 
     await fileaccess.manipulateYAML.call(this, "/uimodule/ui5.yaml", { //TODO hard coded ui module path -> bad
       builder: {

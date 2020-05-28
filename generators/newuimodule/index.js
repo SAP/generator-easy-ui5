@@ -106,7 +106,8 @@ module.exports = class extends Generator {
     const platformIsCF = this.options.oneTimeConfig.platform.includes("Cloud Foundry");
     await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
       packge.scripts.start = "ui5 serve --config=" + sModuleName + "/ui5.yaml  --open index.html";
-      packge.scripts["serve:" + sModuleName] = "ui5 serve--config=" + sModuleName + "/ui5.yaml";
+      packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
+      packge.scripts["build:ui"] = "run-s build:" + sModuleName; //TODO append in case of addinal ui modules
       if (platformIsCF) {
         packge.scripts["build:" + sModuleName] = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp";
       } else {
