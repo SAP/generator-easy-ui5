@@ -1,14 +1,17 @@
-const Generator = require("yeoman-generator");
+const Generator = require("yeoman-generator"),
+fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
 
   prompting() {
-    if (this.options.isSubgeneratorCall) {
-      this.destinationRoot(this.options.cwd);
-      this.options.oneTimeConfig = this.config.getAll();
-      return [];
-    }
+    const modules = this.config.get("uimodules");
     var aPrompt = [{
+      type: "list",
+      name: "modulename",
+      message: "To which module do you want to add a view?",
+      choices: modules || [],
+      when: modules && modules.length > 1
+    }, {
       type: "input",
       name: "usagesName",
       message: "What is the name of your usage?",
@@ -47,6 +50,8 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.componentName = answers.componentName;
       this.options.oneTimeConfig.componentData = answers.componentData;
       this.options.oneTimeConfig.lazy = answers.lazy;
+      this.options.oneTimeConfig.modulename = answers.modulename
+
     });
   }
 
@@ -58,25 +63,22 @@ module.exports = class extends Generator {
     const sComponentName = this.options.oneTimeConfig.componentName;
     const sComponentData = this.options.oneTimeConfig.componentData || {};
     const sLazy = this.options.oneTimeConfig.lazy;
+    const sModuleName = this.options.oneTimeConfig.modulename;
 
-    try {
-      const filePath = process.cwd() + "/webapp/manifest.json";
-      const json = await this.fs.readJSON(filePath);
-      const ui5Config = json["sap.ui5"];
-
-      ui5Config.componentUsages = ui5Config.componentUsages || {};
-      ui5Config.componentUsages[sUsageName] = {
-        "name": sComponentName,
-        "settings": {},
-        "componentData": (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
-        "lazy": sLazy
-      };
-
-      this.fs.writeJSON(filePath, json);
-    } catch (e) {
-      this.log("Error during the manipulation of the manifest: " + e);
-      throw e;
-    }
+    await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+      sap: {
+        ui5: {
+          componentUsages: {
+            [sUsageName]: {
+              name: sComponentName,
+              settings: {},
+              componentData: (sComponentData.length > 0) ? JSON.parse(sComponentData) : {},
+              lazy: sLazy
+            }
+          }
+        }
+      }
+    });
 
     this.log("Add the new usage in your view with the following code: \n '<core:ComponentContainer width='100%' usage='" + sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer>'");
     this.log("Updated manifest file with the new usage.");

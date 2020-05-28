@@ -1,7 +1,11 @@
 specVersion: "2.0"
 metadata:
-  name: <%= projectname %>
+  name: <%= projectname %>_<%= modulename %>
 type: application
+resources:
+  configuration:
+    paths:
+      webapp: <%= modulename %>/webapp
 framework:
   name: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Content delivery network (OpenUI5)") ? "OpenUI5" : "SAPUI5" %>
   version: 1.77.0
@@ -16,7 +20,7 @@ server:
       afterMiddleware: compression
       configuration:
         port: 35729
-        path: webapp
+        path: <%= modulename %>/webapp
 <% if(platform !== 'Static webserver'){ -%>
     - name: ui5-middleware-cfdestination
       afterMiddleware: compression

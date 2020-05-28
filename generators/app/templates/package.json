@@ -2,13 +2,10 @@
   "name": "<%= projectname %>",
   "version": "0.0.1",
   "scripts": {
-    "start": "ui5 serve -o index.html",
-    "serve": "ui5 serve",
     "test": "run-s lint karma",
     "karma-ci": "karma start karma-ci.conf.js",
     "clearCoverage": "shx rm -rf coverage",
     "karma": "run-s clearCoverage karma-ci",
-    "lint": "eslint .",
 <% if(platform.indexOf('Cloud Foundry') !== -1){ -%>
     "build:mta": "mbt build",
     "deploy:cf": "cross-var cf deploy mta_archives/<%= projectname %>_$npm_package_version.mtar",
@@ -17,11 +14,8 @@
     "build:mta": "mbt build -p=xsa",
     "deploy:xs": "cross-var xs deploy mta_archives/<%=projectname%>_$npm_package_version.mtar",
     "deploy": "run-s build:mta deploy:xs",
-<% } if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
-    "build:ui": "ui5 build --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp"
-<% }  else { -%>
-    "build:ui": "ui5 build <%=(ui5libs === 'Local resources (OpenUI5)' || ui5libs === 'Local resources (SAPUI5)') ? '--a':  '--clean-dest --dest approuter/webapp' %> "
 <% }  -%>
+    "lint": "eslint ."
   },
   "devDependencies": {
 <% if(platform !== 'Static webserver'){ -%>

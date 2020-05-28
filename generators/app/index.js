@@ -81,10 +81,7 @@ module.exports = class extends Generator {
         });
     }
 
-    writing() {
-        const sViewName = this.config.get("viewname");
-        const sViewType = this.config.get("viewtype");
-
+    async writing() {
         this.config.set("namespaceURI", this.config.get("namespace").split(".").join("/"));
 
         this.sourceRoot(path.join(__dirname, "templates"));
@@ -93,7 +90,7 @@ module.exports = class extends Generator {
             nodir: true
         }).forEach((file) => {
             const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/").replace(/\$ViewType/, sViewType).replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
+            const sTarget = this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/"));
 
             this.fs.copyTpl(sOrigin, sTarget, this.config.getAll());
         });
@@ -101,8 +98,10 @@ module.exports = class extends Generator {
         const oSubGen = Object.assign({}, this.config.getAll());
         oSubGen.isSubgeneratorCall = true;
         oSubGen.cwd = this.destinationRoot();
+        oSubGen.modulename = "uimodule";
+        debugger
 
-        this.composeWith(require.resolve("../newview"), oSubGen);
+        this.composeWith(require.resolve("../newuimodule"), oSubGen);
         const selectedPlatform = this.config.get("platform");
         if (selectedPlatform !== "Static webserver") {
             this.composeWith(require.resolve("../approuter"), oSubGen);
