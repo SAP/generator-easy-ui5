@@ -19,7 +19,7 @@ module.exports = class extends Generator {
 
     const oConfig = this.config.getAll();
     oConfig.welcomeFile = oConfig.platform === "Fiori Launchpad on Cloud Foundry" ? "/cp.portal" :
-      oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (namespace + projectname + "/").replace(/\./g, "") :
+      oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") :
         "/index.html";
 
     // Copy approuter module
@@ -59,7 +59,7 @@ module.exports = class extends Generator {
     const buildParam = {
       builder: "custom",
       commands: ["npm install", "npm run build:ui --prefix .."]
-    }
+    };
 
     let mta = {
       "ID": oConfig.projectname,
@@ -96,7 +96,7 @@ module.exports = class extends Generator {
           "service": "destination"
         }
       });
-      approuter.requires.push(oConfig.projectname + "_destination");
+      approuter.requires.push({name: oConfig.projectname + "_destination"});
 
       if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 

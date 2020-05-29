@@ -106,7 +106,7 @@ module.exports = class extends Generator {
       this.composeWith(require.resolve("../cfmodules"), oSubGen); //TODO rename
     }
 
-    // this.composeWith(require.resolve("../newuimodule"), oSubGen);
+    this.composeWith(require.resolve("../newuimodule"), oSubGen);
   }
 
   async addPackage() {

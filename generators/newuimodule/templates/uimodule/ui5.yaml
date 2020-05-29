@@ -29,4 +29,12 @@ server:
         port: 1091
         xsappJson: approuter/xs-app.json
         destinations: []
+builder:
+  customTasks:
+    -  name: "ui5-task-zipper"
+       afterTask: "uglify"
+       configuration:
+         archiveName: "webapp"
+         additionalFiles:
+          - approuter/xs-app.json
 <% } -%>

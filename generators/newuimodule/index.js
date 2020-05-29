@@ -7,10 +7,18 @@ module.exports = class extends Generator {
 
   prompting() {
     if (this.options.isSubgeneratorCall) {
-      this.destinationRoot(this.options.cwd);
-      this.options.oneTimeConfig = this.config.getAll();
-      this.options.oneTimeConfig.modulename = this.options.modulename;
-      return [];
+      return this.prompt([{
+        type: "input",
+        name: "tilename",
+        message: "What name should be displayed on the Fiori Launchpad tile?",
+        default: "Fiori App",
+        when: this.options.platform === "Fiori Launchpad on Cloud Foundry"
+      }]).then((answers) => {
+        this.destinationRoot(this.options.cwd);
+        this.options.oneTimeConfig = this.config.getAll();
+        this.options.oneTimeConfig.modulename = this.options.modulename;
+        this.options.oneTimeConfig.tilename = answers.tilename;
+      });
     }
     var aPrompt = [{
       type: "input",
@@ -32,6 +40,12 @@ module.exports = class extends Generator {
         }
         return "Please use alpha numeric characters only for the view name.";
       }
+    }, {
+      type: "input",
+      name: "tilename",
+      message: "What name should be displayed on the Fiori Launchpad tile?",
+      default: "Fiori App",
+      when: this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry"
     }];
 
     if (!this.config.getAll().viewtype) {
@@ -72,13 +86,11 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig = this.config.getAll();
       this.options.oneTimeConfig.viewname = answers.viewname;
       this.options.oneTimeConfig.modulename = answers.modulename;
+      this.options.oneTimeConfig.tilename = answers.tilename;
 
       if (answers.projectname) {
         this.options.oneTimeConfig.projectname = answers.projectname;
         this.options.oneTimeConfig.namespace = answers.namespace;
-
-        // this.config.set("namespaceURI", this.config.get("namespace").split(".").join("/"));
-        // save in
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
     });
@@ -87,6 +99,7 @@ module.exports = class extends Generator {
   async writing() {
     const sModuleName = this.options.oneTimeConfig.modulename;
 
+    // Write files in new module folder
     this.sourceRoot(path.join(__dirname, "templates"));
     glob.sync("**", {
       cwd: this.sourceRoot(),
@@ -94,20 +107,50 @@ module.exports = class extends Generator {
     }).forEach((file) => {
       const sOrigin = this.templatePath(file);
       const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
-
       this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     });
+    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+      await fileaccess.manipulateJSON.call(this, sModuleName + "/webapp/xs-app.json", {
+        "welcomeFile": this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" ? "index.html" : "/flpSandbox.html",
+        "routes": [{
+          "source": "^(.*)",
+          "target": "$1",
+          "authenticationType": "xsuaa",
+          "service": "html5-apps-repo-rt"
+        }]
+      });
 
-    const oSubGen = Object.assign({}, this.options.oneTimeConfig);
-    oSubGen.isSubgeneratorCall = true;
-    oSubGen.cwd = this.destinationRoot();
 
+      if (this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+
+        await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+          ["sap.app"]: {
+              crossNavigation: {
+                inbounds: {
+                  intent1: {
+                    "signature": {
+                      "parameters": {},
+                      "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "data", // TODO replace with modulename
+                    "action": "display",
+                    "title": this.options.oneTimeConfig.tilename,
+                    "description": "App Description",
+                    "icon": "sap-icon://add"
+                  }
+                }
+              }
+          }
+        });
+      }
+    }
+
+    // Append to master package.json
     const additionalBuildOption = (this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" || this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)") ? "--a" : "--clean-dest --dest approuter/webapp";
     const platformIsCF = this.options.oneTimeConfig.platform.includes("Cloud Foundry");
     await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
-      packge.scripts.start = "ui5 serve --config=" + sModuleName + "/ui5.yaml  --open index.html";
       packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
-      packge.scripts["build:ui"] = "run-s build:" + sModuleName; //TODO append in case of addinal ui modules
+      packge.scripts["build:ui"] += "build:" + sModuleName;
       if (platformIsCF) {
         packge.scripts["build:" + sModuleName] = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp";
       } else {
@@ -116,19 +159,10 @@ module.exports = class extends Generator {
       return packge;
     });
 
-
+    const oSubGen = Object.assign({}, this.options.oneTimeConfig);
+    oSubGen.isSubgeneratorCall = true;
+    oSubGen.cwd = this.destinationRoot();
     this.composeWith(require.resolve("../newview"), oSubGen);
-    // const selectedPlatform = this.config.get("platform");
-    // if (selectedPlatform !== "Static webserver") {
-    //     this.composeWith(require.resolve("../approuter"), oSubGen);
-    //     if (selectedPlatform === "Cloud Foundry HTML5 Application Repository") {
-    //         this.composeWith(require.resolve("../deployer"), oSubGen);
-    //     }
-    //     if (selectedPlatform === "Fiori Launchpad on Cloud Foundry") {
-    //         this.composeWith(require.resolve("../deployer"), oSubGen);
-    //         this.composeWith(require.resolve("../launchpad"), oSubGen);
-    //     }
-    // }
   }
 
   end() {
