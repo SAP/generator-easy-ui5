@@ -1,5 +1,5 @@
 {
-  "welcomeFile": "<%=(platform === 'Cloud Foundry HTML5 Application Repository') ? (namespace+projectname+'/').replace(/\./g, '') :  '/index.html'%>",
+  "welcomeFile": "<%=welcomeFile%>",
 <% if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'Fiori Launchpad on Cloud Foundry'){ -%>
   "authenticationMethod": "route",
   "logout": {
