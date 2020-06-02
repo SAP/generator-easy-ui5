@@ -17,7 +17,7 @@
         "payload": {
           "viz": [
             {
-              "id": "<%=projectname%>",
+              "id": "<%=namespace%>.<%=projectname%>",
               "vizId": "data-display"
             }
           ]
@@ -37,7 +37,7 @@
           "viz": [
             {
               "id": "<%=projectname%>-0-1576776620655",
-              "appId": "<%=projectname%>",
+              "appId": "<%=namespace%>.<%=projectname%>",
               "vizId": "data-display"
             }
           ]
