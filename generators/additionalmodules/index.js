@@ -137,11 +137,10 @@ module.exports = class extends Generator {
             "service-plan": "app-host",
             "service": "html5-apps-repo",
             "config": {
-              "sizeLimit": 5
+              "sizeLimit": 2
             }
           }
         });
-        approuter.requires.push({ name: oConfig.projectname + "_html5_repo_host" });
 
         mta.resources.push({
           "name": oConfig.projectname + "_html5_repo_runtime",

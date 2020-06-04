@@ -40,7 +40,8 @@ module.exports = class extends Generator {
           return true;
         }
         return "Please use alpha numeric characters only for the view name.";
-      }
+      },
+      default: "MainView"
     }, {
       type: "input",
       name: "tilename",
@@ -195,12 +196,12 @@ module.exports = class extends Generator {
       packge.scripts["build:ui"] += " build:" + sModuleName;
       let buildCommand = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest";
       if (localResources) {
-        buildCommand += " --a ";
+        buildCommand += " --a";
       }
       if (platformIsAppRouter) {
         buildCommand += " --dest approuter/" + sModuleName + "/webapp";
       } else {
-        buildCommand += " deployer/resources/webapp ";
+        buildCommand += " --dest deployer/resources/" + sModuleName ;
         buildCommand += " --include-task=generateManifestBundle ";
 
       }

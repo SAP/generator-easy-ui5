@@ -106,7 +106,7 @@ module.exports = class extends Generator {
       this.composeWith(require.resolve("../additionalmodules"), oSubGen);
     }
 
-    this.composeWith(require.resolve("../newuimodule"), oSubGen);
+    this.composeWith(require.resolve("../newwebapp"), oSubGen);
   }
 
   async addPackage() {
