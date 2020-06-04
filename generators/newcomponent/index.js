@@ -8,7 +8,7 @@ module.exports = class extends Generator {
     var aPrompt = [{
       type: "list",
       name: "modulename",
-      message: "To which module do you want to add a view?",
+      message: "To which module do you want to add a component?",
       choices: modules || [],
       when: modules && modules.length > 1
     }, {
@@ -50,15 +50,12 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.componentName = answers.componentName;
       this.options.oneTimeConfig.componentData = answers.componentData;
       this.options.oneTimeConfig.lazy = answers.lazy;
-      this.options.oneTimeConfig.modulename = answers.modulename;
+      this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
     });
   }
 
   async writing() {
-    if (this.options.isSubgeneratorCall) {
-      return;
-    }
     const sUsageName = this.options.oneTimeConfig.usagesName;
     const sComponentName = this.options.oneTimeConfig.componentName;
     const sComponentData = this.options.oneTimeConfig.componentData || {};
@@ -81,6 +78,5 @@ module.exports = class extends Generator {
     });
 
     this.log("Add the new usage in your view with the following code: \n '<core:ComponentContainer width='100%' usage='" + sUsageName + "' propagateModel='true' lifecycle='Container'></core:ComponentContainer>'");
-    this.log("Updated manifest file with the new usage.");
   }
 };

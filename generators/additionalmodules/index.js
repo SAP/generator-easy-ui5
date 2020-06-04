@@ -9,6 +9,7 @@ module.exports = class extends Generator {
     if (this.options.isSubgeneratorCall) {
       this.destinationRoot(this.options.cwd);
       this.options.oneTimeConfig = this.config.getAll();
+      this.options.oneTimeConfig.modulename = this.options.modulename;
       return;
     }
     throw ("This subgenerator is only intended for internal use. Please don\"t call it directly.");
@@ -17,10 +18,8 @@ module.exports = class extends Generator {
   async writing() {
     this.sourceRoot(path.join(__dirname, "templates"));
 
-    const oConfig = this.config.getAll();
-    oConfig.welcomeFile = oConfig.platform === "Fiori Launchpad on Cloud Foundry" ? "/cp.portal" :
-      oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") :
-        "/index.html";
+    const oConfig = this.options.oneTimeConfig;
+    const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
 
     // Copy approuter module
     glob.sync("**", {
@@ -31,7 +30,15 @@ module.exports = class extends Generator {
     });
     this.fs.copyTpl(this.templatePath("xs-security.json"), this.destinationPath("xs-security.json"), oConfig);
 
-    if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+
+    if (platformIsAppRouter) {
+
+      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+        "welcomeFile": "uimodule/index.html",
+        "routes": []
+      });
+
+    } else {
       // Copy deployer module
       glob.sync("**", {
         cwd: this.sourceRoot() + "/deployer",
@@ -39,6 +46,17 @@ module.exports = class extends Generator {
       }).forEach(file => {
         this.fs.copyTpl(this.templatePath("deployer/" + file), this.destinationPath("deployer/" + file.replace(/^_/, "").replace(/\/_/, "/")), oConfig);
       });
+
+
+      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+        "welcomeFile": oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") : "/cp.portal",
+        "authenticationMethod": "route",
+        "logout": {
+          "logoutEndpoint": "/do/logout"
+        },
+        "routes": []
+      });
+
     }
     if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 
@@ -84,9 +102,11 @@ module.exports = class extends Generator {
 
     const approuter = mta.modules[0];
 
-    if (oConfig.platform === "Application Router @ SAP HANA XS Advanced") {
+    if (oConfig.platform.includes("Application Router")) {
       approuter["build-parameters"] = buildParam;
-    } else {
+    }
+
+    if (oConfig.platform !== "Application Router @ SAP HANA XS Advanced") {
 
       mta.resources.push({
         "name": oConfig.projectname + "_destination",
@@ -96,7 +116,7 @@ module.exports = class extends Generator {
           "service": "destination"
         }
       });
-      approuter.requires.push({name: oConfig.projectname + "_destination"});
+      approuter.requires.push({ name: oConfig.projectname + "_destination" });
 
       if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 
@@ -151,6 +171,7 @@ module.exports = class extends Generator {
             name: oConfig.projectname + "_launchpad_deployer",
             type: "com.sap.portal.content",
             path: "launchpad",
+            ["deployed-after"]: [oConfig.projectname + "_deployer"],
             requires: [{
               name: oConfig.projectname + "_portal"
             }, {

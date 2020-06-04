@@ -103,7 +103,7 @@ module.exports = class extends Generator {
     oSubGen.modulename = "uimodule";
 
     if (oConfig.platform !== "Static webserver") {
-      this.composeWith(require.resolve("../cfmodules"), oSubGen); //TODO rename
+      this.composeWith(require.resolve("../additionalmodules"), oSubGen);
     }
 
     this.composeWith(require.resolve("../newuimodule"), oSubGen);
@@ -115,7 +115,7 @@ module.exports = class extends Generator {
       "name": oConfig.projectname,
       "version": "0.0.1",
       "scripts": {
-        "start": "ui5 serve --config=uimodules/ui5.yaml  --open index.html",
+        "start": "ui5 serve --config=uimodule/ui5.yaml  --open index.html",
         "build:ui": "run-s ",
         "test": "run-s lint karma",
         "karma-ci": "karma start karma-ci.conf.js",
@@ -175,6 +175,7 @@ module.exports = class extends Generator {
   }
 
   end() {
+    this.config.set("setupCompleted", true);
     this.spawnCommandSync("git", ["init", "--quiet"], {
       cwd: this.destinationPath()
     });

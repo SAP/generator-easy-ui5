@@ -8,7 +8,7 @@ module.exports = class extends Generator {
     var aPrompt = [{
       type: "list",
       name: "modulename",
-      message: "To which module do you want to add a view?",
+      message: "To which module do you want to add a model?",
       choices: modules || [],
       when: modules && modules.length > 1
     }, {
@@ -73,10 +73,6 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    if (this.options.isSubgeneratorCall) {
-      return;
-    }
-
     const sModelName = this.options.oneTimeConfig.modelName;
     const sUrl = this.options.oneTimeConfig.url;
     const sModuleName = this.options.oneTimeConfig.modulename;

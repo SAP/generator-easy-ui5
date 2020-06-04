@@ -20,6 +20,7 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig.tilename = answers.tilename;
       });
     }
+
     var aPrompt = [{
       type: "input",
       name: "modulename",
@@ -45,7 +46,7 @@ module.exports = class extends Generator {
       name: "tilename",
       message: "What name should be displayed on the Fiori Launchpad tile?",
       default: "Fiori App",
-      when: this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry"
+      when: this.config.get("platform") === "Fiori Launchpad on Cloud Foundry"
     }];
 
     if (!this.config.getAll().viewtype) {
@@ -98,6 +99,8 @@ module.exports = class extends Generator {
 
   async writing() {
     const sModuleName = this.options.oneTimeConfig.modulename;
+    const localResources = (this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" || this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)");
+    const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
 
     // Write files in new module folder
     this.sourceRoot(path.join(__dirname, "templates"));
@@ -107,55 +110,101 @@ module.exports = class extends Generator {
     }).forEach((file) => {
       const sOrigin = this.templatePath(file);
       const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
+
+      const isUnneededFlpSandbox = sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "Fiori Launchpad on Cloud Foundry";
+      const isUnneededXsApp = sTarget.includes("xs-app") && !(this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry" || this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository");
+
+      if (isUnneededXsApp || isUnneededFlpSandbox) {
+        return;
+      }
+
       this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     });
-    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-      await fileaccess.manipulateJSON.call(this, sModuleName + "/webapp/xs-app.json", {
-        "welcomeFile": this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" ? "index.html" : "/flpSandbox.html",
+
+    if (this.options.oneTimeConfig.platform.includes("Application Router")) {
+      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
         "routes": [{
-          "source": "^(.*)",
+          "source": "^/" + sModuleName + "/(.*)$",
           "target": "$1",
-          "authenticationType": "xsuaa",
-          "service": "html5-apps-repo-rt"
+          "authenticationType": "none",
+          "localDir": sModuleName + "/webapp"
         }]
       });
+
+    }
+
+    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+      // await fileaccess.manipulateJSON.call(this, /  sModuleName + "/webapp/xs-app.json", {
+      //   "welcomeFile": this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" ? "index.html" : "/flpSandbox.html",
+      //   "routes": [{
+      //     "source": "^(.*)",
+      //     "target": "$1",
+      //     "authenticationType": "xsuaa",
+      //     "service": "html5-apps-repo-rt"
+      //   }]
+      // });
 
 
       if (this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 
         await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
           ["sap.app"]: {
-              crossNavigation: {
-                inbounds: {
-                  intent1: {
-                    "signature": {
-                      "parameters": {},
-                      "additionalParameters": "allowed"
-                    },
-                    "semanticObject": "data", // TODO replace with modulename
-                    "action": "display",
-                    "title": this.options.oneTimeConfig.tilename,
-                    "description": "App Description",
-                    "icon": "sap-icon://add"
-                  }
+            crossNavigation: {
+              inbounds: {
+                intent1: {
+                  "signature": {
+                    "parameters": {},
+                    "additionalParameters": "allowed"
+                  },
+                  "semanticObject": sModuleName,
+                  "action": "display",
+                  "title": this.options.oneTimeConfig.tilename,
+                  "description": "App Description",
+                  "icon": "sap-icon://add"
                 }
               }
+            }
           }
         });
+
+        // await fileaccess.manipulateJSON.call(this, "/launchpad/portal-site/CommonDataModel.json", { TODO not sure how to add a second one in the first place
+        //   payload: {
+        //     catalogs: {
+        //         inbounds: {
+        //           intent1: {
+        //             "signature": {
+        //               "parameters": {},
+        //               "additionalParameters": "allowed"
+        //             },
+        //             "semanticObject": sModuleName,
+        //             "action": "display",
+        //             "title": this.options.oneTimeConfig.tilename,
+        //             "description": "App Description",
+        //             "icon": "sap-icon://add"
+        //           }
+        //         }
+        //       }
+        //   }
+        // });
       }
     }
 
     // Append to master package.json
-    const additionalBuildOption = (this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" || this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)") ? "--a" : "--clean-dest --dest approuter/webapp";
-    const platformIsCF = this.options.oneTimeConfig.platform.includes("Cloud Foundry");
     await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
       packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
-      packge.scripts["build:ui"] += "build:" + sModuleName;
-      if (platformIsCF) {
-        packge.scripts["build:" + sModuleName] = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest --include-task=generateManifestBundle --dest deployer/resources/webapp";
-      } else {
-        packge.scripts["build:" + sModuleName] = "ui5 build --config=" + sModuleName + "/ui5.yaml " + additionalBuildOption;
+      packge.scripts["build:ui"] += " build:" + sModuleName;
+      let buildCommand = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest";
+      if (localResources) {
+        buildCommand += " --a ";
       }
+      if (platformIsAppRouter) {
+        buildCommand += " --dest approuter/" + sModuleName + "/webapp";
+      } else {
+        buildCommand += " deployer/resources/webapp ";
+        buildCommand += " --include-task=generateManifestBundle ";
+
+      }
+      packge.scripts["build:" + sModuleName] = buildCommand;
       return packge;
     });
 

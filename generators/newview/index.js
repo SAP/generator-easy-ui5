@@ -1,4 +1,5 @@
-const Generator = require("yeoman-generator");
+const Generator = require("yeoman-generator"),
+fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
 
@@ -75,7 +76,7 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.viewname = answers.viewname;
       this.options.oneTimeConfig.createcontroller = answers.createcontroller;
       this.options.oneTimeConfig.addToRoute = answers.addToRoute;
-      this.options.oneTimeConfig.modulename = answers.modulename;
+      this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
       if (answers.projectname) {
         this.options.oneTimeConfig.projectname = answers.projectname;

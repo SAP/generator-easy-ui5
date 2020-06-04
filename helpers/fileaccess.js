@@ -16,7 +16,9 @@ exports.writeJSON = async function (filePath, override) {
       objectAssignDeep.withOptions(oldContent, [override], { arrayBehaviour: "merge" });
 
     this.fs.writeJSON(fullFilePath, newContent);
-    !this.options.isSubgeneratorCall && this.log(`Updated file: ${filePath}`);
+    if (!this.options.isSubgeneratorCall && this.config.get("setupCompleted")) {
+      this.log(`Updated file: ${filePath}`);
+    }
   } catch (e) {
     this.log(`Error during the manipulation of the ${filePath} file: ${e}`);
     throw e;
@@ -39,7 +41,9 @@ exports.writeYAML = async function (filePath, override) {
 
     this.fs.write(fullFilePath, yaml.stringify(newContent));
 
-    !this.options.isSubgeneratorCall && this.log(`Updated file: ${filePath}`);
+    if (!this.options.isSubgeneratorCall && this.config.get("setupCompleted")) {
+      this.log(`Updated file: ${filePath}`);
+    }
   } catch (e) {
     this.log(`Error during the manipulation of the ${filePath} file: ${e}`);
     throw e;
@@ -57,7 +61,9 @@ exports.manipulateJSON = async function (filePath, override) {
       objectAssignDeep.withOptions(oldContent, [override], { arrayBehaviour: "merge" });
 
     this.fs.writeJSON(fullFilePath, newContent);
-    !this.options.isSubgeneratorCall && this.log(`Updated file: ${filePath}`);
+    if (!this.options.isSubgeneratorCall && this.config.get("setupCompleted")) {
+      this.log(`Updated file: ${filePath}`);
+    }
   } catch (e) {
     this.log(`Error during the manipulation of the ${filePath} file: ${e}`);
     throw e;

@@ -8,4 +8,4 @@ mta_archives/
 deployer/resources/
 Makefile*
 mta-*
-approuter/webapp/
+approuter/*/webapp/
