@@ -132,7 +132,7 @@ module.exports = class extends Generator {
         "karma-coverage": "^2.0.2",
         "karma-ui5": "^2.1.2",
         "npm-run-all": "^4.1.5",
-        "eslint": "^7.1.0"
+        "eslint": "^6.1.0"
       },
       "ui5": {
         "dependencies": [
