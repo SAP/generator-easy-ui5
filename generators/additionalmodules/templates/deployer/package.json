@@ -1,12 +1,12 @@
 {
-    "name": "webapp-deployer",
-    "engines": {
+  "name": "webapp-deployer",
+  "engines": {
       "node": "12.X"
-    },
-    "dependencies": {
-        "@sap/html5-app-deployer": "2.1.0"
-    },
-    "scripts": {
-        "start": "node node_modules/@sap/html5-app-deployer/index.js"
-    }
+  },
+  "dependencies": {
+      "@sap/html5-app-deployer": "2.1.0"
+  },
+  "scripts": {
+      "start": "node node_modules/@sap/html5-app-deployer/index.js"
+  }
 }

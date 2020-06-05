@@ -1,6 +1,6 @@
 sap.ui.define([
   "sap/ui/test/opaQunit",
-  "<%=namespace.replace(/\./g, '/')%>/<%=projectname%>/test/integration/pages/<%=viewname%>"
+  "<%=appURI%>/test/integration/pages/<%=viewname%>"
 ], function (opaTest) {
   "use strict";
 

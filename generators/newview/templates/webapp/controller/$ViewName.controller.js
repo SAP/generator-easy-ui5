@@ -3,5 +3,5 @@ sap.ui.define([
 ], function(Controller) {
   "use strict";
 
-  return Controller.extend("<%= namespace%>.<%=projectname%>.controller.<%=viewname%>", {});
+  return Controller.extend("<%=appId%>.controller.<%=viewname%>", {});
 });

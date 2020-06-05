@@ -1,7 +1,7 @@
 {
   "_version": "1.12.0",
   "sap.app": {
-    "id": "<%=namespace%>.<%= modulename === 'uimodule' ? projectname : modulename%>",
+    "id": "<%=appId%>",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -28,7 +28,7 @@
   },
   "sap.ui5": {
     "rootView": {
-      "viewName": "<%=namespace%>.<%=projectname%>.view.<%=viewname%>",
+      "viewName": "<%=appId%>.view.<%=viewname%>",
       "type": "<%=viewtype%>",
       "async": true,
       "id": "idAppControl"
@@ -49,7 +49,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "<%=namespace%>.<%=projectname%>.i18n.i18n"
+          "bundleName": "<%=appId%>.i18n.i18n"
         }
       }
     },
@@ -64,7 +64,7 @@
       "config": {
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
-        "viewPath": "<%= namespace%>.<%=projectname%>.view",
+        "viewPath": "<%=appId%>.view",
         "controlId": "idAppControl",
         "controlAggregation": "pages",
         "async": true

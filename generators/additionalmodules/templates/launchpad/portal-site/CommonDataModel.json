@@ -15,12 +15,7 @@
           "i18n": "i18n/i18n.properties"
         },
         "payload": {
-          "viz": [
-            {
-              "id": "<%=projectname%>",
-              "vizId": "<%=modulename%>-display"
-            }
-          ]
+          "viz": []
         }
       }
     ],
@@ -34,13 +29,7 @@
           "i18n": "i18n/i18n.properties"
         },
         "payload": {
-          "viz": [
-            {
-              "id": "<%=projectname%>-0-1576776620655",
-              "appId": "<%=projectname%>",
-              "vizId": "<%=modulename%>-display"
-            }
-          ]
+          "viz": []
         }
       }
     ],
@@ -57,13 +46,13 @@
           "config": {
             "ushellConfig": {
               "bootstrapPlugins": {
-								"KeyUserPlugin": {
-									"component": "sap.ushell.plugins.rta"
-								},
-								"PersonalizePlugin": {
-									"component": "sap.ushell.plugins.rta-personalize"
-								}
-							},
+                "KeyUserPlugin": {
+                  "component": "sap.ushell.plugins.rta"
+                },
+                "PersonalizePlugin": {
+                  "component": "sap.ushell.plugins.rta-personalize"
+                }
+              },
               "renderers": {
                 "fiori2": {
                   "componentData": {

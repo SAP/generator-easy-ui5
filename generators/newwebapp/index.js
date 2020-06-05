@@ -18,6 +18,9 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig = this.config.getAll();
         this.options.oneTimeConfig.modulename = this.options.modulename;
         this.options.oneTimeConfig.tilename = answers.tilename;
+
+        this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
+        this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
       });
     }
 
@@ -93,8 +96,13 @@ module.exports = class extends Generator {
       if (answers.projectname) {
         this.options.oneTimeConfig.projectname = answers.projectname;
         this.options.oneTimeConfig.namespace = answers.namespace;
+        this.options.oneTimeConfig.namespaceURI = answers.namespace.split(".").join("/");
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
+
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
+
     });
   }
 
@@ -118,6 +126,7 @@ module.exports = class extends Generator {
       if (isUnneededXsApp || isUnneededFlpSandbox) {
         return;
       }
+      debugger
 
       this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     });
@@ -135,15 +144,6 @@ module.exports = class extends Generator {
     }
 
     if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-      // await fileaccess.manipulateJSON.call(this, /  sModuleName + "/webapp/xs-app.json", {
-      //   "welcomeFile": this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" ? "index.html" : "/flpSandbox.html",
-      //   "routes": [{
-      //     "source": "^(.*)",
-      //     "target": "$1",
-      //     "authenticationType": "xsuaa",
-      //     "service": "html5-apps-repo-rt"
-      //   }]
-      // });
 
 
       if (this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
@@ -168,25 +168,22 @@ module.exports = class extends Generator {
           }
         });
 
-        // await fileaccess.manipulateJSON.call(this, "/launchpad/portal-site/CommonDataModel.json", { TODO not sure how to add a second one in the first place
-        //   payload: {
-        //     catalogs: {
-        //         inbounds: {
-        //           intent1: {
-        //             "signature": {
-        //               "parameters": {},
-        //               "additionalParameters": "allowed"
-        //             },
-        //             "semanticObject": sModuleName,
-        //             "action": "display",
-        //             "title": this.options.oneTimeConfig.tilename,
-        //             "description": "App Description",
-        //             "icon": "sap-icon://add"
-        //           }
-        //         }
-        //       }
-        //   }
-        // });
+        await fileaccess.manipulateJSON.call(this, "/launchpad/portal-site/CommonDataModel.json", function (commonDataModel) {
+
+          commonDataModel.payload.catalogs[0].payload.viz.push({
+            id: this.options.oneTimeConfig.appId,
+            vizId: sModuleName + "-display"
+          });
+
+          commonDataModel.payload.groups[0].payload.viz.push({
+            id: this.options.oneTimeConfig.appId,
+            appId: this.options.oneTimeConfig.appId,
+            vizId: sModuleName + "-display"
+          });
+
+          return commonDataModel;
+
+        }.bind(this));
       }
     }
 
@@ -201,7 +198,7 @@ module.exports = class extends Generator {
       if (platformIsAppRouter) {
         buildCommand += " --dest approuter/" + sModuleName + "/webapp";
       } else {
-        buildCommand += " --dest deployer/resources/" + sModuleName ;
+        buildCommand += " --dest deployer/resources/" + sModuleName;
         buildCommand += " --include-task=generateManifestBundle ";
 
       }

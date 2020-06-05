@@ -1,7 +1,7 @@
 sap.ui.define([
   "sap/ui/test/Opa5",
-  "<%=namespace.replace(/\./g, '/')%>/<%=projectname%>/test/integration/arrangements/Startup",
-  "<%=namespace.replace(/\./g, '/')%>/<%=projectname%>/test/integration/BasicJourney"
+  "<%=appURI%>/test/integration/arrangements/Startup",
+  "<%=appURI%>/test/integration/BasicJourney"
 ], function(Opa5, Startup) {
   "use strict";
 

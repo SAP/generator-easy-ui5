@@ -1,11 +1,11 @@
 sap.ui.define([
   "sap/ui/core/UIComponent",
   "sap/ui/Device",
-  "<%= namespace.replace(/\./g, '/')%>/<%=projectname.replace('.', '/')%>/model/models"
+  "<%=appURI%>/model/models"
 ], function(UIComponent, Device, models) {
   "use strict";
 
-  return UIComponent.extend("<%=namespace%>.<%=projectname%>.Component", {
+  return UIComponent.extend("<%=appId%>.Component", {
 
     metadata: {
       manifest: "json"

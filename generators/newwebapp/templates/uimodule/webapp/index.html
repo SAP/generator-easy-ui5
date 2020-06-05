@@ -9,19 +9,19 @@
 
   <title><%= projectname %></title>
 
-  <script id="sap-ui-bootstrap" src="<%= ui5libs === 'Content delivery network (OpenUI5)' ? 
+  <script id="sap-ui-bootstrap" src="<%= ui5libs === 'Content delivery network (OpenUI5)' ?
       'https://openui5.hana.ondemand.com/resources/sap-ui-core.js' :
       ui5libs === 'Content delivery network (SAPUI5)' ?
       'https://sapui5.hana.ondemand.com/resources/sap-ui-core.js' : 'resources/sap-ui-core.js'  %>"
     data-sap-ui-theme="sap_fiori_3" data-sap-ui-resourceroots='{
-        "<%=namespace%>.<%=projectname%>": "./"
+        "<%=appId%>": "./"
       }' data-sap-ui-oninit="module:sap/ui/core/ComponentSupport" data-sap-ui-compatVersion="edge"
     data-sap-ui-async="true" data-sap-ui-frameOptions="trusted">
     </script>
 </head>
 
 <body class="sapUiBody">
-  <div data-sap-ui-component data-name="<%=namespace%>.<%=projectname%>" data-id="container"
+  <div data-sap-ui-component data-name="<%=appId%>" data-id="container"
     data-settings='{"id" : "<%=projectname%>"}'>
   </div>
 </body>

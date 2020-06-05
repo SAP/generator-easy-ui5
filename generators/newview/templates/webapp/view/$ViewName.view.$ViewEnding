@@ -1,4 +1,4 @@
-<% if (viewtype === 'XML') { %> <mvc:View controllerName="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>"
+<% if (viewtype === 'XML') { %> <mvc:View controllerName="<%=appId%>.controller.<%=viewname%>"
   displayBlock="true"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc">
@@ -10,7 +10,7 @@
     </pages>
   </App>
 </mvc:View><% } if (viewtype === 'HTML') { -%>
-<template data-controller-name="<%= namespace%>.<%=projectname%>.controller.<%=viewname%>">
+<template data-controller-name="<%=appId%>.controller.<%=viewname%>">
   <div data-sap-ui-type="sap.m.App" id="<%= isSubgeneratorCall ? 'idAppControl' : viewname %>"  >
     <div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
       <div data-sap-ui-aggregation="content">
@@ -20,7 +20,7 @@
 </template><% } if (viewtype === 'JSON') { -%>
 {
   "Type": "sap.ui.core.mvc.JSONView",
-  "controllerName": "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>",
+  "controllerName": "<%=appId%>.controller.<%=viewname%>",
   "content": [{
     "Type": "sap.m.App",
     "id": "<%= isSubgeneratorCall ? 'idAppControl' : viewname %>",
@@ -33,10 +33,10 @@
 }<% } if (viewtype === 'JS') { -%>
 sap.ui.define([ ], function() {
 "use strict";
-  sap.ui.jsview("<%= namespace%>.<%=projectname%>.view.<%=viewname%>", {
+  sap.ui.jsview("<%=appId%>.view.<%=viewname%>", {
 
     getControllerName: function () {
-      return "<%= namespace%>.<%=projectname%>.controller.<%=viewname%>";
+      return "<%=appId%>.controller.<%=viewname%>";
     },
 
     createContent: function () {

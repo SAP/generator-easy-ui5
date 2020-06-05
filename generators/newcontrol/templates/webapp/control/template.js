@@ -1,7 +1,7 @@
 sap.ui.define(
   ["<%= supercontrol.replace(/\./g, '/') %>"],
   function(Control) {
-    return Control.extend("<%=namespace%>.<%=projectname%>.control.<%=controlname%>",{
+    return Control.extend("<%=appId%>.control.<%=controlname%>",{
          metadata: {
               properties: {},
               aggregations: {},

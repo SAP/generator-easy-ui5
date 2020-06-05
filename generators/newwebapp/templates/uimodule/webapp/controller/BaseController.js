@@ -2,11 +2,11 @@ sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/core/routing/History",
   "sap/ui/core/UIComponent",
-  "<%= namespaceURI%>/<%=projectname%>/model/formatter"
+  "<%=appURI%>/model/formatter"
 ], function(Controller, History, UIComponent, formatter) {
   "use strict";
 
-  return Controller.extend("<%= namespace%>.<%=projectname%>.controller.BaseController", {
+  return Controller.extend("<%=appId%>.controller.BaseController", {
 
     formatter: formatter,
 

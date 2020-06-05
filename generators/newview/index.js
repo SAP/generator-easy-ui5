@@ -1,5 +1,5 @@
 const Generator = require("yeoman-generator"),
-fileaccess = require("../../helpers/fileaccess");
+  fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
 
@@ -9,6 +9,9 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig = this.config.getAll();
       this.options.oneTimeConfig.modulename = this.options.modulename;
       this.options.oneTimeConfig.viewname = this.options.viewname;
+
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
       return [];
     }
 
@@ -83,6 +86,10 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig.namespace = answers.namespace;
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
+
+
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
     });
   }
 

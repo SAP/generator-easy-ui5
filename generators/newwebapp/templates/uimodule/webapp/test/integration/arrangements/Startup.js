@@ -3,12 +3,12 @@ sap.ui.define([
 ], function(Opa5) {
   "use strict";
 
-  return Opa5.extend("<%=namespace%>.<%=projectname%>.test.integration.arrangements.Startup", {
+  return Opa5.extend("<%=appId%>.test.integration.arrangements.Startup", {
 
     iStartMyApp: function () {
       this.iStartMyUIComponent({
         componentConfig: {
-          name: "<%=namespace%>.<%=projectname%>",
+          name: "<%=appId%>",
           async: true,
           manifest: true
         }

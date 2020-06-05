@@ -30,15 +30,19 @@ module.exports = class extends Generator {
     });
     this.fs.copyTpl(this.templatePath("xs-security.json"), this.destinationPath("xs-security.json"), oConfig);
 
+    const welcomeRoute = platformIsAppRouter ? "uimodule/index.html" :
+      oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") : "/cp.portal";
 
-    if (platformIsAppRouter) {
+    await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+      "welcomeFile": welcomeRoute,
+      "authenticationMethod": "none",
+      "logout": {
+        "logoutEndpoint": "/do/logout"
+      },
+      "routes": []
+    });
 
-      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
-        "welcomeFile": "uimodule/index.html",
-        "routes": []
-      });
-
-    } else {
+    if (!platformIsAppRouter) {
       // Copy deployer module
       glob.sync("**", {
         cwd: this.sourceRoot() + "/deployer",
@@ -48,14 +52,7 @@ module.exports = class extends Generator {
       });
 
 
-      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
-        "welcomeFile": oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") : "/cp.portal",
-        "authenticationMethod": "route",
-        "logout": {
-          "logoutEndpoint": "/do/logout"
-        },
-        "routes": []
-      });
+
 
     }
     if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
