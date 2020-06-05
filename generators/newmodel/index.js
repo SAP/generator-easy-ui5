@@ -27,8 +27,8 @@ module.exports = class extends Generator {
       type: "list",
       name: "modelType",
       message: "Which type of model do you want to add?",
-      choices: ["OData", "JSON"],
-      default: "OData"
+      choices: ["OData v2", "OData v4", "JSON"],
+      default: "OData v4"
     },
     {
       type: "list",
@@ -39,7 +39,7 @@ module.exports = class extends Generator {
     },
     {
       when: function (props) {
-        return props.modelType === "OData";
+        return props.modelType.includes("OData");
       },
       type: "input",
       name: "url",
@@ -47,7 +47,7 @@ module.exports = class extends Generator {
     },
     {
       when: function (props) {
-        return props.modelType === "OData";
+        return props.modelType === "OData v2";
       },
       type: "list",
       name: "countMode",
@@ -61,76 +61,82 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.modelName = answers.modelName;
       this.options.oneTimeConfig.modelType = answers.modelType;
       this.options.oneTimeConfig.bindingMode = answers.bindingMode;
-      this.options.oneTimeConfig.modulename = answers.modulename;
+      this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
-      if (answers.modelType === "OData") {
+      if (answers.modelType.includes("OData")) {
         this.options.oneTimeConfig.url = answers.url;
-        this.options.oneTimeConfig.countMode = answers.countMode;
-        this.log(this.options.oneTimeConfig.countMode);
+        if (answers.modelType === "OData v2") {
+          this.options.oneTimeConfig.countMode = answers.countMode;
+        }
       }
-
     });
   }
 
   async writing() {
-    const sModelName = this.options.oneTimeConfig.modelName;
-    const sUrl = this.options.oneTimeConfig.url;
-    const sModuleName = this.options.oneTimeConfig.modulename;
 
-    let override = {
-      sap: {
-        ui5: {
+    let override;
+
+    if (this.options.oneTimeConfig.modelType.includes("OData")) {
+      let sDataSource = this.options.oneTimeConfig.url.replace("/sap/opu/odata/sap/", "");
+      sDataSource.replace("/", "");
+
+      const sourceSettings = this.options.oneTimeConfig.modelType === "OData v2" ? {
+        localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"
+      } : {
+          localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml",
+          odataVersion: "4.0"
+        };
+      const modelType = this.options.oneTimeConfig.modelType === "OData v2" ? "sap.ui.model.odata.v2.ODataModel" : "sap.ui.model.odata.v4.ODataModel";
+      const modelSettings = this.options.oneTimeConfig.modelType === "OData v2" ? {
+        defaultOperationMode: "Server",
+        defaultBindingMode: this.options.oneTimeConfig.bindingMode,
+        defaultCountMode: this.options.oneTimeConfig.countMode,
+        preload: true
+      } : {
+          synchronizationMode: "None",
+          operationMode: "Server",
+          autoExpandSelect: true,
+          earlyRequests: true,
+          groupProperties: {
+            default: {
+              submit: "Auto"
+            }
+          }
+        };
+
+      override = {
+        ["sap.app"]: {
+          dataSources: {
+            [sDataSource]: {
+              uri: this.options.oneTimeConfig.url,
+              type: "OData",
+              settings: sourceSettings
+            }
+          }
+        },
+        ["sap.ui5"]: {
           models: {
-            [sModelName]: {
-              "type": "sap.ui.model.json.JSONModel",
-              "settings": {}
+            [this.options.oneTimeConfig.modelName]: {
+              type: modelType,
+              settings: modelSettings,
+              dataSource: sDataSource
             }
           }
         }
-      }
-    };
-    if (this.options.oneTimeConfig.modelType === "OData") {
-      let sDataSource;
-      let sCountMode;
-      if (sUrl) {
-        sDataSource = sUrl.replace("/sap/opu/odata/sap/", "");
-        sDataSource.replace("/", "");
-        sCountMode = this.options.oneTimeConfig.countMode;
-      }
-
+      };
+    } else {
       override = {
-        sap: {
-          ui5: {
-            models: {
-              [sModelName]: {
-                type: "sap.ui.model.odata.v2.ODataModel",
-                settings: {
-                  defaultOperationMode: "Server",
-                  defaultBindingMode: this.options.oneTimeConfig.bindingMode,
-                  defaultCountMode: sCountMode,
-                  preload: true
-                },
-                dataSource: sDataSource
-              }
-            }
-          },
-          app: {
-            dataSources: {
-              [sDataSource]: {
-                uri: sUrl,
-                type: this.options.oneTimeConfig.modelType,
-                settings: {
-                  localUri: "localService/" + sUrl + "/metadata.xml"
-                }
-              }
+        ["sap.ui5"]: {
+          models: {
+            [this.options.oneTimeConfig.modelName]: {
+              "type": "sap.ui.model.json.JSONModel",
+              "settings": {}
             }
           }
         }
       };
     }
 
-    await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", override);
-
-    this.log("Updated manifest file with the new model.");
+    await fileaccess.manipulateJSON.call(this, "/" + this.options.oneTimeConfig.modulename + "/webapp/manifest.json", override);
   }
 };

@@ -19,8 +19,8 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig.modulename = this.options.modulename;
         this.options.oneTimeConfig.tilename = answers.tilename;
 
-        this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
-        this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : this.options.modulename);
+        this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.modulename);
+        this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.modulename);
       });
     }
 
@@ -100,8 +100,8 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
 
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
-      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === 'uimodule' ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
 
     });
   }
@@ -126,7 +126,6 @@ module.exports = class extends Generator {
       if (isUnneededXsApp || isUnneededFlpSandbox) {
         return;
       }
-      debugger
 
       this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     });
