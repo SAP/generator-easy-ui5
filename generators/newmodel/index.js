@@ -16,7 +16,7 @@ module.exports = class extends Generator {
       name: "modelName",
       message: "What is the name of your model, press enter if it is the default model?",
       validate: (s) => {
-        if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
+        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
           return true;
         }
         return "Please use alpha numeric characters only for the view name.";

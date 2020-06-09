@@ -11,7 +11,7 @@ module.exports = class extends Generator {
       name: "projectname",
       message: "How do you want to name this project?",
       validate: (s) => {
-        if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
+        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
           return true;
         }
         return "Please use alpha numeric characters only for the project name.";
@@ -49,7 +49,7 @@ module.exports = class extends Generator {
       name: "viewname",
       message: "How do you want to name your main view?",
       validate: (s) => {
-        if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
+        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
           return true;
         }
         return "Please use alpha numeric characters only for the view name.";

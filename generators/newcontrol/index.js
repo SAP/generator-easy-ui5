@@ -38,7 +38,7 @@ module.exports = class extends Generator {
         name: "projectname",
         message: "Seems like this project has not been generated with Easy-UI5. Please enter the name your project.",
         validate: (s) => {
-          if (/^[a-zA-Z0-9_-]*$/g.test(s)) {
+          if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
             return true;
           }
           return "Please use alpha numeric characters only for the project name.";
