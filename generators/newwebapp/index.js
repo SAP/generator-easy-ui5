@@ -209,9 +209,7 @@ module.exports = class extends Generator {
     oSubGen.isSubgeneratorCall = true;
     oSubGen.cwd = this.destinationRoot();
     this.composeWith(require.resolve("../newview"), oSubGen);
-  }
 
-  end() {
     const modules = this.config.get("uimodules") || [];
     modules.push(this.options.oneTimeConfig.modulename);
     this.config.set("uimodules", modules);

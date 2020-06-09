@@ -15,7 +15,7 @@ module.exports = class extends Generator {
       name: "controlname",
       message: "What is the name of the new control?",
       validate: (s) => {
-        if (/^[a-zA-Z0-9]*$/g.test(s)) {
+        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
           return true;
         }
         return "Please use alpha numeric characters only for the control name.";
@@ -62,6 +62,8 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.controlname = answers.controlname;
       this.options.oneTimeConfig.supercontrol = answers.supercontrol;
       this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
+
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.modulename);
       if (answers.projectname) {
         this.options.oneTimeConfig.projectname = answers.projectname;
         this.options.oneTimeConfig.namespace = answers.namespace;
@@ -76,7 +78,4 @@ module.exports = class extends Generator {
     this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
   }
 
-  end() {
-    this.log("Created a new control!");
-  }
 };
