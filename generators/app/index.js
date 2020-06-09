@@ -168,6 +168,7 @@ module.exports = class extends Generator {
   }
 
   install() {
+    this.config.set("setupCompleted", true);
     this.installDependencies({
       bower: false,
       npm: true
@@ -175,7 +176,6 @@ module.exports = class extends Generator {
   }
 
   end() {
-    this.config.set("setupCompleted", true);
     this.spawnCommandSync("git", ["init", "--quiet"], {
       cwd: this.destinationPath()
     });
