@@ -5,11 +5,7 @@
   "main": "generators/app/index.js",
   "files": [
     "generators",
-    "app",
-    "newview",
-    "newcontrol",
-    "newcomponentusage",
-    "newmodel"
+    "helpers"
   ],
   "scripts": {
     "test": "mocha",
