@@ -21,7 +21,7 @@ server:
       configuration:
         port: 35729
         path: <%= modulename %>/webapp
-<% if(platform !== 'Static webserver'){ -%>
+<% if(platform !== 'Static webserver' && platform !== 'SAP NetWeaver'){ -%>
     - name: ui5-middleware-cfdestination
       afterMiddleware: compression
       configuration:
@@ -37,4 +37,36 @@ builder:
          archiveName: "webapp"
          additionalFiles:
           - approuter/xs-app.json
+<% } -%>
+<% if(platform === 'SAP NetWeaver'){ -%>
+    - name: ui5-middleware-route-proxy
+      afterMiddleware: compression
+      configuration:
+        debug: false
+        /sap/opu/odata/sap/: 
+          target: http://<yourserver>:<yourserverport>
+          auth:
+            fromEnv: false
+            user: <youruser>
+            pass: <yourpassword>
+builder:
+  customTasks:
+  - name: ui5-task-nwabap-deployer
+    afterTask: generateVersionInfo
+    configuration: 
+      resources:
+        path: dist/<%= modulename %>
+        pattern: "**/*.*"
+      connection:
+        server: http://<yourserver>:<yourserverport>  
+      authentication:
+        user: <youruser>
+        password: <yourpassword>
+      ui5:
+        language: EN
+        package: <yourpackage>
+        bspContainer: <yourbspapplication>
+        bspContainerText: Generated with easy-ui5
+        transportNo: <yourtransport>
+        calculateApplicationIndex: true 
 <% } -%>

@@ -36,7 +36,8 @@ module.exports = class extends Generator {
         "Application Router @ Cloud Foundry",
         "Cloud Foundry HTML5 Application Repository",
         "Fiori Launchpad on Cloud Foundry",
-        "Application Router @ SAP HANA XS Advanced"],
+        "Application Router @ SAP HANA XS Advanced",
+        "SAP NetWeaver"],
       default: "Static webserver"
     }, {
       type: "list",
@@ -102,7 +103,7 @@ module.exports = class extends Generator {
     oSubGen.cwd = this.destinationRoot();
     oSubGen.modulename = "uimodule";
 
-    if (oConfig.platform !== "Static webserver") {
+    if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
       this.composeWith(require.resolve("../additionalmodules"), oSubGen);
     }
 
@@ -141,7 +142,7 @@ module.exports = class extends Generator {
       }
     };
 
-    if (oConfig.platform !== "Static webserver") {
+    if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
       packge.devDependencies["ui5-middleware-cfdestination"] = "^0.2.0";
       packge.devDependencies["ui5-task-zipper"] = "^0.3.0",
       packge.devDependencies["cross-var"] = "^1.1.0";
@@ -162,6 +163,14 @@ module.exports = class extends Generator {
       if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
         packge.scripts.start = "ui5 serve --config=uimodule/ui5.yaml  --open flpSandbox.html";
       }
+    }
+
+    if (oConfig.platform === "SAP NetWeaver"){
+      packge.devDependencies["ui5-task-nwabap-deployer"] = "*";
+      packge.devDependencies["ui5-middleware-route-proxy"] = "*";
+      packge.ui5.dependencies.push("ui5-task-nwabap-deployer");
+      packge.ui5.dependencies.push("ui5-middleware-route-proxy");
+      packge.scripts["deploy"] = "run-s build:ui";
     }
 
     await fileaccess.writeJSON.call(this, "/package.json", packge);

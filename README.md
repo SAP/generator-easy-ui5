@@ -26,7 +26,8 @@ This is the standard way to deploy the web app in SAP HANA XSA-based environment
 This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
 ### Fiori Launchpad on Cloud Foundry
 Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **Cloud Foundry HTML5 Application Repository** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository. 
-
+### SAP NetWeaver
+Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
 
 ## Installation
 
@@ -126,6 +127,14 @@ Call this command from the root directory to deploy the application to HANA XSA
 npm run deploy
 ```
 
+### SAP NetWeaver
+#### Deploy
+Update the ui5.yaml file with your system settings (user, password & server) and ABAP repository settings (package, BSP Container & Transport).
+Run following command to deploy the application to SAP NetWeaver
+```
+npm run deploy
+```
+
 ## Embedded Technologies
 This project leverages (among others) the following Open Source projects:
 * [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
@@ -144,7 +153,6 @@ Please follow our instructions if you would like to [contribute](https://github.
 ## To-Do
 
 The following aspects/features are not yet implemented:
-* Add SAP NetWeaver as a target platform
 * Decouple the sub-generators from the main flow. E.g. so that app router modules can be added after the generation of the UI5 web app.
 
 Contributions are very much appreciated.
