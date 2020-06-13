@@ -110,6 +110,7 @@ module.exports = class extends Generator {
     const sModuleName = this.options.oneTimeConfig.modulename;
     const localResources = (this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" || this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)");
     const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
+    const netweaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
     // Write files in new module folder
     this.sourceRoot(path.join(__dirname, "templates"));
@@ -119,7 +120,7 @@ module.exports = class extends Generator {
     }).forEach((file) => {
       const sOrigin = this.templatePath(file);
       const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
-
+      
       const isUnneededFlpSandbox = sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "Fiori Launchpad on Cloud Foundry";
       const isUnneededXsApp = sTarget.includes("xs-app") && !(this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry" || this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository");
 
@@ -196,10 +197,11 @@ module.exports = class extends Generator {
       }
       if (platformIsAppRouter) {
         buildCommand += " --dest approuter/" + sModuleName + "/webapp";
-      } else {
+      } else if(!netweaver) {
         buildCommand += " --dest deployer/resources/" + sModuleName;
         buildCommand += " --include-task=generateManifestBundle ";
-
+      } else {
+        buildCommand += " --dest dist/" + sModuleName;
       }
       packge.scripts["build:" + sModuleName] = buildCommand;
       return packge;

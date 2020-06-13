@@ -27,7 +27,7 @@ function createTest(oPrompt) {
       }
     });
 
-    if (!!oPrompt.platform && oPrompt.platform !== "Static webserver") {
+    if (!!oPrompt.platform && oPrompt.platform !== "Static webserver" && oPrompt.platform !== "SAP NetWeaver") {
       it("should create an buildable project", async function () {
         try {
           await execa.commandSync("npm run build:mta");
