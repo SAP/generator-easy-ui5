@@ -71,11 +71,6 @@ module.exports = class extends Generator {
   async addMTA() {
     const oConfig = this.config.getAll();
 
-    const buildParam = {
-      builder: "custom",
-      commands: ["npm install", "npm run build:ui --prefix .."]
-    };
-
     let mta = {
       "ID": oConfig.projectname,
       "_schema-version": "3.2.0",
@@ -100,7 +95,10 @@ module.exports = class extends Generator {
     const approuter = mta.modules[0];
 
     if (oConfig.platform.includes("Application Router")) {
-      approuter["build-parameters"] = buildParam;
+      approuter["build-parameters"] = {
+        builder: "custom",
+        commands: ["npm install", "npm run build:ui --prefix .."]
+      };
     }
 
     if (oConfig.platform !== "Application Router @ SAP HANA XS Advanced") {
@@ -117,14 +115,21 @@ module.exports = class extends Generator {
 
       if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 
+
         mta.modules.push({
-          "name": oConfig.projectname + "_deployer",
-          "type": "com.sap.html5.application-content",
+          "name": "webapp_deployer",
+          "type": "com.sap.application.content",
           "path": "deployer",
           "requires": [{
-            "name": oConfig.projectname + "_html5_repo_host"
+            "name": oConfig.projectname + "_html5_repo_host",
+            "parameters": {
+              "content-target": true
+            }
           }],
-          "build-parameters": buildParam
+          "build-parameters":  {
+            ["build-result"]: "resources",
+            ["requires"]: []
+          }
         });
 
         mta.resources.push({

@@ -34,7 +34,7 @@ builder:
     -  name: "ui5-task-zipper"
        afterTask: "uglify"
        configuration:
-         archiveName: "webapp"
+         archiveName: "<%=modulename%>"
          additionalFiles:
           - approuter/xs-app.json
 <% } -%>
@@ -43,7 +43,7 @@ builder:
       afterMiddleware: compression
       configuration:
         debug: false
-        /sap/opu/odata/sap/: 
+        /sap/opu/odata/sap/:
           target: http://<yourserver>:<yourserverport>
           auth:
             fromEnv: false
@@ -53,12 +53,12 @@ builder:
   customTasks:
   - name: ui5-task-nwabap-deployer
     afterTask: generateVersionInfo
-    configuration: 
+    configuration:
       resources:
         path: dist/<%= modulename %>
         pattern: "**/*.*"
       connection:
-        server: http://<yourserver>:<yourserverport>  
+        server: http://<yourserver>:<yourserverport>
       authentication:
         user: <youruser>
         password: <yourpassword>
@@ -68,5 +68,5 @@ builder:
         bspContainer: <yourbspapplication>
         bspContainerText: Generated with easy-ui5
         transportNo: <yourtransport>
-        calculateApplicationIndex: true 
+        calculateApplicationIndex: true
 <% } -%>

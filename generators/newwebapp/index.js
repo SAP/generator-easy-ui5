@@ -120,7 +120,7 @@ module.exports = class extends Generator {
     }).forEach((file) => {
       const sOrigin = this.templatePath(file);
       const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
-      
+
       const isUnneededFlpSandbox = sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "Fiori Launchpad on Cloud Foundry";
       const isUnneededXsApp = sTarget.includes("xs-app") && !(this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry" || this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository");
 
@@ -196,16 +196,43 @@ module.exports = class extends Generator {
         buildCommand += " --a";
       }
       if (platformIsAppRouter) {
-        buildCommand += " --dest approuter/" + sModuleName + "/webapp";
-      } else if(!netweaver) {
-        buildCommand += " --dest deployer/resources/" + sModuleName;
-        buildCommand += " --include-task=generateManifestBundle ";
+        buildCommand += ` --dest approuter/${sModuleName}/webapp`;
+      } else if (!netweaver) {
+        buildCommand += ` --dest ${sModuleName}/dist`;
+        buildCommand += " --include-task=generateManifestBundle";
       } else {
         buildCommand += " --dest dist/" + sModuleName;
       }
       packge.scripts["build:" + sModuleName] = buildCommand;
       return packge;
     });
+
+    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+      await fileaccess.writeYAML.call(this, "/mta.yaml", (mta) => {
+
+        const deployer = mta.modules.find((module) => module.name === "webapp_deployer");
+
+
+        deployer["build-parameters"]["requires"].push({
+          name: sModuleName,
+          artifacts: [`dist/${sModuleName}.zip`],
+          ["target-path"]: "resources/"
+        });
+
+        mta.modules.push({
+          "name": sModuleName,
+          "type": "html5",
+          "path": sModuleName,
+          "build-parameters": {
+            "builder": "custom",
+            "commands": [`npm run build:${sModuleName} --prefix ..`],
+            "supported-platforms": []
+          }
+        });
+        return mta;
+      });
+    }
+
 
     const oSubGen = Object.assign({}, this.options.oneTimeConfig);
     oSubGen.isSubgeneratorCall = true;
@@ -216,5 +243,4 @@ module.exports = class extends Generator {
     modules.push(this.options.oneTimeConfig.modulename);
     this.config.set("uimodules", modules);
   }
-
 };
