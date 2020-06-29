@@ -126,7 +126,7 @@ module.exports = class extends Generator {
               "content-target": true
             }
           }],
-          "build-parameters":  {
+          "build-parameters": {
             ["build-result"]: "resources",
             ["requires"]: []
           }
