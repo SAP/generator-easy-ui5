@@ -15,6 +15,10 @@ function createTest(oPrompt) {
       return assert.file(["uimodule/ui5.yaml", `uimodule/webapp/view/MainView.view.${oPrompt.viewtype.toLowerCase()}`, "uimodule/webapp/index.html", "uimodule/webapp/manifest.json"]);
     });
 
+    it("should reference the base controller", function () {
+      return assert.fileContent('uimodule/webapp/controller/MainView.controller.js', 'controller/BaseController');
+    });
+
     it("should create an installable project", function () {
       return execa.commandSync("npm install");
     });

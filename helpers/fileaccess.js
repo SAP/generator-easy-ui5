@@ -8,7 +8,7 @@ exports.writeJSON = async function (filePath, override) {
     const fullFilePath = process.cwd() + filePath;
     let oldContent = {};
     if (this.fs.exists(fullFilePath)) {
-      oldContent = await this.fs.readJSON(fullFilePath);
+      oldContent = this.fs.readJSON(fullFilePath);
     }
 
     const newContent = typeof override === "function" ?
@@ -54,7 +54,7 @@ exports.writeYAML = async function (filePath, override) {
 exports.manipulateJSON = async function (filePath, override) {
   try {
     const fullFilePath = process.cwd() + filePath;
-    const oldContent = await this.fs.readJSON(fullFilePath);
+    const oldContent = this.fs.readJSON(fullFilePath);
 
     const newContent = typeof override === "function" ?
       override(oldContent) :
