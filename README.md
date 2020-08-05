@@ -16,16 +16,16 @@ The purpose of this generator is to guide you on your first steps with SAPUI5 an
 ## Target platforms
 During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
 
-### Static webserver 
+### Static webserver
 This is the most basic option. Choose this option if you want to deploy the web app in your custom environment or host it on an arbitrary server.
-### Application Router @ Cloud Foundry 
+### Application Router @ Cloud Foundry
 This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-### Application Router @ SAP HANA XS Advanced 
+### Application Router @ SAP HANA XS Advanced
 This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-### Cloud Foundry HTML5 Application Repository 
+### Cloud Foundry HTML5 Application Repository
 This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
 ### Fiori Launchpad on Cloud Foundry
-Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **Cloud Foundry HTML5 Application Repository** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository. 
+Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **Cloud Foundry HTML5 Application Repository** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository.
 ### SAP NetWeaver
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
 
@@ -108,9 +108,9 @@ npm run deploy
 > [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
 >
 > `cf install-plugin -r CF-Community "html5-plugin"`
-> 
+>
 > With this tool you can update your web app without the need to deploy a new cloud application:
-> 
+>
 > `cf html5-push -n html5_repo_host .`
 
 ### SAP HANA XSA
@@ -157,10 +157,6 @@ The following aspects/features are not yet implemented:
 
 Contributions are very much appreciated.
 
-## License
-
-Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved.
-This project is licensed under the Apache Software License, Version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
 
 
 [npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
