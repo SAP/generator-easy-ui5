@@ -35,8 +35,6 @@ builder:
        afterTask: "uglify"
        configuration:
          archiveName: "<%=modulename%>"
-         additionalFiles:
-          - approuter/xs-app.json
 <% } -%>
 <% if(platform === 'SAP NetWeaver'){ -%>
     - name: ui5-middleware-route-proxy
