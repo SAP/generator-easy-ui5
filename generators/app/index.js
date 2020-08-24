@@ -126,14 +126,14 @@ module.exports = class extends Generator {
       },
       "devDependencies": {
         "shx": "^0.3.2",
-        "@ui5/cli": "^2.2.5",
-        "ui5-middleware-livereload": "^0.3.0",
-        "karma": "^5.0.9",
+        "@ui5/cli": "^2.4.1",
+        "ui5-middleware-livereload": "^0.4.1",
+        "karma": "^5.1.1",
         "karma-chrome-launcher": "^3.1.0",
-        "karma-coverage": "^2.0.2",
-        "karma-ui5": "^2.1.2",
+        "karma-coverage": "^2.0.3",
+        "karma-ui5": "^2.2.0",
         "npm-run-all": "^4.1.5",
-        "eslint": "^7.1.0"
+        "eslint": "^7.7.0"
       },
       "ui5": {
         "dependencies": [
@@ -143,10 +143,10 @@ module.exports = class extends Generator {
     };
 
     if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-      packge.devDependencies["ui5-middleware-cfdestination"] = "^0.2.0";
-      packge.devDependencies["ui5-task-zipper"] = "^0.3.0",
-      packge.devDependencies["cross-var"] = "^1.1.0";
-      packge.devDependencies["mbt"] = "^1.0.14";
+      packge.devDependencies["ui5-middleware-cfdestination"] = "^0.2.2";
+      packge.devDependencies["ui5-task-zipper"] = "^0.3.1",
+        packge.devDependencies["cross-var"] = "^1.1.0";
+      packge.devDependencies["mbt"] = "^1.0.16";
       packge.ui5.dependencies.push("ui5-middleware-cfdestination");
       packge.ui5.dependencies.push("ui5-task-zipper");
 
@@ -165,7 +165,7 @@ module.exports = class extends Generator {
       }
     }
 
-    if (oConfig.platform === "SAP NetWeaver"){
+    if (oConfig.platform === "SAP NetWeaver") {
       packge.devDependencies["ui5-task-nwabap-deployer"] = "*";
       packge.devDependencies["ui5-middleware-route-proxy"] = "*";
       packge.ui5.dependencies.push("ui5-task-nwabap-deployer");

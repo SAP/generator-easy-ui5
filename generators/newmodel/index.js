@@ -78,7 +78,7 @@ module.exports = class extends Generator {
 
     if (this.options.oneTimeConfig.modelType.includes("OData")) {
       let sDataSource = this.options.oneTimeConfig.url.replace("/sap/opu/odata/sap/", "");
-      sDataSource.replace("/", "");
+      sDataSource = sDataSource.replace(/\//ig, "");
 
       const sourceSettings = this.options.oneTimeConfig.modelType === "OData v2" ? {
         localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"

@@ -160,7 +160,6 @@ module.exports = class extends Generator {
                   "semanticObject": sModuleName,
                   "action": "display",
                   "title": this.options.oneTimeConfig.tilename,
-                  "description": "App Description",
                   "icon": "sap-icon://add"
                 }
               }

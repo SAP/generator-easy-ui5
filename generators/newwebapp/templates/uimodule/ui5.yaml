@@ -1,4 +1,4 @@
-specVersion: "2.0"
+specVersion: "2.2"
 metadata:
   name: <%= projectname %>_<%= modulename %>
 type: application
@@ -8,7 +8,7 @@ resources:
       webapp: <%= modulename %>/webapp
 framework:
   name: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Content delivery network (OpenUI5)") ? "OpenUI5" : "SAPUI5" %>
-  version: 1.77.0
+  version: 1.80.2
   libraries:
     - name: sap.ui.core
     - name: sap.m

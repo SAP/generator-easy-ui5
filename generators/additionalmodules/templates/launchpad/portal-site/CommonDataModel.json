@@ -71,6 +71,7 @@
           ],
           "sap.cloud.portal": {
             "config": {
+              "ui5VersionNumber": "1.80.2",
               "theme.id": "sap_fiori_3",
               "theme.active": [
                 "sap_fiori_3",
