@@ -3,6 +3,7 @@
 [![Build Status][circleci-image]][circleci-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 [![License Status][license-image]][license-url]
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/generator-easy-ui5/)](https://api.reuse.software/info/github.com/SAP/generator-easy-ui5/)
 
 ## Description
 
