@@ -85,6 +85,17 @@ This sub-generator will add a new component usage for component reuse to your ma
 ```
 yo easy-ui5:newcomponentusage
 ```
+
+### UIVeri5 tests
+This sub-generator will add a basic (UIVeri5)[https://github.com/SAP/ui5-uiveri5] test. It will ask you for test configuration and names of the suite and spec. You can add page objects on start or you can do it in a later step.
+```
+yo easy-ui5:uiveri5
+```
+If you add the `--po`` option, it will create a new page object and an example test exercising it:
+```
+yo easy-ui5:uiveri5 --po
+```
+
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
