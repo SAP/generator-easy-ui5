@@ -13,8 +13,8 @@ module.exports = class extends Generator {
       SauceLabs: "saucelabsReporter"
     };
     this.authMap = {
-      "Fiori form": "fiori-form",
-      "SAP CP form": "sapcloud-form"
+      "SAP Fiori": "fiori-form",
+      "SAP Cloud Platform": "sapcloud-form"
     };
   }
 
@@ -98,7 +98,8 @@ module.exports = class extends Generator {
       this.destinationPath(this.options.oneTimeConfig.dirname),
       Object.assign({}, this.options.oneTimeConfig, {
         reportersMap: this.reportersMap,
-        authMap: this.authMap
+        authMap: this.authMap,
+        viewtype: this.options.oneTimeConfig.viewtype
       }),
       null, {
         globOptions: {
@@ -106,6 +107,7 @@ module.exports = class extends Generator {
         }
     });
     this.fs.delete(this.options.oneTimeConfig.dirname + "/$specName.spec.js");
+    this.config.set("uiveri5Tests", this.options.oneTimeConfig.dirname);
 
     if (this.options.oneTimeConfig.viewtype) {
       await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
@@ -126,14 +128,17 @@ module.exports = class extends Generator {
       };
       await fileaccess.writeJSON.call(this, "/" + this.options.oneTimeConfig.dirname + "/package.json", packge);
     }
-    this.config.set("uiveri5Tests", this.options.oneTimeConfig.dirname);
   }
 
   install() {
     this.config.set("setupCompleted", true);
+    process.chdir(this.destinationPath(this.options.oneTimeConfig.dirname));
     this.installDependencies({
-      bower: false,
-      npm: true
+      bower:false,
+      npm: true,
+      callback: function() {
+        process.chdir(this.destinationRoot());
+      }
     });
   }
 
