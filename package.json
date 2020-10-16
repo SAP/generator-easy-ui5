@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "test": "mocha",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "circleci": "circleci local execute"
   },
   "repository": {
     "type": "git",
