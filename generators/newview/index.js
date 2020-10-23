@@ -87,9 +87,8 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig.viewtype = answers.viewtype;
       }
 
-
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
-      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
     });
   }
 
