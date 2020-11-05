@@ -1,29 +1,27 @@
 sap.ui.require([
-  "sap/ui/test/Opa5",
-  "sap/ui/test/matchers/AggregationLengthEquals"
-], function (Opa5, AggregationLengthEquals) {
+  "sap/ui/test/Opa5"
+], function (Opa5) {
   "use strict";
 
   var sViewName = "<%=appId%>.view.<%=viewname%>";
   var sAppId = "idAppControl";
 
   Opa5.createPageObjects({
-    onTheAppPage: {
+    onThe<%=viewname%>Page: {
+      viewName: sViewName,
 
       assertions: {
 
-        iShouldSeePageCount: function(iItemCount) {
+        iShouldSeeTheTitle: function() {
           return this.waitFor({
-            id: sAppId,
-            viewName: sViewName,
-            matchers: [new AggregationLengthEquals({
-              name: "pages",
-              length: iItemCount
-            })],
-            success: function() {
-              Opa5.assert.ok(true, "The app contains one page");
+            controlType: "sap.m.Title",
+            properties: {
+              text: "<%=appId%>"
             },
-            errorMessage: "App does not have expected number of pages '" + iItemCount + "'."
+            success: function() {
+              Opa5.assert.ok(true, "The page shows the correct title");
+            },
+            errorMessage: "App does not show the expected title <%=appId%>"
           });
         }
       }

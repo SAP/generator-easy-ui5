@@ -4,13 +4,13 @@ sap.ui.define([
 ], function (opaTest) {
   "use strict";
 
-  opaTest("should show correct number of nested pages", function (Given, When, Then) {
+  opaTest("Should see the page", function (Given, When, Then) {
 
     // Arrangements
     Given.iStartMyApp();
 
     // Assertions
-    Then.onTheAppPage.iShouldSeePageCount(1);
+    Then.onThe<%=viewname%>Page.iShouldSeeTheTitle();
 
     // Cleanup
     Then.iTeardownMyApp();

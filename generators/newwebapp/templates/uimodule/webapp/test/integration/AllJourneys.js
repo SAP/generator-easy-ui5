@@ -7,7 +7,7 @@ sap.ui.define([
 
   Opa5.extendConfig({
     arrangements: new Startup(),
-    pollingInterval: 1
+    autoWait: true
   });
 
 });
