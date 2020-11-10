@@ -1,6 +1,6 @@
 <% function upperFirst (str) { return str.charAt(0).toUpperCase() + str.substr(1);} %>require("./pages/<%= poFile %>");
 
-describe("example", function () {
+describe("<%= poFile %>Example", function () {
 
   it("should see the <%= upperFirst(poName) %> page", function () {
     // call the page object's actions and assertions:

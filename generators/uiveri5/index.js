@@ -32,7 +32,7 @@ module.exports = class extends Generator {
         type: "input",
         name: "dirname",
         message: "Seems like this project has not been generated with Easy-UI5. Please enter the name of your project:",
-        default: "uiveri5-tests"
+        default: "uiveri5"
       }]);
     }
 
