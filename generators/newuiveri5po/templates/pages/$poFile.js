@@ -1,10 +1,10 @@
-module.exports = createPageObjects({
-  <%= poName %>: {
+<% function upperFirst (str) { return str.charAt(0).toUpperCase() + str.substr(1);} %>module.exports = createPageObjects({
+  <%= upperFirst(poName) %>: {
     actions: {
       // add action functions here
       <% if (action) { %><%= action %>: function () {
         element(by.control({
-          ontrolType: "sap.m.Button"
+          controlType: "sap.m.Button"
         })).click();
       }<% } %>
     },

@@ -1,9 +1,9 @@
 exports.config = {
   profile: "integration",
-  baseUrl: "<%= baseUrl %>",<% if (chosenReporters.length) { %>
+  baseUrl: "<%= baseUrl %>"<% if (chosenReporters.length) { %>,
   reporters: [<% chosenReporters.forEach(function (reporter) { %>
-    {name: './reporter/<%= reportersMap[reporter] %>'},<% }) %>
-  ]<% } %><% if (viewtype) { %>
+    {name: "./reporter/<%= reportersMap[reporter] %>"},<% }) %>
+  ]<% } %><% if (viewtype) { %>,
   specs: ["./<%= dirname %>/*.spec.js"]<% } %><% if (auth && authMap[auth]) { %>,
   auth: {
     // provide credentials as params when running the test:
