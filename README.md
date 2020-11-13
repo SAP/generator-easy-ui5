@@ -63,7 +63,7 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 ## Sub-generators to avoid recurring tasks
 
 ### Add a new view
-This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route.
+This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
 ```
 yo easy-ui5:newview
 ```
@@ -94,6 +94,20 @@ yo easy-ui5:uiveri5
 This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
 ```
 yo easy-ui5:newuiveri5po
+```
+
+### OPA5 tests
+This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
+```
+yo easy-ui5:opa5
+```
+This sub-generator will create an OPA5 page object and add it to your journeys:
+```
+yo easy-ui5:newopa5po
+```
+This sub-generator will create an OPA5 journey and add it to your test page:
+```
+yo easy-ui5:newopa5journey
 ```
 
 ## Deployment

@@ -36,6 +36,11 @@ module.exports = class extends Generator {
       type: "confirm",
       name: "createcontroller",
       message: "Would you like to create a corresponding controller as well?"
+    }, {
+      type: "confirm",
+      name: "addPO",
+      message: "Do you want to add an OPA5 page object?",
+      default: true
     }];
 
     if (!this.config.getAll().viewtype) {
@@ -89,13 +94,18 @@ module.exports = class extends Generator {
 
       this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
       this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
+
+      if (this.options.oneTimeConfig.addPO) {
+        this.composeWith(require.resolve("../newopa5po"), Object.assign({}, this.options.oneTimeConfig, {
+          isSubgeneratorCall: true
+        }));
+      }
     });
   }
 
   async writing() {
     const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding";
     const sControllerFileName = "webapp/controller/$ViewName.controller.js";
-    const sTestFileName = "webapp/test/integration/pages/$ViewName.js";
     const sViewType = this.options.oneTimeConfig.viewtype;
     const sViewName = this.options.oneTimeConfig.viewname;
     const sModuleName = this.options.oneTimeConfig.modulename;
@@ -110,10 +120,6 @@ module.exports = class extends Generator {
 
     var sOrigin = this.templatePath(sViewFileName);
     var sTarget = this.destinationPath(sModuleName + "/" + sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName));
-    this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
-
-    var sOrigin = this.templatePath(sTestFileName);
-    var sTarget = this.destinationPath(sModuleName + "/" + sTestFileName.replace(/\$ViewName/, sViewName));
     this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 
     if (this.options.oneTimeConfig.createcontroller || this.options.isSubgeneratorCall) {
