@@ -51,6 +51,11 @@ module.exports = class extends Generator {
       message: "What name should be displayed on the Fiori Launchpad tile?",
       default: "Fiori App",
       when: this.config.get("platform") === "Fiori Launchpad on Cloud Foundry"
+    }, {
+      type: "confirm",
+      name: "addOPA5",
+      message: "Do you want to add OPA5 tests?",
+      default: true
     }];
 
     if (!this.config.getAll().viewtype) {
@@ -103,6 +108,11 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
       this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
 
+      if (answers.addOPA5) {
+        this.composeWith(require.resolve("../opa5"), Object.assign({}, this.options.oneTimeConfig, {
+          isSubgeneratorCall: true
+        }));
+      }
     });
   }
 
