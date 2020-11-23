@@ -95,8 +95,8 @@ module.exports = class extends Generator {
     journeys.forEach((journey) => {
       const journeyFile = this.destinationPath(sModule + "test/integration/" + journey + "Journey.js");
       if (fs.existsSync(journeyFile)) {
-        const content = fs.readFileSync(journeyFile, "utf8").replace(/sap.ui.define\(\[(.*)\]/gms,
-          'sap.ui.define\(\[$1  "./pages/' + this.options.oneTimeConfig.poName  + '"\n]');
+        const content = fs.readFileSync(journeyFile, "utf8").replace(/sap.ui.define\(\[(.*)\s\]/gms,
+          `sap.ui.define([$1,\n  "./pages/${this.options.oneTimeConfig.poName}"\n]`).replace(/\s,\s/, ",\n");
         fs.writeFileSync(journeyFile, content);
       }
     });

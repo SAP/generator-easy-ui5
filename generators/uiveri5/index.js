@@ -1,7 +1,5 @@
 var Generator = require("yeoman-generator");
-var validUrl = require("valid-url");
 var validFilename = require("valid-filename");
-var path = require("path");
 var fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
@@ -134,7 +132,7 @@ module.exports = class extends Generator {
     this.config.set("setupCompleted", true);
     process.chdir(this.destinationPath(this.options.oneTimeConfig.dirname));
     this.installDependencies({
-      bower:false,
+      bower: false,
       npm: true,
       callback: function() {
         process.chdir(this.destinationRoot());

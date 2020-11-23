@@ -4,7 +4,7 @@
 ], function (Opa5, Press) {
   "use strict";
 
-  var sViewName = "<%= appId %>.view.<%= upperFirst(poName) %>";
+  var sViewName = "<%= appId %>.view.<%= upperFirst(poName) %>View";
 
   Opa5.createPageObjects({
     onThe<%= upperFirst(poName) %>Page: {
