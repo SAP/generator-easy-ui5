@@ -1,5 +1,4 @@
 const Generator = require("yeoman-generator");
-const validFilename = require("valid-filename");
 const path = require("path");
 const glob = require("glob");
 

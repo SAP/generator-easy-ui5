@@ -14,7 +14,7 @@ sap.ui.define([
     // When.onThe<%= journey %>Page.iPressTheButton();
 
     // Assertions
-    // Then.onThe<%= journey %>Page.iShouldSeeTheTitle();
+    Then.onThe<%= journey %>Page.iShouldSeeTheTitle();
 
     // Cleanup
     Then.iTeardownMyApp();

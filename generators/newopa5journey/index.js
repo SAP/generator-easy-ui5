@@ -73,6 +73,11 @@ module.exports = class extends Generator {
       journeys.push(this.options.oneTimeConfig.journey);
       this.config.set("opa5Journeys", journeys);
       this.options.oneTimeConfig.opa5Journeys = journeys;
+
+      // set default value for opa5pos if empty
+      const pos = this.config.get("opa5pos") || [];
+      this.config.set("opa5pos", pos);
+      this.options.oneTimeConfig.opa5pos = pos;
     });
   }
 
@@ -88,8 +93,8 @@ module.exports = class extends Generator {
     // add new journey to AllJourneys list
     const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
     if (fs.existsSync(allJourneysFile)) {
-      const content = fs.readFileSync(allJourneysFile, "utf8").replace(/sap.ui.define\(\[(.*)\]/gms,
-        'sap.ui.define\(\[$1  "./' + this.options.oneTimeConfig.journey  + 'Journey"\n]');
+      const content = fs.readFileSync(allJourneysFile, "utf8").replace(/sap.ui.define\(\[(.*)\s\]/gms,
+        `sap.ui.define([$1,\n  "./${this.options.oneTimeConfig.journey}Journey"\n]`).replace(/\s,\s/, ",\n");
       fs.writeFileSync(allJourneysFile, content);
     }
   }
