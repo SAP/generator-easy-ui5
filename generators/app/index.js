@@ -125,15 +125,15 @@ module.exports = class extends Generator {
         "lint": "eslint ."
       },
       "devDependencies": {
-        "shx": "^0.3.2",
-        "@ui5/cli": "^2.4.1",
-        "ui5-middleware-livereload": "^0.4.1",
-        "karma": "^5.1.1",
+        "shx": "^0.3.3",
+        "@ui5/cli": "^2.6.4",
+        "ui5-middleware-livereload": "^0.4.3",
+        "karma": "^5.2.3",
         "karma-chrome-launcher": "^3.1.0",
         "karma-coverage": "^2.0.3",
-        "karma-ui5": "^2.2.0",
+        "karma-ui5": "^2.3.1",
         "npm-run-all": "^4.1.5",
-        "eslint": "^7.7.0"
+        "eslint": "^7.14.0"
       },
       "ui5": {
         "dependencies": [

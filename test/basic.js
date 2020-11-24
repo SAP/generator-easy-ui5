@@ -37,21 +37,23 @@ function createTest(oPrompt) {
 
 describe("Basic project capabilities", function () {
   const testConfigurations = [
-
-    { viewtype: "XML", addOPA5: false},
-    // { viewtype: "JS", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry", addOPA5: false },
-    // { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false }
+    { viewtype: "XML", addOPA5: false },
+    { viewtype: "JS", platform: "Application Router @ Cloud Foundry", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
+    { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry", addOPA5: false },
+    { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "XML", platform: "SAP NetWeaver", addOPA5: false },
+    { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false }
   ];
 
   const runningInCircleCI = process.env.CI;
@@ -79,28 +81,28 @@ describe("OPA5 tests", function () {
   it("should add OPA5 tests and run them with karma", function () {
     var appDir;
     return helpers.run(path.join(__dirname, "../generators/app")).withPrompts({ viewtype: "XML", addOPA5: false })
-    .then(function (dir) {
-      appDir = path.join(dir, "com.myorg.myUI5App/uimodule/webapp");
-      return helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
-        addJourney: false,
-        addPO: false
-      });
-    }).then(function () {
-      return helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
-        journey: "Main"
-      });
-    }).then(function () {
-      return helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
-        poName: "Main",
-        action: "iPressTheButton",
-        assertion: "iShouldSeeTheTitle"
-      });
-    }).then(function () {
-      return execa.command("npm install").then(function () {
-        return execa.command("npm run test", { cdw: appDir }).catch(function (e) {
-          throw new Error(e.stdout + "\n" + e.stderr);
+      .then(function (dir) {
+        appDir = path.join(dir, "com.myorg.myUI5App/uimodule/webapp");
+        return helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
+          addJourney: false,
+          addPO: false
+        });
+      }).then(function () {
+        return helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
+          journey: "Main"
+        });
+      }).then(function () {
+        return helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
+          poName: "Main",
+          action: "iPressTheButton",
+          assertion: "iShouldSeeTheTitle"
+        });
+      }).then(function () {
+        return execa.command("npm install").then(function () {
+          return execa.command("npm run test", { cdw: appDir }).catch(function (e) {
+            throw new Error(e.stdout + "\n" + e.stderr);
+          });
         });
       });
-    });
   });
 });

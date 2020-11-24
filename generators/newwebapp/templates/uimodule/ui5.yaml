@@ -8,7 +8,7 @@ resources:
       webapp: <%= modulename %>/webapp
 framework:
   name: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Content delivery network (OpenUI5)") ? "OpenUI5" : "SAPUI5" %>
-  version: 1.80.0
+  version: 1.84.0
   libraries:
     - name: sap.ui.core
     - name: sap.m
