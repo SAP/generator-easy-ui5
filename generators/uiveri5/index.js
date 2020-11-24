@@ -1,5 +1,4 @@
 var Generator = require("yeoman-generator");
-var validFilename = require("valid-filename");
 var fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
@@ -46,17 +45,6 @@ module.exports = class extends Generator {
       choices: Object.keys(this.authMap).concat("none"),
       default: "none"
     }, {
-      type: "input",
-      name: "suiteName",
-      message: "Name for the suite (describe block):",
-      default: "masterdetail",
-      validate: validFilename
-    }, {
-      type: "input",
-      name: "specName",
-      message: "Name for the spec (it block):",
-      default: "should see the app"
-    }, {
       type: "checkbox",
       name: "chosenReporters",
       message: "Choose additional reporters:",
@@ -66,6 +54,11 @@ module.exports = class extends Generator {
       type: "confirm",
       name: "addPO",
       message: "Do you want to add a page object?",
+      default: true
+    }, {
+      type: "confirm",
+      name: "addSpec",
+      message: "Do you want to add a spec?",
       default: true
     }]);
 
@@ -83,16 +76,25 @@ module.exports = class extends Generator {
         dirname: this.options.oneTimeConfig.dirname
       });
     }
+    if (this.options.oneTimeConfig.addSpec) {
+      this.composeWith(require.resolve("../newuiveri5spec"), {
+        dirname: this.options.oneTimeConfig.dirname
+      });
+    }
   }
 
   async writing() {
+     // get values from subgeneratos
+     const specs = this.config.get("uiveri5specs") || [];
+     this.config.set("uiveri5specs", specs);
+     this.options.oneTimeConfig.uiveri5specs = specs;
+
+     const pos = this.config.get("uiveri5pos") || {};
+     this.config.set("uiveri5pos", pos);
+     this.options.oneTimeConfig.uiveri5pos = pos;
+
     this.fs.copyTpl(
-      this.templatePath("$specName.spec.js"),
-      this.destinationPath(this.options.oneTimeConfig.dirname + "/" + this.options.oneTimeConfig.suiteName + ".spec.js"),
-      this.options.oneTimeConfig
-    );
-    this.fs.copyTpl(
-      this.templatePath("./**/!(*.spec.js)"),
+      this.templatePath("./**/*"),
       this.destinationPath(this.options.oneTimeConfig.dirname),
       Object.assign({}, this.options.oneTimeConfig, {
         reportersMap: this.reportersMap,
@@ -104,7 +106,7 @@ module.exports = class extends Generator {
           dot: true
         }
     });
-    this.fs.delete(this.options.oneTimeConfig.dirname + "/$specName.spec.js");
+
     this.config.set("uiveri5Tests", this.options.oneTimeConfig.dirname);
 
     if (this.options.oneTimeConfig.viewtype) {
