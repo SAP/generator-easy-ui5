@@ -39,19 +39,19 @@ describe("Basic project capabilities", function () {
   const testConfigurations = [
 
     { viewtype: "XML", addOPA5: false},
-    // { viewtype: "JS", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry", addOPA5: false },
-    // { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false }
+    { viewtype: "JS", platform: "Application Router @ Cloud Foundry", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
+    { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry", addOPA5: false },
+    { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
+    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false }
   ];
 
   const runningInCircleCI = process.env.CI;
