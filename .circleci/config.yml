@@ -37,6 +37,7 @@ jobs:
 
   deploy:
     <<: *defaults
+    parallelism: 1
     steps:
       - attach_workspace:
           at: ~/repo
