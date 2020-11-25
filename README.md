@@ -95,6 +95,10 @@ This sub-generator will create a UIVeri5 page object and a new test that shows h
 ```
 yo easy-ui5:newuiveri5po
 ```
+This sub-generator will create a UIVeri5 spec file:
+```
+yo easy-ui5:newuiveri5spec
+```
 
 ### OPA5 tests
 This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
