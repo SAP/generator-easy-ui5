@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:12.18.0-browsers
+    - image: circleci/node:14-browsers
   parallelism: 4
 
 jobs:
@@ -48,6 +48,20 @@ jobs:
           name: Publish package
           command: npm publish
 
+
+  github-release:
+    working_directory: ~/repo
+    docker:
+      - image: cibuilds/github:latest
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Publish Release on GitHub
+          command: |
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${VERSION}
+
+
 workflows:
   version: 2
   test-deploy:
@@ -59,6 +73,14 @@ workflows:
       - deploy:
           requires:
             - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - github-release:
+          requires:
+            - deploy
           filters:
             tags:
               only: /^v.*/
