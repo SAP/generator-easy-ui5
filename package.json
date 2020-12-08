@@ -10,7 +10,8 @@
   "scripts": {
     "test": "mocha",
     "lint": "eslint .",
-    "circleci": "circleci local execute"
+    "circleci": "circleci local execute",
+    "workaround": "find . -name '.DS_Store' -delete"
   },
   "repository": {
     "type": "git",
