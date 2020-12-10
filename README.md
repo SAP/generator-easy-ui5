@@ -114,6 +114,21 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5:newopa5journey
 ```
 
+### `wdi5` test framework
+
+There's a sub-generator available to add
+
+- `wdi5` as the test framework
+- a basic `wdi5` config and
+- a sample test file
+
+to the UI5 application by `easy-ui5`.
+
+```bash
+$> cd yourEasyUI5-project
+$> yo easy-ui5:wdi5
+```
+
 ## Deployment
 Depending on your target platform you'll need to install additional tools:
 
