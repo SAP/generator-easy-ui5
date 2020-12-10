@@ -10,8 +10,8 @@ describe("basic wdi5 tests", () => {
                 viewName: "<%= projectname ? namespace + '.' + projectname : namespace %>.<%= viewname ? 'view.' + viewname : 'view.MainView.xml' %>",
                 id: "idAppControl"
             }
-        }
-        const App = browser.asControl(_selector)
-        expect(App.getVisible() /* UI5 Control API */).toBeTruthy()
-    })
-})
+        };
+        const App = browser.asControl(_selector);
+        expect(App.getVisible() /* UI5 Control API */).toBeTruthy();
+    });
+});
