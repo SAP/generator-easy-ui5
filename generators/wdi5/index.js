@@ -11,25 +11,25 @@ module.exports = class extends Generator {
     prompts.push({
       type: "input",
       name: "wdi5ConfPath",
-      message: "in what directory do you want the wdi5 config file to live?",
+      message: "In what directory do you want the wdi5 config file to live?",
       default: "./"
     });
     prompts.push({
       type: "input",
       name: "wdi5TestDirName",
-      message: "in what directory do the wdi5 tests live?",
+      message: "In what directory do the wdi5 tests live?",
       default: "uimodule/webapp/test/wdi5"
     });
     prompts.push({
       type: "input",
       name: "baseUrl",
-      message: "URL to the app under test:",
+      message: "What's the URL of the app under test?",
       default: "http://localhost:8080"
     });
     prompts.push({
       type: "input",
       name: "indexFile",
-      message: "name of the index file of the app under test:",
+      message: "What's the name of the index (\"UI5-bootstrap\"-) file of the app under test?",
       default: "index.html"
     });
 
