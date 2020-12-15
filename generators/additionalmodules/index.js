@@ -139,7 +139,7 @@ module.exports = class extends Generator {
             "service-plan": "app-host",
             "service": "html5-apps-repo",
             "config": {
-              "sizeLimit": 2
+              "sizeLimit": oConfig.ui5libs.indexOf("Local resources") >= 0 ? 100 : 2
             }
           }
         });
