@@ -12,7 +12,7 @@ module.exports = class extends Generator {
         name: "tilename",
         message: "What name should be displayed on the Fiori Launchpad tile?",
         default: "Fiori App",
-        when: this.options.platform === "Fiori Launchpad on Cloud Foundry"
+        when: this.options.platform === "SAP Cloud Platform Launchpad"
       }]).then((answers) => {
         this.destinationRoot(this.options.cwd);
         this.options.oneTimeConfig = this.config.getAll();
@@ -50,7 +50,7 @@ module.exports = class extends Generator {
       name: "tilename",
       message: "What name should be displayed on the Fiori Launchpad tile?",
       default: "Fiori App",
-      when: this.config.get("platform") === "Fiori Launchpad on Cloud Foundry"
+      when: this.config.get("platform") === "SAP Cloud Platform Launchpad"
     }, {
       type: "confirm",
       name: "addOPA5",
@@ -131,8 +131,8 @@ module.exports = class extends Generator {
       const sOrigin = this.templatePath(file);
       const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
 
-      const isUnneededFlpSandbox = sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "Fiori Launchpad on Cloud Foundry";
-      const isUnneededXsApp = sTarget.includes("xs-app") && !(this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry" || this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository");
+      const isUnneededFlpSandbox = sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "SAP Cloud Platform Launchpad";
+      const isUnneededXsApp = sTarget.includes("xs-app") && !(this.options.oneTimeConfig.platform === "SAP Cloud Platform Launchpad" || this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository");
 
       if (isUnneededXsApp || isUnneededFlpSandbox) {
         return;
@@ -153,8 +153,8 @@ module.exports = class extends Generator {
 
     }
 
-    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-      if (this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "SAP Cloud Platform Launchpad") {
+      if (this.options.oneTimeConfig.platform === "SAP Cloud Platform Launchpad") {
         await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
           ["sap.cloud"]: {
             "service": this.options.oneTimeConfig.projectname + ".service"
@@ -199,7 +199,7 @@ module.exports = class extends Generator {
       return packge;
     });
 
-    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+    if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "SAP Cloud Platform Launchpad") {
       await fileaccess.writeYAML.call(this, "/mta.yaml", (mta) => {
 
         const deployer = mta.modules.find((module) => module.name === "webapp_deployer");

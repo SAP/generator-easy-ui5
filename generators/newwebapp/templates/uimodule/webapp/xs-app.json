@@ -1,5 +1,5 @@
 {
-  "welcomeFile": "/<%=platform === 'Fiori Launchpad on Cloud Foundry' ? 'flpSandbox.html' : 'index.html' %>",
+  "welcomeFile": "/<%=platform === 'SAP Cloud Platform Launchpad' ? 'flpSandbox.html' : 'index.html' %>",
   "routes": [
     {
       "source": "^(.*)",

@@ -35,7 +35,7 @@ module.exports = class extends Generator {
       choices: ["Static webserver",
         "Application Router @ Cloud Foundry",
         "Cloud Foundry HTML5 Application Repository",
-        "Fiori Launchpad on Cloud Foundry",
+        "SAP Cloud Platform Launchpad",
         "Application Router @ SAP HANA XS Advanced",
         "SAP NetWeaver"],
       default: "Static webserver"
@@ -61,12 +61,12 @@ module.exports = class extends Generator {
       name: "ui5libs",
       message: "Where should your UI5 libs be served from?",
       choices: (props) => {
-        return (props.platform !== "Fiori Launchpad on Cloud Foundry") ?
+        return (props.platform !== "SAP Cloud Platform Launchpad") ?
           ["Content delivery network (OpenUI5)", "Content delivery network (SAPUI5)", "Local resources (OpenUI5)", "Local resources (SAPUI5)"] :
           ["Content delivery network (SAPUI5)"];
       },
       default: (props) => {
-        return (props.platform !== "Fiori Launchpad on Cloud Foundry") ?
+        return (props.platform !== "SAP Cloud Platform Launchpad") ?
           "Content delivery network (OpenUI5)" :
           "Content delivery network (SAPUI5)";
       },
@@ -150,7 +150,7 @@ module.exports = class extends Generator {
       packge.ui5.dependencies.push("ui5-middleware-cfdestination");
       packge.ui5.dependencies.push("ui5-task-zipper");
 
-      if (oConfig.platform.includes("Cloud Foundry")) {
+      if (oConfig.platform.includes("Cloud Foundry") || oConfig.platform === "SAP Cloud Platform Launchpad") {
         packge.scripts["build:mta"] = "mbt build";
         packge.scripts["deploy:cf"] = `cross-var cf deploy mta_archives/${oConfig.projectname}_$npm_package_version.mtar`;
         packge.scripts["deploy"] = "run-s build:mta deploy:cf";
@@ -160,7 +160,7 @@ module.exports = class extends Generator {
         packge.scripts["deploy"] = "run-s build:mta deploy:xs";
       }
 
-      if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
+      if (oConfig.platform === "SAP Cloud Platform Launchpad") {
         packge.scripts.start = "ui5 serve --config=uimodule/ui5.yaml  --open flpSandbox.html";
       }
     }

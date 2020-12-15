@@ -42,7 +42,7 @@ describe("Basic project capabilities", function () {
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    { viewtype: "JSON", platform: "Fiori Launchpad on Cloud Foundry", addOPA5: false },
+    { viewtype: "JSON", platform: "SAP Cloud Platform Launchpad", addOPA5: false },
     { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
     { viewtype: "XML", platform: "SAP NetWeaver", addOPA5: false },
     { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },

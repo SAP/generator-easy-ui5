@@ -25,7 +25,7 @@ This is the most basic way to deploy the web app in Cloud Foundry-based environm
 This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
 ### Cloud Foundry HTML5 Application Repository
 This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
-### Fiori Launchpad on Cloud Foundry
+### SAP Cloud Platform Launchpad
 Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **Cloud Foundry HTML5 Application Repository** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository.
 ### SAP NetWeaver
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
