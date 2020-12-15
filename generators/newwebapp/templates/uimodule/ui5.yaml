@@ -31,10 +31,10 @@ server:
         destinations: []
 builder:
   customTasks:
-    -  name: "ui5-task-zipper"
-       afterTask: "uglify"
+    -  name: ui5-task-zipper
+       afterTask: uglify
        configuration:
-         archiveName: "<%=modulename%>"
+         archiveName: <%=modulename%>
 <% } -%>
 <% if(platform === 'SAP NetWeaver'){ -%>
     - name: ui5-middleware-route-proxy
