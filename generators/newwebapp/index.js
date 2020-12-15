@@ -154,11 +154,11 @@ module.exports = class extends Generator {
     }
 
     if (this.options.oneTimeConfig.platform === "Cloud Foundry HTML5 Application Repository" || this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-
-
       if (this.options.oneTimeConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-
         await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+          ["sap.cloud"]: {
+            "service": this.options.oneTimeConfig.projectname + ".service"
+          },
           ["sap.app"]: {
             crossNavigation: {
               inbounds: {
@@ -176,23 +176,6 @@ module.exports = class extends Generator {
             }
           }
         });
-
-        await fileaccess.manipulateJSON.call(this, "/launchpad/portal-site/CommonDataModel.json", function (commonDataModel) {
-
-          commonDataModel.payload.catalogs[0].payload.viz.push({
-            id: this.options.oneTimeConfig.appId,
-            vizId: sModuleName + "-display"
-          });
-
-          commonDataModel.payload.groups[0].payload.viz.push({
-            id: this.options.oneTimeConfig.appId,
-            appId: this.options.oneTimeConfig.appId,
-            vizId: sModuleName + "-display"
-          });
-
-          return commonDataModel;
-
-        }.bind(this));
       }
     }
 

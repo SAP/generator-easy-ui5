@@ -19,30 +19,30 @@ module.exports = class extends Generator {
     this.sourceRoot(path.join(__dirname, "templates"));
 
     const oConfig = this.options.oneTimeConfig;
-    const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
+    const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router"); // aka no destination service etc needed
 
     // Copy approuter module
-    glob.sync("**", {
-      cwd: this.sourceRoot() + "/approuter",
-      nodir: true
-    }).forEach(file => {
-      this.fs.copyTpl(this.templatePath("approuter/" + file), this.destinationPath("approuter/" + file.replace(/^_/, "").replace(/\/_/, "/")), oConfig);
-    });
-    this.fs.copyTpl(this.templatePath("xs-security.json"), this.destinationPath("xs-security.json"), oConfig);
+    if (oConfig.platform !== "Fiori Launchpad on Cloud Foundry") {
+      glob.sync("**", {
+        cwd: this.sourceRoot() + "/approuter",
+        nodir: true
+      }).forEach(file => {
+        this.fs.copyTpl(this.templatePath("approuter/" + file), this.destinationPath("approuter/" + file.replace(/^_/, "").replace(/\/_/, "/")), oConfig);
+      });
 
-    const welcomeRoute = platformIsAppRouter ? "uimodule/index.html" :
-      oConfig.platform === "Cloud Foundry HTML5 Application Repository" ? (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "") : "/cp.portal";
+      const welcomeRoute = platformIsAppRouter ? "uimodule/index.html" : (oConfig.namespace + oConfig.projectname + "/").replace(/\./g, "");
 
-    await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
-      "welcomeFile": welcomeRoute,
-      "authenticationMethod": "none",
-      "logout": {
-        "logoutEndpoint": "/do/logout"
-      },
-      "routes": []
-    });
+      await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+        "welcomeFile": welcomeRoute,
+        "authenticationMethod": "none",
+        "logout": {
+          "logoutEndpoint": "/do/logout"
+        },
+        "routes": []
+      });
+    }
 
-    if (!platformIsAppRouter) {
+    if (oConfig.platform !== "Application Router @ SAP HANA XS Advanced") {
       // Copy deployer module
       glob.sync("**", {
         cwd: this.sourceRoot() + "/deployer",
@@ -50,22 +50,7 @@ module.exports = class extends Generator {
       }).forEach(file => {
         this.fs.copyTpl(this.templatePath("deployer/" + file), this.destinationPath("deployer/" + file.replace(/^_/, "").replace(/\/_/, "/")), oConfig);
       });
-
-
-
-
     }
-    if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-
-      // Copy launchpad module
-      glob.sync("**", {
-        cwd: this.sourceRoot() + "/launchpad",
-        nodir: true
-      }).forEach(file => {
-        this.fs.copyTpl(this.templatePath("launchpad/" + file), this.destinationPath("launchpad/" + file.replace(/^_/, "").replace(/\/_/, "/")), oConfig);
-      });
-    }
-
   }
 
   async addMTA() {
@@ -78,7 +63,13 @@ module.exports = class extends Generator {
       "parameters": {
         "enable-parallel-deployments": true
       },
-      "modules": [{
+      "modules": [],
+      "resources": []
+    };
+
+    let approuter;
+    if (oConfig.platform !== "Fiori Launchpad on Cloud Foundry") {
+      approuter = {
         "name": oConfig.projectname,
         "type": "nodejs",
         "path": "approuter",
@@ -87,22 +78,18 @@ module.exports = class extends Generator {
           "memory": "512M"
         },
         "requires": []
-      }],
-      "resources": []
-    };
-
-
-    const approuter = mta.modules[0];
-
-    if (oConfig.platform.includes("Application Router")) {
-      approuter["build-parameters"] = {
-        builder: "custom",
-        commands: ["npm install", "npm run build:ui --prefix .."]
       };
+      mta.modules.push(approuter);
+
+      if (oConfig.platform.includes("Application Router")) {
+        approuter["build-parameters"] = {
+          builder: "custom",
+          commands: ["npm install", "npm run build:ui --prefix .."]
+        };
+      }
     }
 
     if (oConfig.platform !== "Application Router @ SAP HANA XS Advanced") {
-
       mta.resources.push({
         "name": oConfig.projectname + "_destination",
         "type": "org.cloudfoundry.managed-service",
@@ -111,7 +98,9 @@ module.exports = class extends Generator {
           "service": "destination"
         }
       });
-      approuter.requires.push({ name: oConfig.projectname + "_destination" });
+      if (approuter) {
+        approuter.requires.push({ name: oConfig.projectname + "_destination" });
+      }
 
       if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
 
@@ -144,15 +133,17 @@ module.exports = class extends Generator {
           }
         });
 
-        mta.resources.push({
-          "name": oConfig.projectname + "_html5_repo_runtime",
-          "type": "org.cloudfoundry.managed-service",
-          "parameters": {
-            "service-plan": "app-runtime",
-            "service": "html5-apps-repo"
-          }
-        });
-        approuter.requires.push({ name: oConfig.projectname + "_html5_repo_runtime" });
+        if (approuter) {
+          mta.resources.push({
+            "name": oConfig.projectname + "_html5_repo_runtime",
+            "type": "org.cloudfoundry.managed-service",
+            "parameters": {
+              "service-plan": "app-runtime",
+              "service": "html5-apps-repo"
+            }
+          });
+          approuter.requires.push({ name: oConfig.projectname + "_html5_repo_runtime" });
+        }
 
         mta.resources.push({
           "name": oConfig.projectname + "_uaa",
@@ -163,30 +154,63 @@ module.exports = class extends Generator {
             "service": "xsuaa"
           }
         });
-        approuter.requires.push({ name: oConfig.projectname + "_uaa" });
-
+        this.fs.copyTpl(this.templatePath("xs-security.json"), this.destinationPath("xs-security.json"), oConfig);
+        if (approuter) {
+          approuter.requires.push({ name: oConfig.projectname + "_uaa" });
+        }
 
         if (oConfig.platform === "Fiori Launchpad on Cloud Foundry") {
-          approuter.requires.push({ name: oConfig.projectname + "_portal" });
           mta.modules.push({
-            name: oConfig.projectname + "_launchpad_deployer",
-            type: "com.sap.portal.content",
-            path: "launchpad",
-            ["deployed-after"]: [oConfig.projectname + "_deployer"],
-            requires: [{
-              name: oConfig.projectname + "_portal"
-            }, {
-              name: oConfig.projectname + "_html5_repo_host"
-            }, {
-              name: oConfig.projectname + "_uaa"
-            }]
-          });
-          mta.resources.push({
-            name: oConfig.projectname + "_portal",
-            type: "org.cloudfoundry.managed-service",
-            parameters: {
-              "service-plan": "standard",
-              "service": "portal"
+            "name": "hello-world-destination-content",
+            "type": "com.sap.application.content",
+            "build-parameters": {
+              "no-source": true
+            },
+            "requires": [
+              {
+                "name": oConfig.projectname + "_uaa",
+                "parameters": {
+                  "service-key": {
+                    "name": oConfig.projectname + "_uaa-key"
+                  }
+                }
+              },
+              {
+                "name": oConfig.projectname + "_html5_repo_host",
+                "parameters": {
+                  "service-key": {
+                    "name": oConfig.projectname + "_html5_repo_host-key"
+                  }
+                }
+              },
+              {
+                "name": oConfig.projectname + "_destination",
+                "parameters": {
+                  "content-target": true
+                }
+              }
+            ],
+            "parameters": {
+              "content": {
+                "subaccount": {
+                  "existing_destinations_policy": "update",
+                  "destinations": [
+                    {
+                      "Name": oConfig.projectname + "_html5_repo_host",
+                      "ServiceInstanceName": oConfig.projectname + "_html5_repo_host",
+                      "ServiceKeyName": oConfig.projectname + "_html5_repo_host-key",
+                      "sap.cloud.service": oConfig.projectname + ".service"
+                    },
+                    {
+                      "Name": oConfig.projectname + "_uaa",
+                      "Authentication": "OAuth2UserTokenExchange",
+                      "ServiceInstanceName": oConfig.projectname + "_uaa",
+                      "ServiceKeyName": oConfig.projectname + "_uaa-key",
+                      "sap.cloud.service": oConfig.projectname + ".service"
+                    }
+                  ]
+                }
+              }
             }
           });
         }
