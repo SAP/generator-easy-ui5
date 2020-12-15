@@ -161,7 +161,7 @@ module.exports = class extends Generator {
 
         if (oConfig.platform === "SAP Cloud Platform Launchpad") {
           mta.modules.push({
-            "name": "hello-world-destination-content",
+            "name": oConfig.projectname + "destination-content",
             "type": "com.sap.application.content",
             "build-parameters": {
               "no-source": true

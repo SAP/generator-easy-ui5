@@ -27,7 +27,7 @@ server:
       configuration:
         debug: true
         port: 1091
-        xsappJson: approuter/xs-app.json
+        xsappJson: <%= modulename %>/webapp/xs-app.json
         destinations: []
 builder:
   customTasks:
