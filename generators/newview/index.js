@@ -40,7 +40,7 @@ module.exports = class extends Generator {
       type: "confirm",
       name: "addPO",
       message: "Do you want to add an OPA5 page object?",
-      default: true
+      default: false
     }];
 
     if (!this.config.getAll().viewtype) {

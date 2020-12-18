@@ -126,7 +126,7 @@ module.exports = class extends Generator {
       },
       "devDependencies": {
         "shx": "^0.3.3",
-        "@ui5/cli": "^2.7.0",
+        "@ui5/cli": "^2.7.1",
         "ui5-middleware-livereload": "^0.5.1",
         "karma": "^5.2.3",
         "karma-chrome-launcher": "^3.1.0",

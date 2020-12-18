@@ -27,6 +27,7 @@
     }
   },
   "sap.ui5": {
+    "flexEnabled": true,
     "rootView": {
       "viewName": "<%=appId%>.view.<%=viewname%>",
       "type": "<%=viewtype%>",
