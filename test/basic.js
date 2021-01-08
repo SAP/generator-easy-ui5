@@ -19,6 +19,12 @@ function createTest(oPrompt) {
       return assert.fileContent("uimodule/webapp/controller/MainView.controller.js", "controller/BaseController");
     });
 
+    if (!!oPrompt.platform && oPrompt.platform !== "Static webserver" && oPrompt.platform !== "SAP NetWeaver") {
+      it("ui5.yaml middleware should point to the right xs-app.json file", function () {
+        return assert.fileContent("uimodule/ui5.yaml", oPrompt.platform === "Application Router @ Cloud Foundry" ? "xsappJson: approuter/xs-app.json" : "xsappJson: uimodule/webapp/xs-app.json");
+      });
+    }
+
     it("should create an installable project", function () {
       return execa.commandSync("npm install");
     });

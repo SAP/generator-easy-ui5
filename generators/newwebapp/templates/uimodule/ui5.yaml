@@ -27,7 +27,7 @@ server:
       configuration:
         debug: true
         port: 1091
-        xsappJson: <%= modulename %>/webapp/xs-app.json
+        xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : modulename+"/webapp/xs-app.json" %>
         destinations: []
 builder:
   customTasks:
