@@ -25,6 +25,12 @@ function createTest(oPrompt) {
       });
     }
 
+    if (!!oPrompt.platform && (oPrompt.platform === "Cloud Foundry HTML5 Application Repository" && oPrompt.platform === "SAP Cloud Platform Launchpad")) {
+      it("ui5.yaml should leverage the ui5 zipper task", function () {
+        return assert.fileContent("uimodule/ui5.yaml", "name: ui5-task-zipper");
+      });
+    }
+
     it("should create an installable project", function () {
       return execa.commandSync("npm install");
     });

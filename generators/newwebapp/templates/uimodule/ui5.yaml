@@ -29,12 +29,14 @@ server:
         port: 1091
         xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : modulename+"/webapp/xs-app.json" %>
         destinations: []
+<% if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'SAP Cloud Platform Launchpad'){ -%>
 builder:
   customTasks:
     -  name: ui5-task-zipper
        afterTask: uglify
        configuration:
          archiveName: <%=modulename%>
+<% } -%>
 <% } -%>
 <% if(platform === 'SAP NetWeaver'){ -%>
     - name: ui5-middleware-route-proxy
