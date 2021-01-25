@@ -35,6 +35,7 @@ builder:
     -  name: ui5-task-zipper
        afterTask: uglify
        configuration:
+         includeDependencies: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Local resources (SAPUI5)") %>
          archiveName: <%=modulename%>
 <% } -%>
 <% } -%>
