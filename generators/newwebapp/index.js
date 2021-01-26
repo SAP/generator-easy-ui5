@@ -110,7 +110,8 @@ module.exports = class extends Generator {
 
       if (answers.addOPA5) {
         this.composeWith(require.resolve("../opa5"), Object.assign({}, this.options.oneTimeConfig, {
-          isSubgeneratorCall: true
+          isSubgeneratorCall: true,
+          namespaceInput: this.options.oneTimeConfig.namespace
         }));
       }
     });

@@ -1,7 +1,7 @@
 sap.ui.define([
   "sap/ui/test/opaQunit",
-  // "<%= appURI %>/test/integration/pages/<%= journey %>"<% opa5pos.forEach(function (po) { %>,
-  "<%= appURI %>/test/integration/pages/<%= po %>"<% }) %>
+  // "./pages/<%= journey %>"<% opa5pos.forEach(function (po) { %>,
+  "./pages/<%= po %>"<% }) %>
 ], function (opaTest) {
   "use strict";
 

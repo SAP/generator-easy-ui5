@@ -10,7 +10,7 @@ module.exports = class extends Generator {
 
     if (this.options.isSubgeneratorCall) {
       this.options.oneTimeConfig.projectname = this.options.projectname;
-      this.options.oneTimeConfig.namespace = this.options.namespace;
+      this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
     } else {
       if (!this.config.getAll().viewtype) {
@@ -27,7 +27,7 @@ module.exports = class extends Generator {
           default: "myUI5App"
         }, {
           type: "input",
-          name: "namespace",
+          name: "namespaceInput",
           message: "Please enter the namespace you use currently",
           validate: (s) => {
             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -64,10 +64,8 @@ module.exports = class extends Generator {
         this.options.oneTimeConfig[key] = answers[key];
       }
 
+      this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
       this.options.oneTimeConfig.journey = this.options.oneTimeConfig.journey.charAt(0).toUpperCase() + this.options.oneTimeConfig.journey.substr(1);
-      this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespace.split(".").join("/");
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespace + "." + (this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname);
-      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.appURI || this.options.oneTimeConfig.namespaceURI + "/" + (this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname);
 
       const journeys = this.config.get("opa5Journeys") || [];
       journeys.push(this.options.oneTimeConfig.journey);
@@ -82,7 +80,7 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const sModule = this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/webapp/" : "";
+    const sModule = (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
 
     this.fs.copyTpl(
       this.templatePath("test/integration/$journey.js"),
