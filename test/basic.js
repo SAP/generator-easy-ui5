@@ -92,19 +92,24 @@ describe("OPA5 tests", function () {
 
   it("should add OPA5 tests and run them with karma", function () {
     var appDir;
-    return helpers.run(path.join(__dirname, "../generators/app")).withPrompts({ viewtype: "XML", addOPA5: false })
-      .then(function (dir) {
-        appDir = path.join(dir, "com.myorg.myUI5App/uimodule/webapp");
+    return helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
+      viewtype: "XML",
+      addOPA5: false
+    }).then(function (dir) {
+        appDir = path.join(dir, "com.myorg.myUI5App");
         return helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
+          modulename: "uimodule",
           addJourney: false,
           addPO: false
         });
       }).then(function () {
         return helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
+          modulename: "uimodule",
           journey: "Main"
         });
       }).then(function () {
         return helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
+          modulename: "uimodule",
           poName: "Main",
           action: "iPressTheButton",
           assertion: "iShouldSeeTheTitle"

@@ -10,7 +10,7 @@ module.exports = class extends Generator {
 
     if (this.options.isSubgeneratorCall) {
       this.options.oneTimeConfig.projectname = this.options.projectname;
-      this.options.oneTimeConfig.namespace = this.options.namespace;
+      this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
     } else {
       if (!this.config.getAll().viewtype) {
@@ -27,7 +27,7 @@ module.exports = class extends Generator {
           default: "myUI5App"
         }, {
           type: "input",
-          name: "namespace",
+          name: "namespaceInput",
           message: "Please enter the namespace you use currently",
           validate: (s) => {
             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -71,8 +71,11 @@ module.exports = class extends Generator {
       for (var key in answers) {
         this.options.oneTimeConfig[key] = answers[key];
       }
+
+      var appName = !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.oneTimeConfig.modulename;
+      this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
       this.options.oneTimeConfig.poName = this.options.oneTimeConfig.poName.charAt(0).toUpperCase() + this.options.oneTimeConfig.poName.substr(1);
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespace + "." + (this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname);
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespaceInput + "." + appName;
 
       const pos = this.config.get("opa5pos") || [];
       pos.push(this.options.oneTimeConfig.poName);
@@ -82,7 +85,7 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const sModule = this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/webapp/" : "";
+    const sModule = (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
     const journeys = this.config.get("opa5Journeys") || [];
 
     this.fs.copyTpl(

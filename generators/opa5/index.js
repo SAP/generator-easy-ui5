@@ -10,7 +10,7 @@ module.exports = class extends Generator {
 
     if (this.options.isSubgeneratorCall) {
       this.options.oneTimeConfig.projectname = this.options.projectname;
-      this.options.oneTimeConfig.namespace = this.options.namespace;
+      this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
     } else {
 
@@ -28,7 +28,7 @@ module.exports = class extends Generator {
           default: "myUI5App"
         }, {
           type: "input",
-          name: "namespace",
+          name: "namespaceInput",
           message: "Please enter the namespace you use currently",
           validate: (s) => {
             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -64,21 +64,17 @@ module.exports = class extends Generator {
       default: true
     });
 
-
     return this.prompt(aPrompt).then((answers) => {
       for (var key in answers) {
         this.options.oneTimeConfig[key] = answers[key];
       }
 
-      if (answers.projectname) {
-        this.options.oneTimeConfig.projectname = answers.projectname;
-        this.options.oneTimeConfig.namespace = answers.namespace;
-        this.options.oneTimeConfig.namespaceURI = answers.namespace.split(".").join("/");
-      }
-
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespace + "." + (this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname);
-      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.appURI || this.options.oneTimeConfig.namespaceURI + "/" + (this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname);
-      this.options.oneTimeConfig.title = this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.projectname;
+      var appName = !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.oneTimeConfig.modulename;
+      this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
+      this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespaceInput.split(".").join("/");
+      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceInput + "." + appName;
+      this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
+      this.options.oneTimeConfig.title = appName;
     });
   }
 
@@ -105,7 +101,7 @@ module.exports = class extends Generator {
     this.config.set("opa5pos", pos);
     this.options.oneTimeConfig.opa5pos = pos;
 
-    const sModule = this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/webapp/" : "";
+    const sModule = (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
     this.sourceRoot(path.join(__dirname, "templates"));
     glob.sync("**", {
       cwd: this.sourceRoot(),
