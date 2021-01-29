@@ -25,7 +25,7 @@ function createTest(oPrompt) {
       });
     }
 
-    if (!!oPrompt.platform && (oPrompt.platform === "Cloud Foundry HTML5 Application Repository" && oPrompt.platform === "SAP Cloud Platform Launchpad")) {
+    if (!!oPrompt.platform && (oPrompt.platform === "SAP HTML5 Application Repository service for SAP BTP" && oPrompt.platform === "SAP Launchpad service")) {
       it("ui5.yaml should leverage the ui5 zipper task", function () {
         return assert.fileContent("uimodule/ui5.yaml", "name: ui5-task-zipper");
       });
@@ -54,18 +54,18 @@ describe("Basic project capabilities", function () {
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    { viewtype: "JSON", platform: "SAP Cloud Platform Launchpad", addOPA5: false },
-    { viewtype: "XML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JSON", platform: "SAP Launchpad service", addOPA5: false },
+    { viewtype: "XML", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
     { viewtype: "XML", platform: "SAP NetWeaver", addOPA5: false },
     { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
     { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    { viewtype: "HTML", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
-    { viewtype: "JS", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false },
+    { viewtype: "HTML", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
+    { viewtype: "JS", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
     { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
     { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "Cloud Foundry HTML5 Application Repository", addOPA5: false }
+    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false }
   ];
 
   const runningInCircleCI = process.env.CI;

@@ -29,7 +29,7 @@ server:
         port: 1091
         xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : modulename+"/webapp/xs-app.json" %>
         destinations: []
-<% if(platform === 'Cloud Foundry HTML5 Application Repository' || platform === 'SAP Cloud Platform Launchpad'){ -%>
+<% if(platform === 'SAP HTML5 Application Repository service for SAP BTP' || platform === 'SAP Launchpad service'){ -%>
 builder:
   customTasks:
     -  name: ui5-task-zipper

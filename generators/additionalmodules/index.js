@@ -22,7 +22,7 @@ module.exports = class extends Generator {
     const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router"); // aka no destination service etc needed
 
     // Copy approuter module
-    if (oConfig.platform !== "SAP Cloud Platform Launchpad") {
+    if (oConfig.platform !== "SAP Launchpad service") {
       glob.sync("**", {
         cwd: this.sourceRoot() + "/approuter",
         nodir: true
@@ -68,7 +68,7 @@ module.exports = class extends Generator {
     };
 
     let approuter;
-    if (oConfig.platform !== "SAP Cloud Platform Launchpad") {
+    if (oConfig.platform !== "SAP Launchpad service") {
       approuter = {
         "name": oConfig.projectname,
         "type": "nodejs",
@@ -102,7 +102,7 @@ module.exports = class extends Generator {
         approuter.requires.push({ name: oConfig.projectname + "_destination" });
       }
 
-      if (oConfig.platform === "Cloud Foundry HTML5 Application Repository" || oConfig.platform === "SAP Cloud Platform Launchpad") {
+      if (oConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" || oConfig.platform === "SAP Launchpad service") {
 
 
         mta.modules.push({
@@ -159,7 +159,7 @@ module.exports = class extends Generator {
           approuter.requires.push({ name: oConfig.projectname + "_uaa" });
         }
 
-        if (oConfig.platform === "SAP Cloud Platform Launchpad") {
+        if (oConfig.platform === "SAP Launchpad service") {
           mta.modules.push({
             "name": oConfig.projectname + "destination-content",
             "type": "com.sap.application.content",
