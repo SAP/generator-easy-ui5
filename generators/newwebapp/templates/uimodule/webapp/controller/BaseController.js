@@ -44,7 +44,7 @@ sap.ui.define([
      * Method for navigation to specific view
      * @public
      * @param {string} psTarget Parameter containing the string for the target navigation
-     * @param {mapping} pmParameters? Parameters for navigation
+     * @param {Object.<string, string>} pmParameters? Parameters for navigation
      * @param {boolean} pbReplace? Defines if the hash should be replaced (no browser history entry) or set (browser history entry)
      */
     navTo: function(psTarget, pmParameters, pbReplace) {
