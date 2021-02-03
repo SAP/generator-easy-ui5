@@ -47,9 +47,8 @@ module.exports = class extends Generator {
     }, {
       type: "checkbox",
       name: "chosenReporters",
-      message: "Choose additional reporters:",
-      choices: Object.keys(this.reportersMap),
-      default: ["JSON"]
+      message: "Choose additional reporters (or skip):",
+      choices: Object.keys(this.reportersMap)
     }, {
       type: "confirm",
       name: "addPO",
