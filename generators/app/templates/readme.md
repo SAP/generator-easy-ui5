@@ -1,5 +1,5 @@
 # <%= projectname %>
-Insert the purpose of this project and some intersting infos here
+Insert the purpose of this project and some interesting infos here
 
 
 ## Credits
