@@ -50,6 +50,22 @@ module.exports = class extends Generator {
       message: "Choose additional reporters (or skip):",
       choices: Object.keys(this.reportersMap)
     }, {
+      when: function (props) {
+        return props.chosenReporters.indexOf("SauceLabs") > -1;
+      },
+      type: "input",
+      name: "saucelabsResultsUrl",
+      message: "URL to the SauceLabs test results:",
+      default: "https://app.eu-central-1.saucelabs.com/tests/\\\\$\\\\{sessionId\\\\}"
+    }, {
+      when: function (props) {
+        return props.chosenReporters.indexOf("SauceLabs") > -1;
+      },
+      type: "input",
+      name: "saucelabsLoginUrl",
+      message: "SauceLabs SSO login URL:",
+      default: "https://accounts.sap.com/saml2/idp/sso?sp=https://app.eu-central-1.saucelabs.com/sso/metadata"
+    }, {
       type: "confirm",
       name: "addPO",
       message: "Do you want to add a page object?",
