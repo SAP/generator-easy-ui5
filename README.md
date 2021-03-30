@@ -8,7 +8,7 @@
 
 ## Description
 
-Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps within seconds.
+Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
 
 This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
@@ -61,7 +61,7 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 
 1. Scaffold your OpenUI5 project
    ```
-   yo easy-ui5
+   yo easy-ui5 project
    ```
 2. Answer the prompts to create your OpenUI5 project
 3. Run it locally
@@ -77,7 +77,7 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
 
 ```
-yo easy-ui5:newview
+yo easy-ui5 project newview
 ```
 
 ### Create a custom control
@@ -85,7 +85,7 @@ yo easy-ui5:newview
 Run the following command from your project's root to scaffold a custom control.
 
 ```
-yo easy-ui5:newcontrol
+yo easy-ui5 project newcontrol
 ```
 
 ### Add a new model
@@ -93,7 +93,7 @@ yo easy-ui5:newcontrol
 This sub-generator will create a new model in your manifest. Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 
 ```
-yo easy-ui5:newmodel
+yo easy-ui5 project newmodel
 ```
 
 ### Add a new component usage
@@ -101,27 +101,7 @@ yo easy-ui5:newmodel
 This sub-generator will add a new component usage for component reuse to your manifest.
 
 ```
-yo easy-ui5:newcomponentusage
-```
-
-### UIVeri5 tests
-
-This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
-
-```
-yo easy-ui5:uiveri5
-```
-
-This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
-
-```
-yo easy-ui5:newuiveri5po
-```
-
-This sub-generator will create a UIVeri5 spec file:
-
-```
-yo easy-ui5:newuiveri5spec
+yo easy-ui5 project newcomponentusage
 ```
 
 ### OPA5 tests
@@ -129,35 +109,21 @@ yo easy-ui5:newuiveri5spec
 This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
 
 ```
-yo easy-ui5:opa5
+yo easy-ui5 project opa5
 ```
 
 This sub-generator will create an OPA5 page object and add it to your journeys:
 
 ```
-yo easy-ui5:newopa5po
+yo easy-ui5 project newopa5po
 ```
 
 This sub-generator will create an OPA5 journey and add it to your test page:
 
 ```
-yo easy-ui5:newopa5journey
+yo easy-ui5 project newopa5journey
 ```
 
-### `wdi5` test framework
-
-There's a sub-generator available to add
-
-- `wdi5` as the test framework
-- a basic `wdi5` config and
-- a sample test file
-
-to the UI5 application by `easy-ui5`.
-
-```bash
-$> cd yourEasyUI5-project
-$> yo easy-ui5:wdi5
-```
 
 ## Deployment
 
@@ -220,6 +186,10 @@ Run following command to deploy the application to SAP NetWeaver
 ```
 npm run deploy
 ```
+
+## More generators
+
+TODO, insert text
 
 ## Embedded Technologies
 
