@@ -1,198 +1,252 @@
-const Generator = require("yeoman-generator"),
-  fileaccess = require("../../helpers/fileaccess"),
-  path = require("path"),
-  glob = require("glob");
+"use strict";
+const Generator = require("yeoman-generator");
+const chalk = require("chalk");
+const yosay = require("yosay");
+const spawn = require("cross-spawn");
+
+const fs = require("fs");
+const path = require("path");
+
+const { Octokit } = require("@octokit/rest");
+const AdmZip = require("adm-zip");
+
+const generatorOptions = {
+  generator: {
+    type: String,
+    description: "Name of the generator without the generator- prefix",
+  },
+  ghAuthToken: {
+    type: String,
+    description:
+      "GitHub authToken to optionally access private generator repositories",
+  },
+  ghOrg: {
+    type: String,
+    description: "GitHub organization to lookup for generators",
+    default: "ui5-community",
+  },
+  verbose: {
+    type: Boolean,
+    description: "Enable detailed logging",
+  },
+};
+
+const generatorArgs = {
+  generator: {
+    type: String,
+    required: false,
+    description: "Name of the generator without the generator- prefix",
+  },
+
+  subGenerator: {
+    type: String,
+    required: false,
+    description: "Name of the sub-generator you want to invoke",
+  },
+};
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
 
-  prompting() {
-    return this.prompt([{
-      type: "input",
-      name: "projectname",
-      message: "How do you want to name this project?",
-      validate: (s) => {
-        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-          return true;
-        }
-        return "Please use alpha numeric characters only for the project name.";
-      },
-      default: "myUI5App"
-    }, {
-      type: "input",
-      name: "namespace",
-      message: "Which namespace do you want to use?",
-      validate: (s) => {
-        if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
-          return true;
-        }
-        return "Please use alpha numeric characters and dots only for the namespace.";
-      },
-      default: "com.myorg"
-    }, {
-      type: "list",
-      name: "platform",
-      message: "On which platform would you like to host the application?",
-      choices: ["Static webserver",
-        "Application Router @ Cloud Foundry",
-        "SAP HTML5 Application Repository service for SAP BTP",
-        "SAP Launchpad service",
-        "Application Router @ SAP HANA XS Advanced",
-        "SAP NetWeaver"],
-      default: "Static webserver"
-    }, {
-      type: "list",
-      name: "viewtype",
-      message: "Which view type do you want to use?",
-      choices: ["XML", "JSON", "JS", "HTML"],
-      default: "XML"
-    }, {
-      type: "input",
-      name: "viewname",
-      message: "How do you want to name your main view?",
-      validate: (s) => {
-        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-          return true;
-        }
-        return "Please use alpha numeric characters only for the view name.";
-      },
-      default: "MainView"
-    }, {
-      type: "list",
-      name: "ui5libs",
-      message: "Where should your UI5 libs be served from?",
-      choices: (props) => {
-        return (props.platform !== "SAP Launchpad service") ?
-          ["Content delivery network (OpenUI5)", "Content delivery network (SAPUI5)", "Local resources (OpenUI5)", "Local resources (SAPUI5)"] :
-          ["Content delivery network (SAPUI5)"];
-      },
-      default: (props) => {
-        return (props.platform !== "SAP Launchpad service") ?
-          "Content delivery network (OpenUI5)" :
-          "Content delivery network (SAPUI5)";
-      },
-    }, {
-      type: "confirm",
-      name: "newdir",
-      message: "Would you like to create a new directory for the project?",
-      default: true
-    }]).then((answers) => {
-      if (answers.newdir) {
-        this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
-      }
-      this.config.set(answers);
-      this.config.set("namespaceURI", answers.namespace.split(".").join("/"));
+    Object.keys(generatorArgs).forEach((argName) => {
+      this.argument(argName, generatorArgs[argName]);
+    });
+
+    Object.keys(generatorOptions).forEach((optionName) => {
+      this.option(optionName, generatorOptions[optionName]);
     });
   }
 
-  async writing() {
-    const oConfig = this.config.getAll();
-
-    this.sourceRoot(path.join(__dirname, "templates"));
-    glob.sync("**", {
-      cwd: this.sourceRoot(),
-      nodir: true
-    }).forEach((file) => {
-      const sOrigin = this.templatePath(file);
-      const sTarget = this.destinationPath(file.replace(/^_/, "").replace(/\/_/, "/"));
-
-      this.fs.copyTpl(sOrigin, sTarget, oConfig);
-    });
-
-    const oSubGen = Object.assign({}, oConfig);
-    oSubGen.isSubgeneratorCall = true;
-    oSubGen.cwd = this.destinationRoot();
-    oSubGen.modulename = "uimodule";
-
-    if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-      this.composeWith(require.resolve("../additionalmodules"), oSubGen);
+  shouldUseYarn() {
+    try {
+      spawn.sync("yarnpkg --version", { stdio: "ignore" });
+      return true;
+    } catch (e) {
+      return false;
     }
-
-    this.composeWith(require.resolve("../newwebapp"), oSubGen);
   }
 
-  async addPackage() {
-    const oConfig = this.config.getAll();
-    let packge = {
-      "name": oConfig.projectname,
-      "version": "0.0.1",
-      "scripts": {
-        "start": "ui5 serve --config=uimodule/ui5.yaml  --open index.html",
-        "build:ui": "run-s ",
-        "test": "run-s lint karma",
-        "karma-ci": "karma start karma-ci.conf.js",
-        "clearCoverage": "shx rm -rf coverage",
-        "karma": "run-s clearCoverage karma-ci",
-        "lint": "eslint ."
-      },
-      "devDependencies": {
-        "shx": "^0.3.3",
-        "@ui5/cli": "^2.8.1",
-        "ui5-middleware-livereload": "^0.5.1",
-        "karma": "^6.0.1",
-        "karma-chrome-launcher": "^3.1.0",
-        "karma-coverage": "^2.0.3",
-        "karma-ui5": "^2.3.2",
-        "npm-run-all": "^4.1.5",
-        "eslint": "^7.18.0"
-      },
-      "ui5": {
-        "dependencies": [
-          "ui5-middleware-livereload",
-        ]
+  async prompting() {
+    this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
+
+    const octokit = new Octokit({
+      userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
+      auth: this.options.ghAuthToken,
+    });
+
+    const reqRepos = await octokit.repos.listForOrg({
+      org: this.options.ghOrg,
+    });
+
+    let generatorPath;
+    if (this.options.generator === "test") {
+      generatorPath = path.join(
+        __dirname,
+        "../../plugin-generators/generator-ui5-test"
+      );
+    } else {
+      let generator =
+        this.options.generator &&
+        reqRepos.data.find(
+          (repo) => repo.name === `generator-ui5-${this.options.generator}`
+        );
+
+      if (!generator) {
+        if (this.options.generator) {
+          this.log(
+            `The generator ${chalk.red(
+              this.options.generator
+            )} was not found. Please select an existing generator!`
+          );
+        }
+        const generatorRepos = reqRepos.data.filter((repo) =>
+          /^generator-.+/.test(repo.name)
+        );
+        const generatorIdx = (
+          await this.prompt([
+            {
+              type: "list",
+              name: "generator",
+              message: "Select your generator?",
+              choices: generatorRepos.map((repo, idx) => ({
+                name: repo.name,
+                value: idx,
+              })),
+            },
+          ])
+        ).generator;
+        generator = generatorRepos[generatorIdx];
       }
-    };
 
-    if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-      packge.devDependencies["ui5-middleware-cfdestination"] = "^0.3.1";
-      packge.devDependencies["ui5-task-zipper"] = "^0.4.2",
-        packge.devDependencies["cross-var"] = "^1.1.0";
-      packge.devDependencies["mbt"] = "^1.1.0";
-      packge.ui5.dependencies.push("ui5-middleware-cfdestination");
-      packge.ui5.dependencies.push("ui5-task-zipper");
+      const reqBranch = await octokit.repos.getBranch({
+        owner: this.options.ghOrg,
+        repo: generator.name,
+        branch: generator.default_branch,
+      });
 
-      if (oConfig.platform === "Application Router @ Cloud Foundry" || oConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" || oConfig.platform === "SAP Launchpad service") {
-        packge.scripts["build:mta"] = "mbt build";
-        packge.scripts["deploy:cf"] = `cross-var cf deploy mta_archives/${oConfig.projectname}_$npm_package_version.mtar`;
-        packge.scripts["deploy"] = "run-s build:mta deploy:cf";
-      } else if (oConfig.platform === "Application Router @ SAP HANA XS Advanced") {
-        packge.scripts["build:mta"] = "mbt build -p=xsa";
-        packge.scripts["deploy:cf"] = `cross-var xs deploy mta_archives/${oConfig.projectname}_$npm_package_version.mtar`;
-        packge.scripts["deploy"] = "run-s build:mta deploy:xs";
+      const commitSHA = reqBranch.data.commit.sha;
+
+      if (this.options.verbose) {
+        this.log(
+          `Fetching ZIP for commit ${commitSHA} from @${this.options.ghOrg}/${generator.name}#${generator.default_branch}...`
+        );
+      }
+      generatorPath = path.join(
+        __dirname,
+        "../../plugin-generators",
+        generator.name
+      );
+      const shaMarker = path.join(generatorPath, `.${commitSHA}`);
+
+      if (fs.existsSync(generatorPath)) {
+        // check if the SHA marker exists to know whether the generator is up-to-date or not
+        if (!fs.existsSync(shaMarker)) {
+          this.log(`generator in ${generatorPath} is outdated...`);
+          // remove if the SHA marker doesn't exist => outdated!
+          fs.rmdirSync(generatorPath, { recursive: true });
+        }
       }
 
-      if (oConfig.platform === "SAP Launchpad service") {
-        packge.scripts.start = "ui5 serve --config=uimodule/ui5.yaml  --open flpSandbox.html";
+      if (!fs.existsSync(generatorPath)) {
+        if (this.options.verbose) {
+          this.log(`Extracting ZIP to ${generatorPath}...`);
+        }
+        const reqZIPArchive = await octokit.repos.downloadZipballArchive({
+          owner: this.options.ghOrg,
+          repo: generator.name,
+          ref: commitSHA,
+        });
+        const buffer = Buffer.from(new Uint8Array(reqZIPArchive.data));
+        const zip = new AdmZip(buffer);
+        const zipEntries = zip.getEntries();
+        zipEntries.forEach((entry) => {
+          const match =
+            !entry.isDirectory && entry.entryName.match(/[^\/]+\/(.+)/);
+          if (match) {
+            const entryPath = match[1].slice(0, entry.name.length * -1);
+            zip.extractEntryTo(
+              entry,
+              path.join(generatorPath, entryPath),
+              false,
+              true
+            );
+          }
+        });
+        fs.writeFileSync(shaMarker, commitSHA);
       }
     }
 
-    if (oConfig.platform === "SAP NetWeaver") {
-      packge.devDependencies["ui5-task-nwabap-deployer"] = "*";
-      packge.devDependencies["ui5-middleware-route-proxy"] = "*";
-      packge.ui5.dependencies.push("ui5-task-nwabap-deployer");
-      packge.ui5.dependencies.push("ui5-middleware-route-proxy");
-      packge.scripts["deploy"] = "run-s build:ui";
+    this.log("Installing the plugin...");
+    spawn.sync(this.shouldUseYarn() ? "yarn" : "npm", ["install"], {
+      stdio: "ignore",
+      cwd: generatorPath,
+    });
+
+    const yeoman = require("yeoman-environment");
+
+    const opts = Object.keys(this._options).filter(
+      (optionName) =>
+        !(generatorOptions.hasOwnProperty(optionName) || optionName === "help")
+    );
+
+    const env = yeoman.createEnv(this.args, opts);
+
+    function deriveSubcommand(namespace) {
+      const match = namespace.match(/[^:]+:(.+)/);
+      return match ? match[1] : namespace;
     }
 
-    await fileaccess.writeJSON.call(this, "/package.json", packge);
-  }
+    let defaultSubGenerator;
 
-  install() {
-    this.config.set("setupCompleted", true);
-    this.installDependencies({
-      bower: false,
-      npm: true
-    });
-  }
+    let subGenerators = env
+      .lookup({ localOnly: true, packagePaths: generatorPath })
+      .filter((sub) => {
+        if (this.options.subGenerator) {
+          return (
+            !env.get(sub.namespace)?.hidden &&
+            sub.namespace.includes(`:${this.options.subGenerator}`)
+          );
+        }
+        return !env.get(sub.namespace)?.hidden;
+      })
+      .map((sub) => {
+        const transformed = {
+          name:
+            `${env.get(sub.namespace).displayName} [${deriveSubcommand(
+              sub.namespace
+            )}]` || deriveSubcommand(sub.namespace),
+          value: sub.namespace,
+        };
+        if (/:app$/.test(sub.namespace)) {
+          defaultSubGenerator = transformed;
+        }
+        return transformed;
+      });
 
-  end() {
-    this.spawnCommandSync("git", ["init", "--quiet"], {
-      cwd: this.destinationPath()
-    });
-    this.spawnCommandSync("git", ["add", "."], {
-      cwd: this.destinationPath()
-    });
-    this.spawnCommandSync("git", ["commit", "--quiet", "--allow-empty", "-m", "Initialize repository with easy-ui5"], {
-      cwd: this.destinationPath()
+    let subGenerator = subGenerators[0]?.value;
+
+    if (subGenerators.length > 1) {
+      subGenerator = (
+        await this.prompt([
+          {
+            type: "list",
+            name: "subGenerator",
+            message: "What do you want to do?",
+            default: defaultSubGenerator?.value,
+            choices: subGenerators,
+          },
+        ])
+      ).subGenerator;
+    }
+
+    if (this.options.verbose) {
+      this.log(`Calling generator ${chalk.red(subGenerator)}...`);
+    }
+
+    env.run(subGenerator, {
+      verbose: this.options.verbose,
+      embedded: true,
     });
   }
 };

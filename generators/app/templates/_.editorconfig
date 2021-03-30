@@ -1,8 +1,0 @@
-root = true
-
-[*]
-indent_style = space
-indent_size = 2
-charset = utf-8
-# editorconfig-tools is unable to ignore longs strings or urls
-max_line_length = off

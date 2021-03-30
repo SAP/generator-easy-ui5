@@ -1,16 +1,17 @@
 {
   "name": "generator-easy-ui5",
   "version": "2.4.6",
-  "description": "Generator for OpenUI5-based web-apps which use the official UI5 tooling and support deployment targets such as SAP BTP",
+  "description": "Generator for UI5-based project",
   "main": "generators/app/index.js",
   "files": [
-    "generators",
-    "helpers"
+    "generators"
   ],
   "scripts": {
+    "start": "yo easy-ui5-community project",
+    "startSubGen": "yo easy-ui5-community project app",
     "test": "mocha",
     "lint": "eslint .",
-    "circleci": "circleci local execute",
+    "prettier": "prettier --write .",
     "workaround": "find . -name '.DS_Store' -delete"
   },
   "repository": {
@@ -22,8 +23,7 @@
     "sap",
     "sapui5",
     "openui5",
-    "sapcloudplatform",
-    "cloudplatform",
+    "sapbtp",
     "generator",
     "scaffold"
   ],
@@ -34,18 +34,19 @@
   },
   "homepage": "https://github.com/SAP/generator-easy-ui5#readme",
   "dependencies": {
-    "glob": "^7.1.6",
-    "object-assign-deep": "^0.4.0",
-    "valid-filename": "^3.1.0",
-    "valid-url": "^1.0.9",
-    "yaml": "^1.10.0",
-    "yeoman-generator": "^4.12.0"
+    "@octokit/rest": "^18.5.0",
+    "adm-zip": "^0.5.4",
+    "chalk": "^4.1.0",
+    "colors": "^1.4.0",
+    "mocha": "^8.3.2",
+    "rimraf": "^3.0.2",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-environment": "^3.2.0",
+    "yeoman-generator": "^4.13.0",
+    "yeoman-test": "^5.1.0",
+    "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
-    "execa": "^5.0.0",
-    "mocha": "^8.2.1",
-    "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^3.0.0"
+    "prettier": "2.2.1"
   }
 }

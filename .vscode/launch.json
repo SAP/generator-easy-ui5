@@ -5,18 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
-        "type": "node",
-        "request": "launch",
-        "name": "Mocha All",
-        "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-        "args": [
-            "--timeout",
-            "999999",
-            "--colors",
-            "${workspaceFolder}/test"
-        ],
-        "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen"
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/test.js",
+      "args": ["--authToken=", "--org=ui5-community", "--template=ui5-library"],
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    },
+    {
+      "args": ["easy-ui5-community", "--ghAuthToken="],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "name": "Yeoman generator",
+      "program": "~/.homebrew/lib/node_modules/yo/lib/cli.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha All",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": ["--timeout", "999999", "--colors", "${workspaceFolder}/test"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

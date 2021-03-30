@@ -1,0 +1,18 @@
+name: Run test
+
+on: push
+
+jobs:
+  run-test:
+    runs-on: ubuntu-latest
+    strategy:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+
+      - run: git config --global user.email "cicd@example.com" && git config --global user.name "Your Name"
+      - run: npm install
+      - run: npm test

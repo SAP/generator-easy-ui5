@@ -3,7 +3,10 @@
     "node": true
   },
   "parserOptions": {
-    "ecmaVersion": 2019
+    "ecmaVersion": 2021,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
   "rules": {
     "block-scoped-var": 1,
@@ -17,14 +20,8 @@
     "no-console": 2,
     "no-unused-vars": 2,
     "no-trailing-spaces": 2,
-    "semi": [
-      1,
-      "always"
-    ],
-    "quotes": [
-      1,
-      "double"
-    ],
+    "semi": [1, "always"],
+    "quotes": [1, "double"],
     "key-spacing": [
       1,
       {

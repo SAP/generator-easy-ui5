@@ -5,6 +5,7 @@ OS/version:
 Browser/version (+device/version):
 
 Steps to reproduce the problem:
+
 1.
 2.
 3.
