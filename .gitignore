@@ -1,3 +1,4 @@
 node_modules/
+plugin-generators/
 yarn.lock
 package-lock.json
