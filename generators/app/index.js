@@ -29,6 +29,10 @@ const generatorOptions = {
     type: Boolean,
     description: "Enable detailed logging",
   },
+  list: {
+    type: Boolean,
+    description: "List the available sub-generators",
+  },
 };
 
 const generatorArgs = {
@@ -174,14 +178,14 @@ module.exports = class extends Generator {
           }
         });
         fs.writeFileSync(shaMarker, commitSHA);
+
+        this.log("Installing the plugin...");
+        spawn.sync(this.shouldUseYarn() ? "yarn" : "npm", ["install"], {
+          stdio: "ignore",
+          cwd: generatorPath,
+        });
       }
     }
-
-    this.log("Installing the plugin...");
-    spawn.sync(this.shouldUseYarn() ? "yarn" : "npm", ["install"], {
-      stdio: "ignore",
-      cwd: generatorPath,
-    });
 
     const yeoman = require("yeoman-environment");
 
@@ -198,6 +202,28 @@ module.exports = class extends Generator {
     }
 
     let defaultSubGenerator;
+
+    if (this.options.list) {
+      const subgen = env
+        .lookup({ localOnly: true, packagePaths: generatorPath })
+        .filter((sub) => {
+          return !env.get(sub.namespace)?.hidden;
+        })
+        .map((sub) => {
+          let line = `${deriveSubcommand(sub.namespace)}\t\t`;
+          if (deriveSubcommand(sub.namespace).length < 8) {
+            line += "\t";
+          }
+          line += `${env.get(sub.namespace)?.displayName}`;
+          return line;
+        });
+      console.log(
+        `This generator offers ${subgen.length} options:\n\n${subgen.join(
+          "\n"
+        )}`
+      );
+      return;
+    }
 
     let subGenerators = env
       .lookup({ localOnly: true, packagePaths: generatorPath })
