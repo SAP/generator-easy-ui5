@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "prettier": "prettier --write .",
     "start": "yo easy-ui5 project",
-    "startSubGen": "yo easy-ui5 project app --list",
+    "listSubGen": "yo easy-ui5 project --list",
+    "startSubGen": "yo easy-ui5 project app",
     "workaround": "find . -name '.DS_Store' -delete"
   },
   "repository": {

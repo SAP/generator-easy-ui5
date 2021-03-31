@@ -217,7 +217,7 @@ module.exports = class extends Generator {
           line += `${env.get(sub.namespace)?.displayName}`;
           return line;
         });
-      console.log(
+      this.log(
         `This generator offers ${subgen.length} options:\n\n${subgen.join(
           "\n"
         )}`
