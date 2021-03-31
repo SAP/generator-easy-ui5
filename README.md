@@ -8,9 +8,9 @@
 
 ## Description
 
-Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
+Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [SAPUI5](https://sapui5.hana.ondemand.com/)/[OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
 
-This generator has been created to simplify the creation of your OpenUI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
+This generator has been created to simplify the creation of your UI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
 The purpose of this generator is to guide you on your first steps with SAPUI5 and SAP BTP deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
@@ -18,29 +18,10 @@ The purpose of this generator is to guide you on your first steps with SAPUI5 an
 
 During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
 
-### Static webserver
-
-This is the most basic option. Choose this option if you want to deploy the web app in your custom environment or host it on an arbitrary server.
-
-### Application Router @ Cloud Foundry
-
-This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-
-### Application Router @ SAP HANA XS Advanced
-
-This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-
-### SAP HTML5 Application Repository service for SAP BTP
-
-This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
-
-### SAP Launchpad service
-
-Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **SAP HTML5 Application Repository service for SAP BTP** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository.
-
-### SAP NetWeaver
-
-Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
+- Static webserver
+- SAP BTP
+- SAP HANA XS Advanced
+- SAP NetWeaver
 
 ## Installation
 
@@ -57,17 +38,17 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 
 ## Bootstrapping a new UI5 project
 
-> Create your first OpenUI5 App within a few seconds!
+> Create your first UI5 App within a few seconds!
 
-1. Scaffold your OpenUI5 project
+1. Scaffold your UI5 project
    ```
    yo easy-ui5 project
    ```
-2. Answer the prompts to create your OpenUI5 project
+2. Answer the prompts to create your new project
 3. Run it locally
    ```
    cd <your project name>
-   npm start
+   npm start # yarn start
    ```
 
 ## Sub-generators to avoid recurring tasks
@@ -123,7 +104,6 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 ```
 yo easy-ui5 project newopa5journey
 ```
-
 
 ## Deployment
 
@@ -191,13 +171,6 @@ npm run deploy
 
 TODO, insert text
 
-## Embedded Technologies
-
-This project leverages (among others) the following Open Source projects:
-
-- [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
-- [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
-
 ## Support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
@@ -208,13 +181,6 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 
 Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-easy-ui5/blob/master/CONTRIBUTING.md).
 
-## To-Do
-
-The following aspects/features are not yet implemented:
-
-- Decouple the sub-generators from the main flow. E.g. so that app router modules can be added after the generation of the UI5 web app.
-
-Contributions are very much appreciated.
 
 [npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
 [npm-url]: https://www.npmjs.com/package/generator-easy-ui5
