@@ -7,11 +7,12 @@
     "generators"
   ],
   "scripts": {
-    "start": "yo easy-ui5-community project",
-    "startSubGen": "yo easy-ui5-community project app",
     "test": "mocha",
+    "postinstall": "node generators/app/postinstall",
     "lint": "eslint .",
     "prettier": "prettier --write .",
+    "start": "yo easy-ui5 project",
+    "startSubGen": "yo easy-ui5 project app --list",
     "workaround": "find . -name '.DS_Store' -delete"
   },
   "repository": {
