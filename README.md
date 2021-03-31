@@ -181,7 +181,6 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 
 Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-easy-ui5/blob/master/CONTRIBUTING.md).
 
-
 [npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
 [npm-url]: https://www.npmjs.com/package/generator-easy-ui5
 [circleci-image]: https://img.shields.io/circleci/project/github/SAP/generator-easy-ui5.svg
