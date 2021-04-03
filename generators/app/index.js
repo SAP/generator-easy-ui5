@@ -11,27 +11,24 @@ const { Octokit } = require("@octokit/rest");
 const AdmZip = require("adm-zip");
 
 const generatorOptions = {
-  generator: {
-    type: String,
-    description: "Name of the generator without the generator- prefix",
-  },
   ghAuthToken: {
     type: String,
     description:
-      "GitHub authToken to optionally access private generator repositories",
+      `GitHub authToken to optionally access private generator repositories`,
   },
   ghOrg: {
     type: String,
-    description: "GitHub organization to lookup for generators",
+    description: `GitHub organization to lookup for available generators`,
     default: "ui5-community",
-  },
-  verbose: {
-    type: Boolean,
-    description: "Enable detailed logging",
+    hidden: true // we don't want to recommend to use this option
   },
   list: {
     type: Boolean,
-    description: "List the available sub-generators",
+    description: `List the available subcommands of the generator`,
+  },
+  verbose: {
+    type: Boolean,
+    description: `Enable detailed logging`,
   },
 };
 
@@ -39,13 +36,12 @@ const generatorArgs = {
   generator: {
     type: String,
     required: false,
-    description: "Name of the generator without the generator- prefix",
+    description: `Name of the generator to invoke (without the "generator-ui5-" prefix)`,
   },
-
-  subGenerator: {
+  subcommand: {
     type: String,
     required: false,
-    description: "Name of the sub-generator you want to invoke",
+    description: `Name of the subcommand to invoke (without the "generator:" prefix)`,
   },
 };
 
@@ -54,11 +50,18 @@ module.exports = class extends Generator {
     super(args, opts);
 
     Object.keys(generatorArgs).forEach((argName) => {
+      // register the argument for being displayed in the help
       this.argument(argName, generatorArgs[argName]);
     });
 
     Object.keys(generatorOptions).forEach((optionName) => {
-      this.option(optionName, generatorOptions[optionName]);
+      if (!generatorOptions[optionName].hidden) {
+        // register the option for being displayed in the help
+        this.option(optionName, generatorOptions[optionName]);
+      } else {
+        // apply the default value for hidden options if needed
+        this.options[optionName] = this.options[optionName] || generatorOptions[optionName].default;
+      }
     });
   }
 
@@ -74,15 +77,27 @@ module.exports = class extends Generator {
   async prompting() {
     this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
 
+    // create the octokit client to retrieve the generators from GH org
     const octokit = new Octokit({
       userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
       auth: this.options.ghAuthToken,
     });
 
-    const reqRepos = await octokit.repos.listForOrg({
-      org: this.options.ghOrg,
-    });
+    // retrieve the available repositories
+    let reqRepos;
+    try {
+      reqRepos = await octokit.repos.listForOrg({
+        org: this.options.ghOrg,
+      });
+    } catch (e) {
+      console.error(`Failed to connect to GitHub to retrieve available repository for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+      if (this.options.verbose) {
+        console.error(e);
+      }
+      return;
+    }
 
+    // download the generator from GH (or the test generator)
     let generatorPath;
     if (this.options.generator === "test") {
       generatorPath = path.join(
@@ -90,12 +105,15 @@ module.exports = class extends Generator {
         "../../plugin-generators/generator-ui5-test"
       );
     } else {
+
+      // check for provided generator being available on GH
       let generator =
         this.options.generator &&
         reqRepos.data.find(
           (repo) => repo.name === `generator-ui5-${this.options.generator}`
         );
 
+      // if no generator is provided and doesn't exist, ask for generator name
       if (!generator) {
         if (this.options.generator) {
           this.log(
@@ -105,7 +123,7 @@ module.exports = class extends Generator {
           );
         }
         const generatorRepos = reqRepos.data.filter((repo) =>
-          /^generator-.+/.test(repo.name)
+          /^generator-ui5-.+/.test(repo.name)
         );
         const generatorIdx = (
           await this.prompt([
@@ -123,11 +141,21 @@ module.exports = class extends Generator {
         generator = generatorRepos[generatorIdx];
       }
 
-      const reqBranch = await octokit.repos.getBranch({
-        owner: this.options.ghOrg,
-        repo: generator.name,
-        branch: generator.default_branch,
-      });
+      // fetch the available branches to retrieve the latest commit SHA
+      let reqBranch;
+      try {
+        reqBranch = await octokit.repos.getBranch({
+          owner: this.options.ghOrg,
+          repo: generator.name,
+          branch: generator.default_branch,
+        });
+      } catch (e) {
+        console.error(`Failed to retrieve the default branch for repository "${generator.name}" for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+        if (this.options.verbose) {
+          console.error(e);
+        }
+        return;  
+      }
 
       const commitSHA = reqBranch.data.commit.sha;
 
@@ -152,6 +180,7 @@ module.exports = class extends Generator {
         }
       }
 
+      // re-fetch the generator and extract into local plugin folder
       if (!fs.existsSync(generatorPath)) {
         if (this.options.verbose) {
           this.log(`Extracting ZIP to ${generatorPath}...`);
@@ -179,7 +208,10 @@ module.exports = class extends Generator {
         });
         fs.writeFileSync(shaMarker, commitSHA);
 
-        this.log("Installing the plugin...");
+        // run yarn/npm install
+        if (this.options.verbose) {
+          this.log("Installing the plugin dependencies...");
+        }
         spawn.sync(this.shouldUseYarn() ? "yarn" : "npm", ["install"], {
           stdio: "ignore",
           cwd: generatorPath,
@@ -187,61 +219,91 @@ module.exports = class extends Generator {
       }
     }
 
-    const yeoman = require("yeoman-environment");
-
+    // filter the local options and the help command
     const opts = Object.keys(this._options).filter(
       (optionName) =>
         !(generatorOptions.hasOwnProperty(optionName) || optionName === "help")
     );
 
+    // create the env for the plugin generator
+    const yeoman = require("yeoman-environment");
     const env = yeoman.createEnv(this.args, opts);
 
+    // helper to derive the subcommand
     function deriveSubcommand(namespace) {
       const match = namespace.match(/[^:]+:(.+)/);
       return match ? match[1] : namespace;
     }
 
-    let defaultSubGenerator;
-
-    if (this.options.list) {
-      const subgen = env
-        .lookup({ localOnly: true, packagePaths: generatorPath })
-        .filter((sub) => {
-          return !env.get(sub.namespace)?.hidden;
-        })
-        .map((sub) => {
-          let line = `${deriveSubcommand(sub.namespace)}\t\t`;
-          if (deriveSubcommand(sub.namespace).length < 8) {
-            line += "\t";
-          }
-          line += `${env.get(sub.namespace)?.displayName}`;
-          return line;
-        });
-      this.log(
-        `This generator offers ${subgen.length} options:\n\n${subgen.join(
-          "\n"
-        )}`
-      );
-      return;
-    }
-
+    // filter the hidden subgenerators already
+    //   -> subgenerators must be found in env as they are returned by lookup!
     let subGenerators = env
       .lookup({ localOnly: true, packagePaths: generatorPath })
       .filter((sub) => {
-        if (this.options.subGenerator) {
-          return (
-            !env.get(sub.namespace)?.hidden &&
-            sub.namespace.includes(`:${this.options.subGenerator}`)
-          );
-        }
-        return !env.get(sub.namespace)?.hidden;
+        const subGenerator = env.get(sub.namespace);
+        return !subGenerator.hidden;
+      });
+
+    // list the available subgenerators in the console (as help)
+    if (this.options.list) {
+      let maxLength = 0;
+      this.log(subGenerators
+        .map(sub => {
+          maxLength = Math.max(sub.namespace.length, maxLength);
+          return sub;
+        })
+        .reduce((output, sub) => {
+          const subGenerator = env.get(sub.namespace);
+          const displayName = subGenerator.displayName || "";
+          let line = `  ${deriveSubcommand(sub.namespace).padEnd(maxLength + 2)}`;
+          if (displayName) {
+            line += ` # ${subGenerator.displayName}`;
+          }
+          return `${output}\n${line}`;
+        }, `Subcommands (${subGenerators.length}):`));
+      return;
+    }
+
+    // if a subcommand is provided as argument, identify the matching subgenerator
+    // and remove the rest of the subgenerators from the list for later steps
+    if (this.options.subcommand) {
+      const selectedSubGenerator = subGenerators
+        .filter((sub) => {
+          // identify the subgenerator by subcommand
+          return new RegExp(`:${this.options.subcommand}$`).test(sub.namespace);
+        });
+      if (selectedSubGenerator.length == 1) {
+        subGenerators = selectedSubGenerator;
+      } else {
+        this.log(
+          `The generator ${chalk.red(
+            this.options.generator
+          )} has no subcommand ${chalk.red(
+            this.options.subcommand
+          )}. Please select an existing subcommand!`
+        );
+      }
+    }
+
+    // transform the list of the subgenerators and identify the 
+    // default subgenerator for the default selection
+    let defaultSubGenerator;
+    let maxLength = 0;
+    subGenerators = subGenerators
+      .map(sub => {
+        const generator = env.get(sub.namespace);
+        let subcommand = deriveSubcommand(sub.namespace);
+        let displayName = generator.displayName || subcommand;
+        maxLength = Math.max(displayName.length, maxLength);
+        return {
+          subcommand,
+          displayName,
+          sub,
+        };
       })
-      .map((sub) => {
+      .map(({subcommand, displayName, sub}) => {
         const transformed = {
-          name:
-            `${env.get(sub.namespace).displayName} [${deriveSubcommand(
-              sub.namespace
-            )}]` || deriveSubcommand(sub.namespace),
+          name: `${displayName.padEnd(maxLength + 2)} [${subcommand}]`,
           value: sub.namespace,
         };
         if (/:app$/.test(sub.namespace)) {
@@ -250,29 +312,45 @@ module.exports = class extends Generator {
         return transformed;
       });
 
-    let subGenerator = subGenerators[0]?.value;
+    // at least 1 subgenerator must be present
+    if (subGenerators.length >= 1) {
 
-    if (subGenerators.length > 1) {
-      subGenerator = (
-        await this.prompt([
-          {
-            type: "list",
-            name: "subGenerator",
-            message: "What do you want to do?",
-            default: defaultSubGenerator?.value,
-            choices: subGenerators,
-          },
-        ])
-      ).subGenerator;
+      // by default the 1st subgenerator is used
+      let subGenerator = subGenerators[0].value;
+
+      // if more than 1 subgenerator is present
+      // ask the developer to select one!
+      if (subGenerators.length > 1) {
+        subGenerator = (
+          await this.prompt([
+            {
+              type: "list",
+              name: "subGenerator",
+              message: "What do you want to do?",
+              default: defaultSubGenerator && defaultSubGenerator.value,
+              choices: subGenerators,
+            },
+          ])
+        ).subGenerator;
+      }
+  
+      if (this.options.verbose) {
+        this.log(`Calling ${chalk.red(subGenerator)}...`);
+      }
+  
+      // finally, run the subgenerator
+      env.run(subGenerator, {
+        verbose: this.options.verbose,
+        embedded: true,
+      });
+
+    } else {
+      this.log(
+        `The generator ${chalk.red(
+          this.options.generator
+        )} has no visible subgenerators!`
+      );
     }
 
-    if (this.options.verbose) {
-      this.log(`Calling generator ${chalk.red(subGenerator)}...`);
-    }
-
-    env.run(subGenerator, {
-      verbose: this.options.verbose,
-      embedded: true,
-    });
   }
 };
