@@ -4,8 +4,9 @@ const chalk = require("chalk");
 const yosay = require("yosay");
 const spawn = require("cross-spawn");
 
-const fs = require("fs");
 const path = require("path");
+const fs = require("fs");
+const { rmdir } = require("fs").promises;
 
 const { Octokit } = require("@octokit/rest");
 const AdmZip = require("adm-zip");
@@ -65,12 +66,33 @@ module.exports = class extends Generator {
     });
   }
 
-  shouldUseYarn() {
+  _shouldUseYarn() {
     try {
       spawn.sync("yarnpkg --version", { stdio: "ignore" });
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  _showBusy(statusText) {
+    if (this.busyIndicatorTimer) {
+      this.hideBusy();
+    }
+    const output = ['.  ', '.. ', '...'];
+    let i = 0;
+    process.stdout.write(`\r${statusText}   `);
+    this.busyIndicatorTimer = setInterval(() => {
+      process.stdout.write(`\r${statusText}${output[i++]}`);
+      i %= output.length;
+    }, 250);
+  }
+
+  _hideBusy() {
+    if (this.busyIndicatorTimer) {
+      clearInterval(this.busyIndicatorTimer);
+      delete this.busyIndicatorTimer;
+      process.stdout.write(`\n`);
     }
   }
 
@@ -161,7 +183,7 @@ module.exports = class extends Generator {
 
       if (this.options.verbose) {
         this.log(
-          `Fetching ZIP for commit ${commitSHA} from @${this.options.ghOrg}/${generator.name}#${generator.default_branch}...`
+          `Using commit ${commitSHA} from @${this.options.ghOrg}/${generator.name}#${generator.default_branch}...`
         );
       }
       generatorPath = path.join(
@@ -174,17 +196,22 @@ module.exports = class extends Generator {
       if (fs.existsSync(generatorPath)) {
         // check if the SHA marker exists to know whether the generator is up-to-date or not
         if (!fs.existsSync(shaMarker)) {
-          this.log(`generator in ${generatorPath} is outdated...`);
+          if (this.options.verbose) {
+            this.log(`Generator "${generator.name}" in "${generatorPath}" is outdated...`);
+          }
           // remove if the SHA marker doesn't exist => outdated!
-          fs.rmdirSync(generatorPath, { recursive: true });
+          this._showBusy(`  - Deleting "${generator.name}"`);
+          await rmdir(generatorPath, { recursive: true });
+          this._hideBusy();
         }
       }
 
       // re-fetch the generator and extract into local plugin folder
       if (!fs.existsSync(generatorPath)) {
         if (this.options.verbose) {
-          this.log(`Extracting ZIP to ${generatorPath}...`);
+          this.log(`Extracting ZIP to "${generatorPath}"...`);
         }
+        this._showBusy(`  - Downloading "${generator.name}"`);
         const reqZIPArchive = await octokit.repos.downloadZipballArchive({
           owner: this.options.ghOrg,
           repo: generator.name,
@@ -207,15 +234,25 @@ module.exports = class extends Generator {
           }
         });
         fs.writeFileSync(shaMarker, commitSHA);
+        this._hideBusy();
 
         // run yarn/npm install
         if (this.options.verbose) {
           this.log("Installing the plugin dependencies...");
         }
-        spawn.sync(this.shouldUseYarn() ? "yarn" : "npm", ["install"], {
-          stdio: "ignore",
-          cwd: generatorPath,
-        });
+        this._showBusy(`  - Preparing "${generator.name}"`);
+        await new Promise(function(resolve, reject) {
+          const process = spawn(this._shouldUseYarn() ? "yarn" : "npm", ["install"], {
+            stdio: "ignore",
+            cwd: generatorPath,
+          }).on('exit', function (code) {
+            resolve(code);
+          }).on('error', function (err) {
+            reject(err);
+          });
+        }.bind(this));
+        this._hideBusy();
+        this.log("  - Ready!");
       }
     }
 
