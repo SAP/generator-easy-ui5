@@ -76,23 +76,24 @@ module.exports = class extends Generator {
   }
 
   _showBusy(statusText) {
-    if (this.busyIndicatorTimer) {
-      this.hideBusy();
-    }
-    const output = ['.  ', '.. ', '...'];
+    this._clearBusy();
+    const progressChars = ['\\', '|', '/', '-'];
     let i = 0;
-    process.stdout.write(`\r${statusText}   `);
-    this.busyIndicatorTimer = setInterval(() => {
-      process.stdout.write(`\r${statusText}${output[i++]}`);
-      i %= output.length;
-    }, 250);
+    process.stdout.write(`\r${statusText}`);
+    this._busy = {
+      text: statusText,
+      timer: setInterval(() => {
+        process.stdout.write(`\r${statusText} ${progressChars[i++]}`);
+        i %= progressChars.length;
+      }, 250),
+    };
   }
 
-  _hideBusy() {
-    if (this.busyIndicatorTimer) {
-      clearInterval(this.busyIndicatorTimer);
-      delete this.busyIndicatorTimer;
-      process.stdout.write(`\n`);
+  _clearBusy(newLine) {
+    if (this._busy) {
+      clearInterval(this._busy.timer);
+      process.stdout.write(`\r`.padEnd(this._busy.text.length + 3) + (newLine ? "\n" : ""));
+      delete this._busy;
     }
   }
 
@@ -200,9 +201,8 @@ module.exports = class extends Generator {
             this.log(`Generator "${generator.name}" in "${generatorPath}" is outdated...`);
           }
           // remove if the SHA marker doesn't exist => outdated!
-          this._showBusy(`  - Deleting "${generator.name}"`);
+          this._showBusy(`  Deleting "${generator.name}"`);
           await rmdir(generatorPath, { recursive: true });
-          this._hideBusy();
         }
       }
 
@@ -211,7 +211,7 @@ module.exports = class extends Generator {
         if (this.options.verbose) {
           this.log(`Extracting ZIP to "${generatorPath}"...`);
         }
-        this._showBusy(`  - Downloading "${generator.name}"`);
+        this._showBusy(`  Downloading and extracting "${generator.name}"`);
         const reqZIPArchive = await octokit.repos.downloadZipballArchive({
           owner: this.options.ghOrg,
           repo: generator.name,
@@ -234,13 +234,12 @@ module.exports = class extends Generator {
           }
         });
         fs.writeFileSync(shaMarker, commitSHA);
-        this._hideBusy();
 
         // run yarn/npm install
         if (this.options.verbose) {
           this.log("Installing the plugin dependencies...");
         }
-        this._showBusy(`  - Preparing "${generator.name}"`);
+        this._showBusy(`  Preparing "${generator.name}"`);
         await new Promise(function(resolve, reject) {
           const process = spawn(this._shouldUseYarn() ? "yarn" : "npm", ["install"], {
             stdio: "ignore",
@@ -251,10 +250,10 @@ module.exports = class extends Generator {
             reject(err);
           });
         }.bind(this));
-        this._hideBusy();
-        this.log("  - Ready!");
       }
     }
+
+    this._clearBusy(true);
 
     // filter the local options and the help command
     const opts = Object.keys(this._options).filter(
