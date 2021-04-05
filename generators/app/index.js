@@ -79,7 +79,7 @@ module.exports = class extends Generator {
     this._clearBusy();
     const progressChars = ['\\', '|', '/', '-'];
     let i = 0;
-    process.stdout.write(`\r${statusText}`);
+    process.stdout.write(`\r${statusText}  `);
     this._busy = {
       text: statusText,
       timer: setInterval(() => {
