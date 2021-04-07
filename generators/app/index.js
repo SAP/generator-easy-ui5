@@ -201,7 +201,7 @@ module.exports = class extends Generator {
             this.log(`Generator "${generator.name}" in "${generatorPath}" is outdated...`);
           }
           // remove if the SHA marker doesn't exist => outdated!
-          this._showBusy(`  Deleting "${generator.name}"`);
+          this._showBusy(`  Removing old "${generator.name}" templates`);
           await rmdir(generatorPath, { recursive: true });
         }
       }
@@ -211,7 +211,7 @@ module.exports = class extends Generator {
         if (this.options.verbose) {
           this.log(`Extracting ZIP to "${generatorPath}"...`);
         }
-        this._showBusy(`  Downloading and extracting "${generator.name}"`);
+        this._showBusy(`  Downloading and extracting "${generator.name}" templates`);
         const reqZIPArchive = await octokit.repos.downloadZipballArchive({
           owner: this.options.ghOrg,
           repo: generator.name,
