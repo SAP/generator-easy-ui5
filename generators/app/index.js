@@ -68,8 +68,8 @@ module.exports = class extends Generator {
 
   _shouldUseYarn() {
     try {
-      spawn.sync("yarnpkg --version", { stdio: "ignore" });
-      return true;
+      const result = spawn.sync("yarnpkg --version", { stdio: this.config.verbose ? "inherit" : "ignore" });
+      return result.status == 0;
     } catch (e) {
       return false;
     }
@@ -177,7 +177,7 @@ module.exports = class extends Generator {
         if (this.options.verbose) {
           console.error(e);
         }
-        return;  
+        return;
       }
 
       const commitSHA = reqBranch.data.commit.sha;
@@ -240,10 +240,11 @@ module.exports = class extends Generator {
           this.log("Installing the plugin dependencies...");
         }
         this._showBusy(`  Preparing "${generator.name}"`);
-        await new Promise(function(resolve, reject) {
-          const process = spawn(this._shouldUseYarn() ? "yarn" : "npm", ["install"], {
-            stdio: "ignore",
+        await new Promise(function (resolve, reject) {
+          const process = spawn((this._shouldUseYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
+            stdio: this.config.verbose ? "inherit" : "ignore",
             cwd: generatorPath,
+            env: { "NO_UPDATE_NOTIFIER": true }
           }).on('exit', function (code) {
             resolve(code);
           }).on('error', function (err) {
@@ -337,7 +338,7 @@ module.exports = class extends Generator {
           sub,
         };
       })
-      .map(({subcommand, displayName, sub}) => {
+      .map(({ subcommand, displayName, sub }) => {
         const transformed = {
           name: `${displayName.padEnd(maxLength + 2)} [${subcommand}]`,
           value: sub.namespace,
@@ -369,11 +370,11 @@ module.exports = class extends Generator {
           ])
         ).subGenerator;
       }
-  
+
       if (this.options.verbose) {
         this.log(`Calling ${chalk.red(subGenerator)}...`);
       }
-  
+
       // finally, run the subgenerator
       env.run(subGenerator, {
         verbose: this.options.verbose,
