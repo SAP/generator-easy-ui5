@@ -42,6 +42,7 @@
     "colors": "^1.4.0",
     "mocha": "^8.3.2",
     "rimraf": "^3.0.2",
+    "yarn-or-npm": "^3.0.1",
     "yeoman-assert": "^3.1.1",
     "yeoman-environment": "^3.2.0",
     "yeoman-generator": "^4.13.0",
