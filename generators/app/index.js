@@ -3,6 +3,7 @@ const Generator = require("yeoman-generator");
 const chalk = require("chalk");
 const yosay = require("yosay");
 const spawn = require("cross-spawn");
+const { hasYarn } = require("yarn-or-npm");
 
 const path = require("path");
 const fs = require("fs");
@@ -64,15 +65,6 @@ module.exports = class extends Generator {
         this.options[optionName] = this.options[optionName] || generatorOptions[optionName].default;
       }
     });
-  }
-
-  _shouldUseYarn() {
-    try {
-      const result = spawn.sync("yarnpkg --version", { stdio: this.config.verbose ? "inherit" : "ignore" });
-      return result.status == 0;
-    } catch (e) {
-      return false;
-    }
   }
 
   _showBusy(statusText) {
@@ -241,10 +233,13 @@ module.exports = class extends Generator {
         }
         this._showBusy(`  Preparing "${generator.name}"`);
         await new Promise(function (resolve, reject) {
-          const process = spawn((this._shouldUseYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
+          spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
             stdio: this.config.verbose ? "inherit" : "ignore",
             cwd: generatorPath,
-            env: { "NO_UPDATE_NOTIFIER": true }
+            env: {
+              ...process.env,
+              "NO_UPDATE_NOTIFIER": true
+            }
           }).on('exit', function (code) {
             resolve(code);
           }).on('error', function (err) {
