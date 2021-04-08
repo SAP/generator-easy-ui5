@@ -1,10 +1,10 @@
 # Easy UI5 Generator
 
 [![NPM version][npm-image]][npm-url]
-[![Build Status][circleci-image]][circleci-url]
+[![Build Status][test-image]][test-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 [![License Status][license-image]][license-url]
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/generator-easy-ui5/)](https://api.reuse.software/info/github.com/SAP/generator-easy-ui5/)
+[![REUSE status][reuse-image]][reuse-url]
 
 ## Description
 
@@ -55,17 +55,38 @@ During the prompting phase, the generator will ask on which target platform your
 > Have a look at [this plugin project](https://github.com/ui5-community/generator-ui5-project/) for more usage instruction and information about the available subcommands.
 
 
-<!-- ## More generators
+## More generators
 
 And this is just the start!
 We made easy-ui5 extensible, so that the entire [UI5 Community](https://github.com/ui5-community/) can build additional plugins to scaffold any UI5-related development activity.
+
 By default, this generator comes with the [project-creation-plugin](https://github.com/ui5-community/generator-ui5-project) but there are many others as well:
-- Create new UI5 libraries
-- Create new UI5 custom controls
+- Create new UI5 libraries [[ui5-community/generator-ui5-library]](https://github.com/ui5-community/generator-ui5-library)
+- More are coming!
+<!-- - Create new UI5 custom controls
 - Create middlewares for the UI5 tooling
 - Create tasks for the UI5 tooling
+- Create a WDI5 test suite -->
 
-Are you missing a generator in this list and are you willing to provide one to the entire UI5 community? Great! [This blog posts](TODO INSERT LINK HERE) contains everything you need to know to get started! -->
+To download and use any of the plugins above, run the following command
+```sh
+yo easy-ui5 [project|libray] # this is the name of the repositorty without the "generator-ui5-" prefix
+```
+
+<!-- Are you missing a generator in this list and are you willing to provide one to the entire UI5 community? Great! [This blog posts](TODO INSERT LINK HERE) contains everything you need to know to get started!  -->
+
+## Calling generators
+
+Run the following command to see all subgenerators of a given plugin
+```sh
+yo easy-ui5 [project|libray] --list
+```
+Once you decided on the subgenerator, run:
+
+Run the following command to see all subgenerators of a given plugin
+```sh
+yo easy-ui5 [project|libray] <sub-generator-id>
+```
 
 ## Support
 
@@ -79,10 +100,11 @@ Please follow our instructions if you would like to [contribute](https://github.
 
 [npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
 [npm-url]: https://www.npmjs.com/package/generator-easy-ui5
-[circleci-image]: https://img.shields.io/circleci/project/github/SAP/generator-easy-ui5.svg
-[circleci-url]: https://circleci.com/gh/SAP/generator-easy-ui5
+[test-image]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml/badge.svg
+[test-url]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml
 [daviddm-image]: https://img.shields.io/david/SAP/generator-easy-ui5.svg
 [daviddm-url]: https://david-dm.org/SAP/generator-easy-ui5
 [license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
 [license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
-<!-- TODO Switch to GH Actions for CI/CD -->
+[reuse-image]: https://api.reuse.software/badge/github.com/SAP/generator-easy-ui5/
+[reuse-url]: https://api.reuse.software/info/github.com/SAP/generator-easy-ui5/
