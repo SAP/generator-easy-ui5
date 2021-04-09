@@ -6,8 +6,9 @@ on:
   push:
     branches:
       - main
+  create:
     tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - v*
 
 jobs:
   publish-npm:
@@ -43,4 +44,3 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-
