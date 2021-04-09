@@ -70,7 +70,7 @@ By default, this generator comes with the [project-creation-plugin](https://gith
 
 To download and use any of the plugins above, run the following command
 ```sh
-yo easy-ui5 [project|libray] # this is the name of the repositorty without the "generator-ui5-" prefix
+yo easy-ui5 [project|library] # this is the name of the repositorty without the "generator-ui5-" prefix
 ```
 
 <!-- Are you missing a generator in this list and are you willing to provide one to the entire UI5 community? Great! [This blog posts](TODO INSERT LINK HERE) contains everything you need to know to get started!  -->
@@ -79,13 +79,13 @@ yo easy-ui5 [project|libray] # this is the name of the repositorty without the "
 
 Run the following command to see all subgenerators of a given plugin
 ```sh
-yo easy-ui5 [project|libray] --list
+yo easy-ui5 [project|library] --list
 ```
 Once you decided on the subgenerator, run:
 
 Run the following command to see all subgenerators of a given plugin
 ```sh
-yo easy-ui5 [project|libray] <sub-generator-id>
+yo easy-ui5 [project|library] <sub-generator-id>
 ```
 
 ## Support
