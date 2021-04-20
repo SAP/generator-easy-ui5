@@ -1,6 +1,6 @@
 ---
 name: New Issue for an Easy-UI5 plugin
-about: Use this template if incorrect files were generated and the project doesn't run as expected
+about: You can find links to the plugins here. Please open the issue there if incorrect files were generated or the project doesn't run as expected.
 assignees: IObert
 
 ---
