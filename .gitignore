@@ -1,4 +1,6 @@
 node_modules/
-plugin-generators/
+!/plugin-generators
+/plugin-generators/*
+!/plugin-generators/generator-ui5-test
 yarn.lock
 package-lock.json
