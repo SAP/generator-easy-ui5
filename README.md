@@ -14,15 +14,17 @@ This generator has been created to simplify the creation of your UI5 prototypes.
 
 The purpose of this generator is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
+## Requirements
+
+- Get [Node.js](https://nodejs.org/en/download/)  (**version 12 or higher** ⚠️)
 
 ## Installation
 
-1. Get [Node.js](https://nodejs.org/en/download/) (version 8.5 or higher)
-2. Install the generator
+1. Install the generator
    ```sh
    npm install -g yo generator-easy-ui5
    ```
-3. Verify your installation to see if Yeoman has been installed correctly
+2. Verify your installation to see if Yeoman has been installed correctly
    ```sh
    yo
    ```
