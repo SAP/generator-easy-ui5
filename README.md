@@ -18,7 +18,7 @@ The purpose of this generator is to guide you on your first steps with [SAPUI5](
 
 - Get [Node.js](https://nodejs.org/en/download/)  (**version 12 or higher** ⚠️)
 
-## Installation
+## Download and Installation
 
 1. Install the generator
    ```sh
@@ -90,7 +90,7 @@ Run the following command to see all subgenerators of a given plugin
 yo easy-ui5 [project|library] <sub-generator-id>
 ```
 
-## Support
+## How to obtain support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
 
