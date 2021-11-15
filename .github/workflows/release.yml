@@ -17,7 +17,6 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
 
-      - run: git config --global user.email "cicd@example.com" && git config --global user.name "Your Name"
       - run: npm install
       - run: npm test
       - run: npm publish
