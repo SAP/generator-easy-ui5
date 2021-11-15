@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url]
 [![Build Status][test-image]][test-url]
-[![Dependency Status][daviddm-image]][daviddm-url]
+[![Dependency Status][librariesio-image]][repo-url]
 [![License Status][license-image]][license-url]
 [![REUSE status][reuse-image]][reuse-url]
 
@@ -104,8 +104,8 @@ Please follow our instructions if you would like to [contribute](https://github.
 [npm-url]: https://www.npmjs.com/package/generator-easy-ui5
 [test-image]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml/badge.svg
 [test-url]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml
-[daviddm-image]: https://img.shields.io/david/SAP/generator-easy-ui5.svg
-[daviddm-url]: https://david-dm.org/SAP/generator-easy-ui5
+[librariesio-image]: https://img.shields.io/librariesio/github/SAP/generator-easy-ui5
+[repo-url]: https://github.com/SAP/generator-easy-ui5
 [license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
 [license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
 [reuse-image]: https://api.reuse.software/badge/github.com/SAP/generator-easy-ui5/
