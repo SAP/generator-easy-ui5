@@ -7,6 +7,8 @@ assignees: IObert
 
 ## Easy-Ui5 version:
 
+> Run `yo easy-ui5 --plugins` to print all relevant version strings
+
 ## OS/version:
 
 ## Browser/version (+device/version):

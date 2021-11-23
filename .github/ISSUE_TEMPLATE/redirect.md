@@ -12,3 +12,5 @@ Here are a few direct links to some plugins:
 * [UI5 Project](https://github.com/ui5-community/generator-ui5-project)
 * [UI5 Library](https://github.com/ui5-community/generator-ui5-library)
 * [UI5 Control](https://github.com/ui5-community/generator-ui5-control)
+* [SAPUI5 Fiori Launchpad Plugin](https://github.com/ui5-community/generator-ui5-flp-plugin)
+* [UI5 TypeScript App](https://github.com/ui5-community/generator-ui5-ts-app)
