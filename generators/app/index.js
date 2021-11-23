@@ -103,15 +103,17 @@ module.exports = class extends Generator {
     if (this.options.plugins) {
       const glob = require("glob");
       const yeoman = require("yeoman-environment/package.json");
+      const home = __dirname.slice(0, -14)
 
       const components = {
         'Node.js': process.version,
-        'home': __dirname.slice(0, -4),
+        'home': home,
         "yeoman-environment": yeoman.version
       };
-      glob.sync("./plugin-generators/*/package.json").forEach(function (plugin) {
-        const name = plugin.replace("./plugin-generators/", "").replace("/package.json", "");
-        const lib = require(path.join("../../", plugin));
+      glob.sync(path.join(home, "plugin-generators/*/package.json")).forEach(function (plugin) {
+        console.log(plugin)
+        const name = plugin.match(/plugin-generators\/(.+)\/package\.json/)[1];
+        const lib = require(plugin);
         components[name] = lib.version;
       });
 
