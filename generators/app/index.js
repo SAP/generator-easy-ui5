@@ -111,7 +111,6 @@ module.exports = class extends Generator {
         "yeoman-environment": yeoman.version
       };
       glob.sync(path.join(home, "plugin-generators/*/package.json")).forEach(function (plugin) {
-        console.log(plugin)
         const name = plugin.match(/plugin-generators\/(.+)\/package\.json/)[1];
         const lib = require(plugin);
         components[name] = lib.version;
