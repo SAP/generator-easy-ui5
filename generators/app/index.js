@@ -36,6 +36,11 @@ const generatorOptions = {
     type: Boolean,
     description: `Skip the update of the plugin generators`,
   },
+  plugins: {
+    type: Boolean,
+    alias: "p",
+    description: `Get detailed version information`,
+  }
 };
 
 const generatorArgs = {
@@ -94,6 +99,28 @@ module.exports = class extends Generator {
   }
 
   async prompting() {
+
+    if (this.options.plugins) {
+      const glob = require("glob");
+      const yeoman = require("yeoman-environment/package.json");
+
+      const components = {
+        'Node.js': process.version,
+        'home': __dirname.slice(0, -4),
+        "yeoman-environment": yeoman.version
+      };
+      glob.sync("./plugin-generators/*/package.json").forEach(function (plugin) {
+        const name = plugin.replace("./plugin-generators/", "").replace("/package.json", "");
+        const lib = require(path.join("../../", plugin));
+        components[name] = lib.version;
+      });
+
+      const log = this.log;
+      return Object.keys(components).forEach(function (component) {
+        log(`${chalk.green(component)}: ${components[component]}`);
+      })
+    }
+
     this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
 
     // create the octokit client to retrieve the generators from GH org
