@@ -10,6 +10,8 @@ const fs = require("fs");
 const { rmdir } = require("fs").promises;
 
 const { Octokit } = require("@octokit/rest");
+const { throttling } = require("@octokit/plugin-throttling");
+const MyOctokit = Octokit.plugin(throttling);
 const AdmZip = require("adm-zip");
 
 const generatorOptions = {
@@ -125,9 +127,30 @@ module.exports = class extends Generator {
     this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
 
     // create the octokit client to retrieve the generators from GH org
-    const octokit = new Octokit({
+    const octokit = new MyOctokit({
       userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
       auth: this.options.ghAuthToken,
+      throttle: {
+        onRateLimit: (retryAfter, options) => {
+          this.log(
+            `${chalk.yellow("Hit the GitHub API limit!")} Request quota exhausted for this request.`
+          );
+
+          if (options.request.retryCount === 0) {
+            // only retries once
+            this.log(`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\`. `);
+            return true;
+          }
+        },
+        onAbuseLimit: (_, options) => {
+          console.log(options);
+          // does not retry, only logs a warning
+          this.log(
+            `${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `
+          );
+
+        },
+      }
     });
 
     // retrieve the available repositories
