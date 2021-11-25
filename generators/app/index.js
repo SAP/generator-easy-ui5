@@ -143,7 +143,6 @@ module.exports = class extends Generator {
           }
         },
         onAbuseLimit: (_, options) => {
-          console.log(options);
           // does not retry, only logs a warning
           this.log(
             `${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `
