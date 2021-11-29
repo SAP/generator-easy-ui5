@@ -17,7 +17,7 @@ const ghOrg = "ui5-community",
 
   function showBusy(statusText) {
     clearBusy();
-    const progressChars = ['\\', '|', '/', '-'];
+    const progressChars = ["\\", "|", "/", "-"];
     let i = 0;
     process.stdout.write(`\r${statusText}  `);
     _busy = {
@@ -32,7 +32,7 @@ const ghOrg = "ui5-community",
   function clearBusy(newLine) {
     if (_busy) {
       clearInterval(_busy.timer);
-      process.stdout.write(`\r`.padEnd(_busy.text.length + 3) + (newLine ? "\n" : ""));
+      process.stdout.write("\r".padEnd(_busy.text.length + 3) + (newLine ? "\n" : ""));
       _busy = null;
     }
   }
@@ -63,9 +63,9 @@ const ghOrg = "ui5-community",
   if (fs.existsSync(generatorPath)) {
     // check if the SHA marker exists to know whether the generator is up-to-date or not
     if (!fs.existsSync(shaMarker)) {
-      console.log(`The default generator is outdated...`);
+      console.log("The default generator is outdated...");
       // remove if the SHA marker doesn't exist => outdated!
-      showBusy(`  Removing old default templates`);
+      showBusy("  Removing old default templates");
       await rmdir(generatorPath, { recursive: true });
     }
   }
@@ -73,8 +73,8 @@ const ghOrg = "ui5-community",
 
   // re-fetch the generator and extract into local plugin folder
   if (!fs.existsSync(generatorPath)) {
-    console.log(`Extracting default templates...`);
-    showBusy(`  Downloading and extracting default templates`);
+    console.log("Extracting default templates...");
+    showBusy("  Downloading and extracting default templates");
     const reqZIPArchive = await octokit.repos.downloadZipballArchive({
       owner: ghOrg,
       repo: repoName,
@@ -100,7 +100,7 @@ const ghOrg = "ui5-community",
 
     // run yarn/npm install
     console.log("Installing the plugin dependencies...");
-    showBusy(`  Preparing the default templates`);
+    showBusy("  Preparing the default templates");
     await new Promise(function (resolve, reject) {
       spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
         stdio: "inherit",
@@ -109,9 +109,9 @@ const ghOrg = "ui5-community",
           ...process.env,
           "NO_UPDATE_NOTIFIER": true
         }
-      }).on('exit', function (code) {
+      }).on("exit", function (code) {
         resolve(code);
-      }).on('error', function (err) {
+      }).on("error", function (err) {
         reject(err);
       });
     }.bind(this));

@@ -18,30 +18,30 @@ const generatorOptions = {
   ghAuthToken: {
     type: String,
     description:
-      `GitHub authToken to optionally access private generator repositories`,
+      "GitHub authToken to optionally access private generator repositories",
   },
   ghOrg: {
     type: String,
-    description: `GitHub organization to lookup for available generators`,
+    description: "GitHub organization to lookup for available generators",
     default: "ui5-community",
     hidden: true // we don't want to recommend to use this option
   },
   list: {
     type: Boolean,
-    description: `List the available subcommands of the generator`,
+    description: "List the available subcommands of the generator",
   },
   verbose: {
     type: Boolean,
-    description: `Enable detailed logging`,
+    description: "Enable detailed logging",
   },
   skipUpdate: {
     type: Boolean,
-    description: `Skip the update of the plugin generators`,
+    description: "Skip the update of the plugin generators",
   },
   plugins: {
     type: Boolean,
     alias: "p",
-    description: `Get detailed version information`,
+    description: "Get detailed version information",
   }
 };
 
@@ -49,12 +49,12 @@ const generatorArgs = {
   generator: {
     type: String,
     required: false,
-    description: `Name of the generator to invoke (without the "generator-ui5-" prefix)`,
+    description: "Name of the generator to invoke (without the \"generator-ui5-\" prefix)",
   },
   subcommand: {
     type: String,
     required: false,
-    description: `Name of the subcommand to invoke (without the "generator:" prefix)`,
+    description: "Name of the subcommand to invoke (without the \"generator:\" prefix)",
   },
 };
 
@@ -80,7 +80,7 @@ module.exports = class extends Generator {
 
   _showBusy(statusText) {
     this._clearBusy();
-    const progressChars = ['\\', '|', '/', '-'];
+    const progressChars = ["\\", "|", "/", "-"];
     let i = 0;
     process.stdout.write(`\r${statusText}  `);
     this._busy = {
@@ -95,7 +95,7 @@ module.exports = class extends Generator {
   _clearBusy(newLine) {
     if (this._busy) {
       clearInterval(this._busy.timer);
-      process.stdout.write(`\r`.padEnd(this._busy.text.length + 3) + (newLine ? "\n" : ""));
+      process.stdout.write("\r".padEnd(this._busy.text.length + 3) + (newLine ? "\n" : ""));
       delete this._busy;
     }
   }
@@ -105,11 +105,11 @@ module.exports = class extends Generator {
     if (this.options.plugins) {
       const glob = require("glob");
       const yeoman = require("yeoman-environment/package.json");
-      const home = __dirname.slice(0, -14)
+      const home = __dirname.slice(0, -14);
 
       const components = {
-        'Node.js': process.version,
-        'home': home,
+        "Node.js": process.version,
+        "home": home,
         "yeoman-environment": yeoman.version
       };
       glob.sync(path.join(home, "plugin-generators/*/package.json")).forEach(function (plugin) {
@@ -121,7 +121,8 @@ module.exports = class extends Generator {
       const log = this.log;
       return Object.keys(components).forEach(function (component) {
         log(`${chalk.green(component)}: ${components[component]}`);
-      })
+      });
+      ;
     }
 
     this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
@@ -142,7 +143,7 @@ module.exports = class extends Generator {
             return true;
           }
         },
-        onAbuseLimit: (_, options) => {
+        onAbuseLimit: () => {
           // does not retry, only logs a warning
           this.log(
             `${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `
@@ -294,9 +295,9 @@ module.exports = class extends Generator {
               ...process.env,
               "NO_UPDATE_NOTIFIER": true
             }
-          }).on('exit', function (code) {
+          }).on("exit", function (code) {
             resolve(code);
-          }).on('error', function (err) {
+          }).on("error", function (err) {
             reject(err);
           });
         }.bind(this));
@@ -371,7 +372,7 @@ module.exports = class extends Generator {
       }
     }
 
-    // transform the list of the subgenerators and identify the 
+    // transform the list of the subgenerators and identify the
     // default subgenerator for the default selection
     let defaultSubGenerator;
     let maxLength = 0;

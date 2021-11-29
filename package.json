@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha",
     "postinstall": "node generators/app/postinstall",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "prettier": "prettier --write .",
     "start": "yo easy-ui5 project",
     "listSubGen": "yo easy-ui5 project --list",
