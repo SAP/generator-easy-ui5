@@ -60,7 +60,10 @@ const generatorArgs = {
 
 module.exports = class extends Generator {
   constructor(args, opts) {
-    super(args, opts);
+    super(args, opts, {
+      // disable the Yeoman 5 package-manager logic (auto install)!
+      customInstallTask: "disabled"
+    });
 
     Object.keys(generatorArgs).forEach((argName) => {
       // register the argument for being displayed in the help
