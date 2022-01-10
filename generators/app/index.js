@@ -244,7 +244,7 @@ module.exports = class extends Generator {
       );
       const shaMarker = path.join(generatorPath, `.${commitSHA}`);
 
-      if (fs.existsSync(generatorPath) && this.options.skipUpdate) {
+      if (fs.existsSync(generatorPath) && !this.options.skipUpdate) {
         // check if the SHA marker exists to know whether the generator is up-to-date or not
         if (!fs.existsSync(shaMarker)) {
           if (this.options.verbose) {
