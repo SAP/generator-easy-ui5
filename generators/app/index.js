@@ -14,6 +14,18 @@ const { throttling } = require("@octokit/plugin-throttling");
 const MyOctokit = Octokit.plugin(throttling);
 const AdmZip = require("adm-zip");
 
+// helper to retrieve config entries from npm
+//   --> npm config set easy-ui5_addGhOrg XYZ
+const NPM_CONFIG_PREFIX = "easy-ui5_";
+let npmConfig;
+const getNPMConfig = (configName) => {
+  if (!npmConfig) {
+    npmConfig = require("libnpmconfig").read();
+  }
+  return npmConfig && npmConfig[`${NPM_CONFIG_PREFIX}${configName}`]
+}
+
+// the command line options of the generator
 const generatorOptions = {
   ghAuthToken: {
     type: String,
@@ -24,7 +36,26 @@ const generatorOptions = {
     type: String,
     description: "GitHub organization to lookup for available generators",
     default: "ui5-community",
-    hidden: true // we don't want to recommend to use this option
+    hide: true // we don't want to recommend to use this option
+  },
+  subGeneratorPrefix: {
+    type: String,
+    description: "Prefix used for the lookup of the available generators",
+    default: "generator-ui5-",
+    hide: true // we don't want to recommend to use this option
+  },
+  addGhOrg: {
+    type: String,
+    description: `GitHub organization to lookup for additional available generators`,
+    hide: true, // we don't want to recommend to use this option
+    npmConfig: true
+  },
+  addSubGeneratorPrefix: {
+    type: String,
+    description: `Prefix used for the lookup of the additional available generators`,
+    default: "generator-",
+    hide: true, // we don't want to recommend to use this option
+    npmConfig: true
   },
   list: {
     type: Boolean,
@@ -71,12 +102,14 @@ module.exports = class extends Generator {
     });
 
     Object.keys(generatorOptions).forEach((optionName) => {
-      if (!generatorOptions[optionName].hidden) {
-        // register the option for being displayed in the help
-        this.option(optionName, generatorOptions[optionName]);
-      } else {
-        // apply the default value for hidden options if needed
-        this.options[optionName] = this.options[optionName] || generatorOptions[optionName].default;
+      const initialValue = this.options[optionName];
+      // register the option for being displayed in the help
+      this.option(optionName, generatorOptions[optionName]);
+      const defaultedValue = this.options[optionName];
+      if (generatorOptions[optionName].npmConfig) {
+        // if a value is set, use the set value (parameter has higher precedence than npm config)
+        // => this.option(...) applies the default value to this.options[...] used as last resort
+        this.options[optionName] = initialValue || getNPMConfig(optionName) || defaultedValue;
       }
     });
   }
@@ -176,14 +209,40 @@ module.exports = class extends Generator {
       }
     });
 
-    // retrieve the available repositories
-    let reqRepos;
-    try {
-      reqRepos = await octokit.repos.listForOrg({
-        org: this.options.ghOrg,
+    // helper to retrieve the available repositories for a GH org
+    const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix) => {
+      const response = await octokit.repos.listForOrg({
+        org: ghOrg,
       });
+      return response?.data?.filter((repo) =>
+        repo.name.startsWith(`${subGeneratorPrefix}`)
+      ).map((repo) => {
+        return {
+          org: repo.owner?.login,
+          name: repo.name,
+          branch: repo.default_branch,
+          subGeneratorName: repo.name.substring(subGeneratorPrefix.length),
+        };
+      });
+    }
+
+    // retrieve the available repositories
+    let availGenerators;
+    try {
+      availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix);
     } catch (e) {
-      console.error(`Failed to connect to GitHub to retrieve available repository for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+      console.error(`Failed to connect to GitHub to retrieve available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+      if (this.options.verbose) {
+        console.error(e);
+      }
+      return;
+    }
+    try {
+      if (this.options.addGhOrg && this.options.addSubGeneratorPrefix) {
+        availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+      }
+    } catch (e) {
+      console.error(`Failed to connect to GitHub to retrieve additional generators for "${this.options.addGhOrg}" organization! Run with --verbose for details!`);
       if (this.options.verbose) {
         console.error(e);
       }
@@ -200,11 +259,9 @@ module.exports = class extends Generator {
     } else {
 
       // check for provided generator being available on GH
-      let generator =
-        this.options.generator &&
-        reqRepos.data.find(
-          (repo) => repo.name === `generator-ui5-${this.options.generator}`
-        );
+      let generator = this.options.generator && availGenerators.find((repo) => 
+        repo.subGeneratorName === this.options.generator
+      );
 
       // if no generator is provided and doesn't exist, ask for generator name
       if (!generator) {
@@ -215,32 +272,30 @@ module.exports = class extends Generator {
             )} was not found. Please select an existing generator!`
           );
         }
-        const generatorRepos = reqRepos.data.filter((repo) =>
-          /^generator-ui5-.+/.test(repo.name)
-        );
+
         const generatorIdx = (
           await this.prompt([
             {
               type: "list",
               name: "generator",
               message: "Select your generator?",
-              choices: generatorRepos.map((repo, idx) => ({
-                name: repo.name,
+              choices: availGenerators.map((availGenerator, idx) => ({
+                name: `${availGenerator.subGeneratorName}${this.options.addGhOrg ? ` [${availGenerator.org}]` : ""}`,
                 value: idx,
               })),
             },
           ])
         ).generator;
-        generator = generatorRepos[generatorIdx];
+        generator = availGenerators[generatorIdx];
       }
 
       // fetch the available branches to retrieve the latest commit SHA
       let reqBranch;
       try {
         reqBranch = await octokit.repos.getBranch({
-          owner: this.options.ghOrg,
+          owner: generator.org,
           repo: generator.name,
-          branch: generator.default_branch,
+          branch: generator.branch,
         });
       } catch (e) {
         console.error(chalk.red(`Failed to retrieve the default branch for repository "${generator.name}" for "${this.options.ghOrg}" organization! Run with --verbose for details!`));
