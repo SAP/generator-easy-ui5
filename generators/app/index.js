@@ -105,30 +105,50 @@ module.exports = class extends Generator {
 
   async prompting() {
 
+    this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
+
+    const home = path.join(__dirname, "..", "..");
+
+    // check the permissions to Easy UI5s plugin directory which must
+    // allow read/write to install additional plugin generators
+    let pluginsHome = path.join(home, "plugin-generators");
+    try {
+      fs.accessSync(pluginsHome, fs.constants.R_OK | fs.constants.W_OK);
+    } catch (e) {
+      pluginsHome = path.join(require("os").homedir(), ".npm", "_generator-easy-ui5", "plugin-generators");
+      if (this.options.verbose) {
+        console.error(`Plugin directory: ${chalk.green(pluginsHome)}`);
+        console.error(chalk.red(e.message));
+      }
+      fs.mkdirSync(pluginsHome, { recursive: true });
+    }
+
+    // log the plugins and configuration
     if (this.options.plugins) {
       const glob = require("glob");
       const yeoman = require("yeoman-environment/package.json");
-      const home = __dirname.slice(0, -14);
 
       const components = {
         "Node.js": process.version,
+        "yeoman-environment": yeoman.version,
+        "generator-easy-ui5": require(path.join(home, "package.json")).version,
         "home": home,
-        "yeoman-environment": yeoman.version
+        "pluginsHome": pluginsHome,
       };
-      glob.sync(path.join(home, "plugin-generators/*/package.json")).forEach(function (plugin) {
-        const name = plugin.match(/plugin-generators\/(.+)\/package\.json/)[1];
+
+      Object.keys(components).forEach((component) => {
+        this.log(`${chalk.green(component)}: ${components[component]}`);
+      });
+
+      this.log(chalk.green("\nAvailable generators:"));
+      glob.sync(`${pluginsHome}/*/package.json`).forEach((plugin) => {
+        const name = plugin.match(/.*\/(.+)\/package\.json/)[1];
         const lib = require(plugin);
-        components[name] = lib.version;
+        this.log(`  - ${chalk.green(name)}: ${lib.version}`);
       });
 
-      const log = this.log;
-      return Object.keys(components).forEach(function (component) {
-        log(`${chalk.green(component)}: ${components[component]}`);
-      });
-      ;
+      return;
     }
-
-    this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
 
     // create the octokit client to retrieve the generators from GH org
     const octokit = new MyOctokit({
@@ -223,9 +243,9 @@ module.exports = class extends Generator {
           branch: generator.default_branch,
         });
       } catch (e) {
-        console.error(`Failed to retrieve the default branch for repository "${generator.name}" for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+        console.error(chalk.red(`Failed to retrieve the default branch for repository "${generator.name}" for "${this.options.ghOrg}" organization! Run with --verbose for details!`));
         if (this.options.verbose) {
-          console.error(e);
+          console.error(chalk.red(e.message));
         }
         return;
       }
@@ -237,11 +257,7 @@ module.exports = class extends Generator {
           `Using commit ${commitSHA} from @${this.options.ghOrg}/${generator.name}#${generator.default_branch}...`
         );
       }
-      generatorPath = path.join(
-        __dirname,
-        "../../plugin-generators",
-        generator.name
-      );
+      generatorPath = path.join(pluginsHome, generator.name);
       const shaMarker = path.join(generatorPath, `.${commitSHA}`);
 
       if (fs.existsSync(generatorPath) && !this.options.skipUpdate) {
