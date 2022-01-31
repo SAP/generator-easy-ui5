@@ -5,22 +5,37 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/test.js",
-      "args": ["--authToken=", "--org=ui5-community", "--template=ui5-library"],
-      "request": "launch",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
-    },
-    {
-      "args": ["easy-ui5-community", "--ghAuthToken="],
+      "args": ["../", "--ghAuthToken=", "--ghOrg=ui5-community"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "name": "Yeoman generator",
       "program": "~/.homebrew/lib/node_modules/yo/lib/cli.js",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "pwa-node",
+      "cwd": "${workspaceFolder}/test"
+    },
+    {
+      "args": ["../", "--ghAuthToken=", "--ghOrg=ui5-community", "--addGhOrg=yeoman"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "name": "Yeoman generator (addGhOrg)",
+      "program": "~/.homebrew/lib/node_modules/yo/lib/cli.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "cwd": "${workspaceFolder}/test"
+    },
+    {
+      "args": ["../", "ts-app", "--ghAuthToken=", "--ghOrg=ui5-community", "--addGhOrg=yeoman"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "name": "Yeoman generator ts-app (addGhOrg)",
+      "program": "~/.homebrew/lib/node_modules/yo/lib/cli.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "cwd": "${workspaceFolder}/test"
     },
     {
       "type": "node",
