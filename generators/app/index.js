@@ -214,7 +214,23 @@ module.exports = class extends Generator {
       const response = await octokit.repos.listForOrg({
         org: ghOrg,
       });
-      return response?.data?.filter((repo) =>
+      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
+    }
+
+    // helper to retrieve the available repositories for a GH user
+    const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
+      const response = await octokit.repos.listForUser({
+        username: ghUser,
+      });
+      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
+    }
+
+    // helper for filtering repos with corresponding subGenerator prefix
+    const filterReposWithSubGeneratorPrefix = (repos, subGeneratorPrefix) => {
+      if (!Array.isArray(repos)) {
+        return [];
+      }
+      return repos.filter((repo) =>
         repo.name.startsWith(`${subGeneratorPrefix}`)
       ).map((repo) => {
         return {
@@ -242,11 +258,18 @@ module.exports = class extends Generator {
         availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
       }
     } catch (e) {
-      console.error(`Failed to connect to GitHub to retrieve additional generators for "${this.options.addGhOrg}" organization! Run with --verbose for details!`);
       if (this.options.verbose) {
-        console.error(e);
+        this.log(`Failed to connect to GitHub retrieve additional generators for "${this.options.addGhOrg}" organization! Try to retrieve for user...`);
       }
-      return;
+      try {
+        availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+      } catch (e) {
+        console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!`);
+        if (this.options.verbose) {
+          console.error(e);
+        }
+        return;
+      }
     }
 
     // download the generator from GH (or the test generator)
