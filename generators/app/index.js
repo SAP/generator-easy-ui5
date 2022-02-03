@@ -209,22 +209,6 @@ module.exports = class extends Generator {
       }
     });
 
-    // helper to retrieve the available repositories for a GH org
-    const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix) => {
-      const response = await octokit.repos.listForOrg({
-        org: ghOrg,
-      });
-      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
-    }
-
-    // helper to retrieve the available repositories for a GH user
-    const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
-      const response = await octokit.repos.listForUser({
-        username: ghUser,
-      });
-      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
-    }
-
     // helper for filtering repos with corresponding subGenerator prefix
     const filterReposWithSubGeneratorPrefix = (repos, subGeneratorPrefix) => {
       if (!Array.isArray(repos)) {
@@ -240,6 +224,22 @@ module.exports = class extends Generator {
           subGeneratorName: repo.name.substring(subGeneratorPrefix.length),
         };
       });
+    }
+
+    // helper to retrieve the available repositories for a GH org
+    const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix) => {
+      const response = await octokit.repos.listForOrg({
+        org: ghOrg,
+      });
+      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
+    }
+
+    // helper to retrieve the available repositories for a GH user
+    const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
+      const response = await octokit.repos.listForUser({
+        username: ghUser,
+      });
+      return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
     }
 
     // retrieve the available repositories
