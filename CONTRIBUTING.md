@@ -66,7 +66,7 @@ Note that the developers also have their regular duties, so depending on the req
 
 First, make sure that you pull the latest state of the GitHub repository and then proceed with the following steps:
 
-1. Update the changelog: `npm run changelog`
+1. Update the changelog: `npm run changelog`, commit and push the change with the commit-msg: `chore: update CHANGELOG.md`
 
 2. Update the version: `npm version patch|minor|major`
 
