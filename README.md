@@ -8,11 +8,15 @@
 
 ## Description
 
-Easy-ui5 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [SAPUI5](https://sapui5.hana.ondemand.com/)/[OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
+Easy-ui5 💙 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [SAPUI5](https://sapui5.hana.ondemand.com/)/[OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
 
 This generator has been created to simplify the creation of your UI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
 The purpose of this generator is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
+
+> Starting with easy-ui5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. Easy-ui5 will download and install these repositories when needed.
+>
+> By default, it will download the repository [generator-ui5-project](https://github.com/ui5-community/generator-ui5-project/) which contains the templates that were previously integrated in easy-ui5 < 3.
 
 ## Requirements
 

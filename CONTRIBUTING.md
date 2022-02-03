@@ -50,7 +50,7 @@ Make sure the change would be welcome (e.g. a bugfix or a useful feature); best 
 
 1. Create a branch forking the generator-easy-ui5 repository and do your change.
 
-2. Commit and push your changes on that branch
+2. Commit (with a commit message following the [conventional-commit](https://www.conventionalcommits.org/) syntax) and push your changes on that branch
 
 3. If your change fixes an issue reported at GitHub, add a [keyword](https://help.github.com/articles/closing-issues-using-keywords/) like `fix <issue ID>` to the commit message:
 
@@ -61,3 +61,15 @@ Make sure the change would be welcome (e.g. a bugfix or a useful feature); best 
 Note that the developers also have their regular duties, so depending on the required effort for reviewing, testing and clarification this may take a while
 
 6. Once the change has been approved we will inform you in a comment
+
+## How to release - the Process
+
+First, make sure that you pull the latest state of the GitHub repository and then proceed with the following steps:
+
+1. Update the changelog: `npm run changelog`
+
+2. Update the version: `npm version patch|minor|major`
+
+3. Push the new commit and tag: `git push origin --follow-tags`
+
+A GitHub action will do the needful once the new tag has been pushed.

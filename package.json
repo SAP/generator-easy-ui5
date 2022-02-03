@@ -15,6 +15,7 @@
     "listSubGen": "yo easy-ui5 project --list",
     "startSubGen": "yo easy-ui5 project app",
     "workaround": "find . -name '.DS_Store' -delete",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "prepare": "husky install",
     "hooks:commit-msg": "commitlint -e"
   },
@@ -57,6 +58,7 @@
   "devDependencies": {
     "@commitlint/cli": "16.1.0",
     "@commitlint/config-conventional": "16.0.0",
+    "conventional-changelog-cli": "^2.2.2",
     "cz-conventional-changelog": "3.3.0",
     "husky": "^7.0.4",
     "prettier": "2.5.1"
