@@ -14,7 +14,9 @@
     "start": "yo easy-ui5 project",
     "listSubGen": "yo easy-ui5 project --list",
     "startSubGen": "yo easy-ui5 project app",
-    "workaround": "find . -name '.DS_Store' -delete"
+    "workaround": "find . -name '.DS_Store' -delete",
+    "prepare": "husky install",
+    "hooks:commit-msg": "commitlint -e"
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,20 @@
     "yosay": "^2.0.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "16.1.0",
+    "@commitlint/config-conventional": "16.0.0",
+    "cz-conventional-changelog": "3.3.0",
+    "husky": "^7.0.4",
     "prettier": "2.5.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
