@@ -43,16 +43,16 @@
     "colors": "1.4.0",
     "glob": "^7.2.0",
     "libnpmconfig": "^1.2.1",
-    "mocha": "^9.1.3",
+    "mocha": "^9.2.0",
     "rimraf": "^3.0.2",
     "yarn-or-npm": "^3.0.1",
     "yeoman-assert": "^3.1.1",
-    "yeoman-environment": "^3.8.0",
-    "yeoman-generator": "^5.4.2",
-    "yeoman-test": "^6.2.0",
+    "yeoman-environment": "^3.9.1",
+    "yeoman-generator": "^5.6.1",
+    "yeoman-test": "^6.3.0",
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "prettier": "2.4.1"
+    "prettier": "2.5.1"
   }
 }
