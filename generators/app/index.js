@@ -357,7 +357,7 @@ module.exports = class extends Generator {
         }
         this._showBusy(`  Downloading and extracting "${generator.name}" templates`);
         const reqZIPArchive = await octokit.repos.downloadZipballArchive({
-          owner: this.options.ghOrg,
+          owner: generator.org,
           repo: generator.name,
           ref: commitSHA,
         });
