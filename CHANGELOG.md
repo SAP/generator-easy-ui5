@@ -1,3 +1,13 @@
+## [3.2.2](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.2.2) (2022-02-08)
+
+
+### Bug Fixes
+
+* usage of proper gh org for logging and download ([#94](https://github.com/SAP/generator-easy-ui5/issues/94)) ([a88d4db](https://github.com/SAP/generator-easy-ui5/commit/a88d4dbb0a1f5ed3cf60f7ed0297c651222a83fb))
+* use the org name of the selected generator for downloading the corresponding repo ([d9ca4dc](https://github.com/SAP/generator-easy-ui5/commit/d9ca4dc3170e0507199799d2e14db327cba4d871))
+
+
+
 # [3.2.0](https://github.com/SAP/generator-easy-ui5/compare/v3.1.5...v3.2.0) (2022-02-03)
 
 
