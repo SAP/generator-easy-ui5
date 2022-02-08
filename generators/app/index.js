@@ -321,7 +321,7 @@ module.exports = class extends Generator {
           branch: generator.branch,
         });
       } catch (e) {
-        console.error(chalk.red(`Failed to retrieve the default branch for repository "${generator.name}" for "${this.options.ghOrg}" organization! Run with --verbose for details!`));
+        console.error(chalk.red(`Failed to retrieve the default branch for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
         if (this.options.verbose) {
           console.error(chalk.red(e.message));
         }
@@ -332,7 +332,7 @@ module.exports = class extends Generator {
 
       if (this.options.verbose) {
         this.log(
-          `Using commit ${commitSHA} from @${this.options.ghOrg}/${generator.name}#${generator.default_branch}...`
+          `Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.default_branch}...`
         );
       }
       generatorPath = path.join(pluginsHome, generator.name);
