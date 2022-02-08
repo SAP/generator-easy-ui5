@@ -66,10 +66,10 @@ Note that the developers also have their regular duties, so depending on the req
 
 First, make sure that you pull the latest state of the GitHub repository and then proceed with the following steps:
 
-1. Update the changelog: `npm run changelog`, commit and push the change with the commit-msg: `chore: update CHANGELOG.md`
+1. Update the version: `npm version patch|minor|major`
 
-2. Update the version: `npm version patch|minor|major`
+2. Update the changelog: `npm run changelog`, commit and amend the version change from step 1: `git add . && git commit --amend --no-edit`
 
-3. Push the new commit and tag: `git push origin --follow-tags`
+3. Push the new commit and tag: `git push origin --tags`
 
 A GitHub action will do the needful once the new tag has been pushed.
