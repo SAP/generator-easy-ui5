@@ -20,7 +20,7 @@ The purpose of this generator is to guide you on your first steps with [SAPUI5](
 
 ## Requirements
 
-- Get [Node.js](https://nodejs.org/en/download/)  (**version 12 or higher** ⚠️)
+- Get [Node.js](https://nodejs.org/en/download/)  (**version 14 or higher** ⚠️)
 
 ## Download and Installation
 

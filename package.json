@@ -6,6 +6,9 @@
   "files": [
     "generators"
   ],
+  "engines" : { 
+    "node" : ">=14.0.0"
+  },
   "scripts": {
     "test": "mocha",
     "postinstall": "node generators/app/postinstall",
