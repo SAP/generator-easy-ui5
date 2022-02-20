@@ -7,7 +7,7 @@ const { hasYarn } = require("yarn-or-npm");
 
 const path = require("path");
 const fs = require("fs");
-const { rmdir } = require("fs").promises;
+const { rm } = require("fs").promises;
 
 const { Octokit } = require("@octokit/rest");
 const { throttling } = require("@octokit/plugin-throttling");
@@ -346,7 +346,7 @@ module.exports = class extends Generator {
           }
           // remove if the SHA marker doesn't exist => outdated!
           this._showBusy(`  Removing old "${generator.name}" templates`);
-          await rmdir(generatorPath, { recursive: true });
+          await rm(generatorPath, { recursive: true });
         }
       }
 
@@ -385,7 +385,7 @@ module.exports = class extends Generator {
         }
         this._showBusy(`  Preparing "${generator.name}"`);
         await new Promise(function (resolve, reject) {
-          spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
+          spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress", "--ignore-engines"], {
             stdio: this.config.verbose ? "inherit" : "ignore",
             cwd: generatorPath,
             env: {

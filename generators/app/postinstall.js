@@ -1,7 +1,7 @@
 "use strict";
 const spawn = require("cross-spawn");
 const fs = require("fs");
-const { rmdir } = require("fs").promises;
+const { rm } = require("fs").promises;
 const path = require("path");
 const { hasYarn } = require("yarn-or-npm");
 const { Octokit } = require("@octokit/rest");
@@ -66,7 +66,7 @@ const ghOrg = "ui5-community",
       console.log("The default generator is outdated...");
       // remove if the SHA marker doesn't exist => outdated!
       showBusy("  Removing old default templates");
-      await rmdir(generatorPath, { recursive: true });
+      await rm(generatorPath, { recursive: true });
     }
   }
 
@@ -102,7 +102,7 @@ const ghOrg = "ui5-community",
     console.log("Installing the plugin dependencies...");
     showBusy("  Preparing the default templates");
     await new Promise(function (resolve, reject) {
-      spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress"], {
+      spawn((hasYarn() ? "yarn" : "npm"), ["install", "--no-progress", "--ignore-engines"], {
         stdio: "inherit",
         cwd: generatorPath,
         env: {
