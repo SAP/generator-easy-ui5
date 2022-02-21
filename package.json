@@ -1,13 +1,13 @@
 {
   "name": "generator-easy-ui5",
-  "version": "3.2.2",
+  "version": "3.3.0",
   "description": "Generator for UI5-based project",
   "main": "generators/app/index.js",
   "files": [
     "generators"
   ],
-  "engines" : { 
-    "node" : ">=14.0.0"
+  "engines": {
+    "node": ">=14.0.0"
   },
   "scripts": {
     "test": "mocha",
