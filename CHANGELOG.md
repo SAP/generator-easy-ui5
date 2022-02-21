@@ -1,10 +1,16 @@
-## [3.2.2](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.2.2) (2022-02-08)
+# [3.3.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.3.0) (2022-02-21)
 
 
 ### Bug Fixes
 
+* **postinstall:** avoid non-existing node_modules ([#98](https://github.com/SAP/generator-easy-ui5/issues/98)) ([f93c7c9](https://github.com/SAP/generator-easy-ui5/commit/f93c7c99b9e5df7af801a085afe72be85e462007))
 * usage of proper gh org for logging and download ([#94](https://github.com/SAP/generator-easy-ui5/issues/94)) ([a88d4db](https://github.com/SAP/generator-easy-ui5/commit/a88d4dbb0a1f5ed3cf60f7ed0297c651222a83fb))
 * use the org name of the selected generator for downloading the corresponding repo ([d9ca4dc](https://github.com/SAP/generator-easy-ui5/commit/d9ca4dc3170e0507199799d2e14db327cba4d871))
+
+
+### Features
+
+* allow to run easy-ui5 embedded ([#99](https://github.com/SAP/generator-easy-ui5/issues/99)) ([f4952c4](https://github.com/SAP/generator-easy-ui5/commit/f4952c442c9563a51c48b8edc25843f097fce4c4))
 
 
 
