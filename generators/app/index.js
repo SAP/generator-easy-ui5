@@ -138,7 +138,10 @@ module.exports = class extends Generator {
 
   async prompting() {
 
-    this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
+    // Have Yeoman greet the user.
+    if (!this.options.embedded) {
+      this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} generator!`));
+    }
 
     const home = path.join(__dirname, "..", "..");
 
