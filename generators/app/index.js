@@ -31,6 +31,7 @@ const generatorOptions = {
     type: String,
     description:
       "GitHub authToken to optionally access private generator repositories",
+    npmConfig: true
   },
   ghOrg: {
     type: String,
