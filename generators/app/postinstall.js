@@ -5,11 +5,25 @@ const { rm } = require("fs").promises;
 const path = require("path");
 const { hasYarn } = require("yarn-or-npm");
 const { Octokit } = require("@octokit/rest");
+const { throttling } = require("@octokit/plugin-throttling");
+const MyOctokit = Octokit.plugin(throttling);
 const AdmZip = require("adm-zip");
+
+// helper to retrieve config entries from npm
+//   --> npm config set easy-ui5_addGhOrg XYZ
+const NPM_CONFIG_PREFIX = "easy-ui5_";
+let npmConfig;
+const getNPMConfig = (configName) => {
+  if (!npmConfig) {
+    npmConfig = require("libnpmconfig").read();
+  }
+  return npmConfig && npmConfig[`${NPM_CONFIG_PREFIX}${configName}`]
+}
 
 const ghOrg = "ui5-community",
   repoName = "generator-ui5-project",
-  branch = "main";
+  branch = "main",
+  ghAuthToken = getNPMConfig("ghAuthToken");
 
 (async () => {
 
@@ -37,8 +51,25 @@ const ghOrg = "ui5-community",
     }
   }
 
-  const octokit = new Octokit({
-    userAgent: "generator-easy-ui5",
+  const pkg = require(path.join(__dirname, "../../package.json"));
+  console.log(`${pkg.name}:${pkg.version} - ${ghAuthToken}`);
+  const octokit = new MyOctokit({
+    userAgent: `${pkg.name}:${pkg.version}`,
+    auth: ghAuthToken,
+    throttle: {
+      onRateLimit: (retryAfter, options) => {
+        console.log(`Hit the GitHub API limit! Request quota exhausted for this request.`);
+        if (options.request.retryCount === 0) {
+          // only retries once
+          this.log(`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with "npm config set easy-ui5_ghAuthToken ghp_xxxx".`);
+          return true;
+        }
+      },
+      onAbuseLimit: () => {
+        // does not retry, only logs a warning
+        console.error(`Hit the GitHub API limit again! Please supply an auth token with with "npm config set easy-ui5_ghAuthToken ghp_xxxx".`);
+      },
+    }
   });
 
   const reqBranch = await octokit.repos.getBranch({
@@ -51,7 +82,7 @@ const ghOrg = "ui5-community",
 
   // eslint-disable-next-line
   console.log(
-    `Fetching ZIP for commit ${commitSHA} from @${ghOrg}/${repoName}#${branch}...`
+    `Using commit ${commitSHA} from @${ghOrg}/${repoName}#${branch}...`
   );
   const generatorPath = path.join(
     __dirname,
@@ -63,7 +94,10 @@ const ghOrg = "ui5-community",
   if (fs.existsSync(generatorPath)) {
     // check if the SHA marker exists to know whether the generator is up-to-date or not
     if (!fs.existsSync(shaMarker)) {
-      console.log("The default generator is outdated...");
+      // eslint-disable-next-line
+      console.log(
+        `Fetching new ZIP as the default generator is outdated...`
+      );
       // remove if the SHA marker doesn't exist => outdated!
       showBusy("  Removing old default templates");
       await rm(generatorPath, { recursive: true });
