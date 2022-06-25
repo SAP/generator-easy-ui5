@@ -70,6 +70,6 @@ First, make sure that you pull the latest state of the GitHub repository and the
 
 2. Update the changelog: `npm run changelog`, commit and amend the version change from step 1: `git add . && git commit --amend --no-edit`
 
-3. Push the new commit and tag: `git push origin --tags`
+3. Push the new commit and tag: `git push && git push --tags`
 
 A GitHub action will do the needful once the new tag has been pushed.
