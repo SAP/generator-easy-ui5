@@ -1,31 +1,35 @@
-const assert = require("yeoman-assert"),
-  path = require("path"),
-  helpers = require("yeoman-test"),
-  fs = require("fs"),
-  rimraf = require("rimraf"),
-  glob = require("glob");
+const path = require("path");
+const fs = require('fs-extra');
+
+const assert = require("yeoman-assert");
+const helpers = require("yeoman-test");
 
 describe("Basic project capabilities", function () {
   this.timeout(10000);
 
   before(function () {
-    glob.sync("test/generator-ui5-test/**").forEach((source) => {
-      const target = source.replace(
-        "test/generator-ui5-test",
-        "plugin-generators/generator-ui5-test"
-      );
-      if (!source.includes(".")) {
-        !fs.existsSync(target) && fs.mkdirSync(target);
-      } else {
-        fs.copyFileSync(source, target);
-      }
-    });
+    fs.copySync(path.join(__dirname, "generator-ui5-test"), path.join(__dirname, "../plugin-generators/generator-ui5-test"), { recursive: true, overwrite: true});
   });
 
-  it("should be able to run the test generator", function () {
-    return helpers
-      .run(path.join(__dirname, "../generators/app"))
-      .withArguments(["test"]);
+  it("should be able to run the test generator", async function () {
+    return new Promise((resolve, reject) => {
+      helpers
+        .run(path.join(__dirname, "../generators/app"))
+        .inTmpDir()
+        .withArguments(["test"])
+        .withOptions({
+          "offline": true
+        })
+        .on("end", (ctx) => {
+          // ensure the async write took place
+          setTimeout(() => {
+            resolve(ctx);
+          }, 1000);
+        })
+        .on("error", (err) => {
+          reject(err);
+        })
+    });
   });
 
   it("should create the test file", function () {
@@ -33,6 +37,6 @@ describe("Basic project capabilities", function () {
   });
 
   after(function () {
-    rimraf.sync("plugin-generators/generator-ui5-test");
+    fs.removeSync(path.join(__dirname, "../plugin-generators/generator-ui5-test"))
   });
 });

@@ -8,7 +8,9 @@ const { hasYarn } = require("yarn-or-npm");
 const path = require("path");
 const fs = require("fs");
 const { rm } = require("fs").promises;
+const glob = require("glob");
 
+const { request } = require("@octokit/request");
 const { Octokit } = require("@octokit/rest");
 const { throttling } = require("@octokit/plugin-throttling");
 const MyOctokit = Octokit.plugin(throttling);
@@ -62,19 +64,32 @@ const generatorOptions = {
     type: Boolean,
     description: "List the available subcommands of the generator",
   },
+  skipUpdate: {
+    type: Boolean,
+    description: "Skip the update of the plugin generator",
+  },
+  forceUpdate: {
+    type: Boolean,
+    description: "Force the update of the plugin generator",
+  },
+  offline: {
+    type: Boolean,
+    alias: "o",
+    description: "Running easy-ui5 in offline mode",
+  },
   verbose: {
     type: Boolean,
     description: "Enable detailed logging",
-  },
-  skipUpdate: {
-    type: Boolean,
-    description: "Skip the update of the plugin generators",
   },
   plugins: {
     type: Boolean,
     alias: "p",
     description: "Get detailed version information",
-  }
+  },
+  next: {
+    type: Boolean,
+    description: "Preview the next mode to consume templates from bestofui5.org",
+  },
 };
 
 const generatorArgs = {
@@ -162,7 +177,6 @@ module.exports = class extends Generator {
 
     // log the plugins and configuration
     if (this.options.plugins) {
-      const glob = require("glob");
       const yeoman = require("yeoman-environment/package.json");
 
       const components = {
@@ -179,7 +193,7 @@ module.exports = class extends Generator {
 
       this.log(chalk.green("\nAvailable generators:"));
       glob.sync(`${pluginsHome}/*/package.json`).forEach((plugin) => {
-        const name = plugin.match(/.*\/(.+)\/package\.json/)[1];
+        const name = plugin.match(/.*\/generator-(.+)\/package\.json/)[1];
         const lib = require(plugin);
         this.log(`  - ${chalk.green(name)}: ${lib.version}`);
       });
@@ -188,30 +202,38 @@ module.exports = class extends Generator {
     }
 
     // create the octokit client to retrieve the generators from GH org
-    const octokit = new MyOctokit({
-      userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
-      auth: this.options.ghAuthToken,
-      throttle: {
-        onRateLimit: (retryAfter, options) => {
-          this.log(
-            `${chalk.yellow("Hit the GitHub API limit!")} Request quota exhausted for this request.`
-          );
-
-          if (options.request.retryCount === 0) {
-            // only retries once
-            this.log(`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\`. `);
-            return true;
-          }
-        },
-        onAbuseLimit: () => {
-          // does not retry, only logs a warning
-          this.log(
-            `${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `
-          );
-
-        },
-      }
-    });
+    // when not running in offline mode!
+    let octokit;
+    if (this.options.offline) {
+      this.log(
+        `Running in ${chalk.yellow(
+          "offline"
+        )} mode!`
+      );
+    } else {
+      octokit = new MyOctokit({
+        userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
+        auth: this.options.ghAuthToken,
+        throttle: {
+          onRateLimit: (retryAfter, options) => {
+            this.log(
+              `${chalk.yellow("Hit the GitHub API limit!")} Request quota exhausted for this request.`
+            );
+            if (options.request.retryCount === 0) {
+              // only retries once
+              this.log(`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\`. `);
+              return true;
+            }
+          },
+          onAbuseLimit: () => {
+            // does not retry, only logs a warning
+            this.log(
+              `${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `
+            );
+          },
+        }
+      });
+    }
 
     // helper for filtering repos with corresponding subGenerator prefix
     const filterReposWithSubGeneratorPrefix = (repos, subGeneratorPrefix) => {
@@ -228,7 +250,7 @@ module.exports = class extends Generator {
           subGeneratorName: repo.name.substring(subGeneratorPrefix.length),
         };
       });
-    }
+    };
 
     // helper to retrieve the available repositories for a GH org
     const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix) => {
@@ -236,7 +258,7 @@ module.exports = class extends Generator {
         org: ghOrg,
       });
       return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
-    }
+    };
 
     // helper to retrieve the available repositories for a GH user
     const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
@@ -244,62 +266,133 @@ module.exports = class extends Generator {
         username: ghUser,
       });
       return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
-    }
+    };
 
-    // retrieve the available repositories
-    let availGenerators;
-    try {
-      availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix);
-    } catch (e) {
-      console.error(`Failed to connect to GitHub to retrieve available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
-      if (this.options.verbose) {
-        console.error(e);
-      }
-      return;
-    }
-    try {
-      if (this.options.addGhOrg && this.options.addSubGeneratorPrefix) {
-        availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
-      }
-    } catch (e) {
-      if (this.options.verbose) {
-        this.log(`Failed to connect to GitHub retrieve additional generators for "${this.options.addGhOrg}" organization! Try to retrieve for user...`);
-      }
-      try {
-        availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
-      } catch (e) {
-        console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!`);
+    // determine the generator to be used
+    let generator;
+
+    // try to identify whether concrete generator is defined
+    if (!generator) {
+      // determine generator by ${owner}/${repo}(!${dir})? syntax, e.g.:
+      //   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial
+      //   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial#1.0
+      //   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator
+      //   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator#1.0
+      const reGenerator = /([^\/]+)\/([^\!\#]+)(?:\!([^\#]+))?(?:\#(.+))?/;
+      const matchGenerator = reGenerator.exec(this.options.generator);
+      if (matchGenerator) {
+        // derive and path the generator information from command line
+        const [owner, repo, dir = "/generator", branch] = matchGenerator.slice(1);
+        generator = {
+          org: owner,
+          name: repo,
+          branch,
+          dir,
+          pluginPath: `_/${owner}/${repo}`,
+        };
+        // log which generator is being used!
         if (this.options.verbose) {
-          console.error(e);
+          this.log(
+            `Using generator ${chalk.green(
+              `${owner}/${repo}!${dir}${branch ? "#" + branch : ""}`
+            )}`
+          );
         }
-        return;
       }
     }
 
-    // download the generator from GH (or the test generator)
-    let generatorPath;
-    if (this.options.generator === "test") {
-      generatorPath = path.join(
-        __dirname,
-        "../../plugin-generators/generator-ui5-test"
-      );
-    } else {
+    // retrieve the available repositories (if no generator is specified specified directly)
+    let availGenerators;
+    if (!generator) {
+      if (this.options.offline) {
+        availGenerators = glob.sync(`${pluginsHome}/generator-*/package.json`).map((plugin) => {
+          const match = plugin.match(/.*\/(generator-(.+))\/package\.json/);
+          return {
+            org: "local",
+            name: match[1],
+            subGeneratorName: match[2].match(/(?:ui5-)?(.*)/)?.[1] || match[2],
+            local: true,
+          }
+        });
+      } else {
+        if (this.options.next) {
+          // check bestofui5.org for generators
+          try {
+            const response = await request({
+              method: "GET",
+              url: "https://raw.githubusercontent.com/ui5-community/bestofui5-data/live-data/data/data.json",
+            });
+            const data = JSON.parse(response.data);
+          
+            availGenerators = data?.packages?.filter(entry => {
+              return entry.type === "generator";
+            }).map(entry => {
+              return {
+                org: entry.gitHubOwner,
+                name: entry.gitHubRepo,
+                subGeneratorName: entry.gitHubRepo.match(/(?:generator-(?:ui5-)?)(.*)/)?.[1] || entry.gitHubRepo,
+              };
+            });
+          } catch (e) {
+            console.error(`Failed to connect to bestofui5.org to retrieve all available generators! Run with --verbose for details!`);
+            if (this.options.verbose) {
+              console.error(e);
+            }
+            return;
+          }
+        } else {
+          // check the main GH org for generators
+          try {
+            availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix);
+          } catch (e) {
+            console.error(`Failed to connect to GitHub to retrieve all available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+            if (this.options.verbose) {
+              console.error(e);
+            }
+            return;
+          }
 
+          // check the additional GH org for generators with a different prefix
+          try {
+            if (this.options.addGhOrg && this.options.addSubGeneratorPrefix) {
+              availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+            }
+          } catch (e) {
+            if (this.options.verbose) {
+              this.log(`Failed to connect to GitHub retrieve additional generators for "${this.options.addGhOrg}" organization! Try to retrieve for user...`);
+            }
+            try {
+              availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+            } catch (e) {
+              console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!`);
+              if (this.options.verbose) {
+                console.error(e);
+              }
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // if no generator is provided and doesn't exist, ask for generator name
+    if (!generator) {
       // check for provided generator being available on GH
-      let generator = this.options.generator && availGenerators.find((repo) => 
+      generator = this.options.generator && availGenerators.find((repo) => 
         repo.subGeneratorName === this.options.generator
       );
 
       // if no generator is provided and doesn't exist, ask for generator name
-      if (!generator) {
-        if (this.options.generator) {
-          this.log(
-            `The generator ${chalk.red(
-              this.options.generator
-            )} was not found. Please select an existing generator!`
-          );
-        }
+      if (this.options.generator && !generator) {
+        this.log(
+          `The generator ${chalk.red(
+            this.options.generator
+          )} was not found. Please select an existing generator!`
+        );
+      }
 
+      // still not found, select a generator
+      if (!generator) {
         const generatorIdx = (
           await this.prompt([
             {
@@ -315,36 +408,54 @@ module.exports = class extends Generator {
         ).generator;
         generator = availGenerators[generatorIdx];
       }
+    }
 
-      // fetch the available branches to retrieve the latest commit SHA
-      let reqBranch;
+    let generatorPath = path.join(pluginsHome, generator.pluginPath || generator.name);
+    if (!this.options.offline) {
+      // lookup the default path of the generator if not set
+      if (!generator.branch) {
+        try {
+          const repoInfo = await octokit.repos.get({
+            owner: generator.org,
+            repo: generator.name,
+          });
+          generator.branch = repoInfo.data.default_branch;
+        } catch (e) {
+          console.error(`Generator "${owner}/${repo}!${dir}${branch ? "#" + branch : ""}" not found! Run with --verbose for details!`);
+          if (this.options.verbose) {
+            console.error(e);
+          }
+          return;
+        }
+      }
+      // fetch the branch to retrieve the latest commit SHA
+      let commitSHA;
       try {
-        reqBranch = await octokit.repos.getBranch({
+        // determine the commitSHA
+        const reqBranch = await octokit.repos.getBranch({
           owner: generator.org,
           repo: generator.name,
           branch: generator.branch,
         });
+        commitSHA = reqBranch.data.commit.sha;
       } catch (e) {
-        console.error(chalk.red(`Failed to retrieve the default branch for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
+        console.error(chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
         if (this.options.verbose) {
           console.error(chalk.red(e.message));
         }
         return;
       }
-
-      const commitSHA = reqBranch.data.commit.sha;
-
+  
       if (this.options.verbose) {
         this.log(
-          `Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.default_branch}...`
+          `Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.branch}...`
         );
       }
-      generatorPath = path.join(pluginsHome, generator.name);
       const shaMarker = path.join(generatorPath, `.${commitSHA}`);
-
+  
       if (fs.existsSync(generatorPath) && !this.options.skipUpdate) {
         // check if the SHA marker exists to know whether the generator is up-to-date or not
-        if (!fs.existsSync(shaMarker)) {
+        if (this.options.forceUpdate || !fs.existsSync(shaMarker)) {
           if (this.options.verbose) {
             this.log(`Generator "${generator.name}" in "${generatorPath}" is outdated...`);
           }
@@ -353,7 +464,7 @@ module.exports = class extends Generator {
           await rm(generatorPath, { recursive: true });
         }
       }
-
+  
       // re-fetch the generator and extract into local plugin folder
       if (!fs.existsSync(generatorPath)) {
         if (this.options.verbose) {
@@ -370,9 +481,14 @@ module.exports = class extends Generator {
         const zipEntries = zip.getEntries();
         zipEntries.forEach((entry) => {
           const match =
-            !entry.isDirectory && entry.entryName.match(/[^\/]+\/(.+)/);
-          if (match) {
-            const entryPath = match[1].slice(0, entry.name.length * -1);
+            !entry.isDirectory && entry.entryName.match(/[^\/]+(\/.+)/);
+          let entryPath;
+          if (generator.dir && match && match[1].startsWith(generator.dir)) {
+            entryPath = path.dirname(match[1].substring(generator.dir.length));
+          } else if (!generator.dir && match) {
+            entryPath = path.dirname(match[1]);
+          }
+          if (entryPath) {
             zip.extractEntryTo(
               entry,
               path.join(generatorPath, entryPath),
@@ -380,9 +496,9 @@ module.exports = class extends Generator {
               true
             );
           }
-        });
+      });
         fs.writeFileSync(shaMarker, commitSHA);
-
+  
         // run yarn/npm install
         if (this.options.verbose) {
           this.log("Installing the plugin dependencies...");
@@ -403,9 +519,10 @@ module.exports = class extends Generator {
           });
         }.bind(this));
       }
-    }
+  
+      this._clearBusy(true);
 
-    this._clearBusy(true);
+    }
 
     // filter the local options and the help command
     const opts = Object.keys(this._options).filter(
@@ -523,7 +640,7 @@ module.exports = class extends Generator {
       }
 
       if (this.options.verbose) {
-        this.log(`Calling ${chalk.red(subGenerator)}...`);
+        this.log(`Calling ${chalk.red(subGenerator)}...\n  \\_ in: ${generatorPath}`);
       }
 
       // finally, run the subgenerator
