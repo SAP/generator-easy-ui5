@@ -1,4 +1,4 @@
-# [3.4.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.4.0) (2022-06-25)
+# [3.5.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.0) (2022-07-26)
 
 
 ### Bug Fixes
@@ -13,6 +13,7 @@
 
 * allow ghAuthToken as NPM configuration ([#103](https://github.com/SAP/generator-easy-ui5/issues/103)) ([5e3d928](https://github.com/SAP/generator-easy-ui5/commit/5e3d92807e881d0ade80251bc8cc1bdde85142be))
 * allow to run easy-ui5 embedded ([#99](https://github.com/SAP/generator-easy-ui5/issues/99)) ([f4952c4](https://github.com/SAP/generator-easy-ui5/commit/f4952c442c9563a51c48b8edc25843f097fce4c4))
+* offline support, generator from repo, bestofui5 test ([#110](https://github.com/SAP/generator-easy-ui5/issues/110)) ([70e9012](https://github.com/SAP/generator-easy-ui5/commit/70e9012d85bee0c2ac2dadfe3ca9cac3d297ce84))
 
 
 
