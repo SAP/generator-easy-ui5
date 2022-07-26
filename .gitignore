@@ -4,3 +4,4 @@ node_modules/
 !/plugin-generators/generator-ui5-test
 yarn.lock
 package-lock.json
+.DS_Store
