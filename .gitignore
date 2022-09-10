@@ -1,7 +1,14 @@
+# Ignore node_modules
 node_modules/
+
+# Ignore test files
 !/plugin-generators
 /plugin-generators/*
 !/plugin-generators/generator-ui5-test
+
+# Ignore PNPM and YARN lock files
+pnpm-lock.yaml
 yarn.lock
-package-lock.json
+
+# Ignore Mac files
 .DS_Store

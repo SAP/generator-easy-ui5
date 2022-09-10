@@ -531,8 +531,11 @@ module.exports = class extends Generator {
     );
 
     // create the env for the plugin generator
-    const yeoman = require("yeoman-environment");
-    const env = yeoman.createEnv(this.args, opts);
+    let env = this.env; // in case of Yeoman UI the env is injected!
+    if (!env) {
+      const yeoman = require("yeoman-environment");
+      env = yeoman.createEnv(this.args, opts);
+    }
 
     // helper to derive the subcommand
     function deriveSubcommand(namespace) {
@@ -647,6 +650,7 @@ module.exports = class extends Generator {
       env.run(subGenerator, {
         verbose: this.options.verbose,
         embedded: true,
+        destinationRoot: this.destinationRoot()
       });
 
     } else {
