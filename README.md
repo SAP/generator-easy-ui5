@@ -14,13 +14,13 @@ This generator has been created to simplify the creation of your UI5 prototypes.
 
 The purpose of this generator is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
-> Starting with easy-ui5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. Easy-ui5 will download and install these repositories when needed.
+> :warning: Starting with easy-ui5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. Easy-ui5 will download and install these repositories when needed.
 >
 > By default, it will download the repository [generator-ui5-project](https://github.com/ui5-community/generator-ui5-project/) which contains the templates that were previously integrated in easy-ui5 < 3.
 
 ## Requirements
 
-- Get [Node.js](https://nodejs.org/en/download/)  (**version 14 or higher** ⚠️)
+- Get [Node.js](https://nodejs.org/en/download/)  (:warning: **version 14 or higher**)
 
 ## Download and Installation
 
