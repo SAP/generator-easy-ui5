@@ -13,24 +13,25 @@ yo ./
 Expected result:
 
 ```sh
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 
 ? Select your generator? (Use arrow keys)
-❯ library 
-  middleware 
-  task 
-  control 
-  project 
-  ts-app 
-  flp-plugin 
+❯ library
+  middleware
+  task
+  control
+  project
+  app
+  ts-app
+  flp-plugin
 ```
 
 By specifying an `addGhOrg` additional entries should be displayed:
@@ -42,24 +43,25 @@ yo ./ --addGhOrg=petermuessig
 Expected result:
 
 ```sh
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 
 ? Select your generator? (Use arrow keys)
-❯ library [ui5-community] 
-  middleware [ui5-community] 
-  task [ui5-community] 
-  control [ui5-community] 
-  project [ui5-community] 
-  ts-app [ui5-community] 
-  flp-plugin [ui5-community] 
+❯ library [ui5-community]
+  middleware [ui5-community]
+  task [ui5-community]
+  control [ui5-community]
+  project [ui5-community]
+  app [ui5-community]
+  ts-app [ui5-community]
+  flp-plugin [ui5-community]
 ```
 
 ## Scenario 2: Next Usage
@@ -73,23 +75,23 @@ yo ./ --next
 Expected result:
 
 ```sh
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 
 ? Select your generator? (Use arrow keys)
-❯ project 
-  ts-app 
-  ts-app-fcl 
-  flp-plugin 
-  library 
-  control 
+❯ project
+  ts-app
+  ts-app-fcl
+  flp-plugin
+  library
+  control
 ```
 
 ## Scenario 3: Offline Usage
@@ -103,21 +105,21 @@ yo ./ --offline
 Expected result:
 
 ```sh
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 
 Running in offline mode!
 ? Select your generator? (Use arrow keys)
-❯ library 
-  project 
-  ts-app 
+❯ library
+  project
+  ts-app
 ```
 
 ## Scenario 4: Generator From GitHub Repository
@@ -129,15 +131,15 @@ yo ./ SAP-samples/ui5-typescript-tutorial
 Expected result:
 
 ```sh
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 
-? How do you want to name this application? (myapp) 
+? How do you want to name this application? (myapp)
 ```

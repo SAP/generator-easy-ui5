@@ -20,7 +20,7 @@ The purpose of this generator is to guide you on your first steps with [SAPUI5](
 
 ## Requirements
 
-- Get [Node.js](https://nodejs.org/en/download/)  (:warning: **version 14 or higher**)
+- Get [Node.js](https://nodejs.org/en/download/) (:warning: **version 14 or higher**)
 
 ## Download and Installation
 
@@ -60,13 +60,13 @@ During the prompting phase, the generator will ask on which target platform your
 
 > Have a look at [this plugin project](https://github.com/ui5-community/generator-ui5-project/) for more usage instruction and information about the available subcommands.
 
-
 ## More generators
 
 And this is just the start!
 We made easy-ui5 extensible, so that the entire [UI5 Community](https://github.com/ui5-community/) can build additional plugins to scaffold any UI5-related development activity.
 
 By default, this generator comes with the [project-creation-plugin](https://github.com/ui5-community/generator-ui5-project) but there are many others as well:
+
 - Create new UI5 libraries [[ui5-community/generator-ui5-library]](https://github.com/ui5-community/generator-ui5-library)
 - More are coming!
 <!-- - Create new UI5 custom controls
@@ -75,6 +75,7 @@ By default, this generator comes with the [project-creation-plugin](https://gith
 - Create a WDI5 test suite -->
 
 To download and use any of the plugins above, run the following command
+
 ```sh
 yo easy-ui5 [project|library] # this is the name of the repositorty without the "generator-ui5-" prefix
 ```
@@ -84,12 +85,15 @@ yo easy-ui5 [project|library] # this is the name of the repositorty without the 
 ## Calling generators
 
 Run the following command to see all subgenerators of a given plugin
+
 ```sh
 yo easy-ui5 [project|library] --list
 ```
+
 Once you decided on the subgenerator, run:
 
 Run the following command to see all subgenerators of a given plugin
+
 ```sh
 yo easy-ui5 [project|library] <sub-generator-id>
 ```

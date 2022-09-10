@@ -1,8 +1,6 @@
 ---
 name: New Issue for the Easy-UI5 shell
 about: Only use this template if there is a problem during the prompting phase or with the file generation. Use the other template if incorrect files were generated.
-assignees: IObert
-
 ---
 
 ## Easy-Ui5 version:
@@ -24,4 +22,3 @@ assignees: IObert
 ## What happens instead?
 
 ## Any other information? (attach screenshot if possible)
-

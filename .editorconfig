@@ -1,0 +1,23 @@
+# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = tab
+tab_width = 2
+
+[*.{yaml,yml,md,json}]
+indent_size = 2
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
