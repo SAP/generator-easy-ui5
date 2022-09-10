@@ -1,4 +1,10 @@
-# [3.5.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.0) (2022-07-26)
+## [3.5.1](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.1) (2022-09-10)
+
+### Bug Fixes
+
+- enable for Yeoman UI usage ([03c2e38](https://github.com/SAP/generator-easy-ui5/commit/03c2e38af4eebe108d6076710b74d8aaf7c31d8d))
+
+## [3.5.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.0) (2022-07-26)
 
 ### Bug Fixes
 
