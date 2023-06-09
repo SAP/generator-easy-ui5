@@ -4,7 +4,8 @@
   "description": "Generator for UI5-based project",
   "main": "generators/app/index.js",
   "files": [
-    "generators"
+    "generators",
+    "plugins"
   ],
   "engines": {
     "node": ">=14.0.0"
