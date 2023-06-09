@@ -40,6 +40,11 @@ const generatorOptions = {
 		default: "ui5-community",
 		hide: true, // we don't want to recommend to use this option
 	},
+	ghThreshold: {
+		type: Number,
+		default: 100,
+		hide: true, // shouldn't be needed
+	},
 	subGeneratorPrefix: {
 		type: String,
 		description: "Prefix used for the lookup of the available generators",
@@ -58,6 +63,18 @@ const generatorOptions = {
 		default: "generator-",
 		hide: true, // we don't want to recommend to use this option
 		npmConfig: true,
+	},
+	pluginsHome: {
+		type: String,
+		description: "Home directory of the plugin generators",
+		default: path.join(require("os").homedir(), ".npm", "_generator-easy-ui5", "plugin-generators"),
+		hide: true, // shouldn't be needed
+		npmConfig: true,
+	},
+	embed: {
+		type: Boolean,
+		description: "Embeds the selected plugin generator",
+		hide: true, // shouldn't be needed
 	},
 	list: {
 		type: Boolean,
@@ -151,6 +168,43 @@ module.exports = class extends Generator {
 		}
 	}
 
+	async _npmInstall(dir) {
+		return new Promise(
+			function (resolve, reject) {
+				spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines"], {
+					stdio: this.config.verbose ? "inherit" : "ignore",
+					cwd: dir,
+					env: {
+						...process.env,
+						NO_UPDATE_NOTIFIER: true,
+					},
+				})
+					.on("exit", function (code) {
+						resolve(code);
+					})
+					.on("error", function (err) {
+						reject(err);
+					});
+			}.bind(this)
+		);
+	}
+
+	_unzip(zip, targetPath, zipInternalPath /* used for plugin generators from GitHub (e.g. TS tutorial) */) {
+		const zipEntries = zip.getEntries();
+		zipEntries.forEach((entry) => {
+			const match = !entry.isDirectory && entry.entryName.match(/[^\/]+(\/.+)/);
+			let entryPath;
+			if (zipInternalPath && match && match[1].startsWith(zipInternalPath)) {
+				entryPath = path.dirname(match[1].substring(zipInternalPath.length));
+			} else if (!zipInternalPath && match) {
+				entryPath = path.dirname(match[1]);
+			}
+			if (entryPath) {
+				zip.extractEntryTo(entry, path.join(targetPath, entryPath), false, true);
+			}
+		});
+	}
+
 	async prompting() {
 		const home = path.join(__dirname, "..", "..");
 		const pkgJson = require(path.join(home, "package.json"));
@@ -160,19 +214,14 @@ module.exports = class extends Generator {
 			this.log(yosay(`Welcome to the ${chalk.red("easy-ui5")} ${chalk.yellow(pkgJson.version)} generator!`));
 		}
 
-		// check the permissions to Easy UI5s plugin directory which must
-		// allow read/write to install additional plugin generators
-		let pluginsHome = path.join(home, "plugin-generators");
-		try {
-			fs.accessSync(pluginsHome, fs.constants.R_OK | fs.constants.W_OK);
-		} catch (e) {
-			pluginsHome = path.join(require("os").homedir(), ".npm", "_generator-easy-ui5", "plugin-generators");
-			if (this.options.verbose) {
-				console.error(`Plugin directory: ${chalk.green(pluginsHome)}`);
-				console.error(chalk.red(e.message));
-			}
-			fs.mkdirSync(pluginsHome, { recursive: true });
+		// by default we install the easy-ui5 plugin generators into the following folder:
+		// %user_dir%/.npm/_generator-easy-ui5/plugin-generators
+		let pluginsHome = this.options.pluginsHome;
+		if (this.options.verbose) {
+			console.error(`Plugin directory: ${chalk.green(pluginsHome)}`);
+			console.error(chalk.red(e.message));
 		}
+		fs.mkdirSync(pluginsHome, { recursive: true });
 
 		// log the plugins and configuration
 		if (this.options.plugins) {
@@ -246,9 +295,11 @@ module.exports = class extends Generator {
 		};
 
 		// helper to retrieve the available repositories for a GH org
-		const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix) => {
+		const listGeneratorsForOrg = async (ghOrg, subGeneratorPrefix, threshold) => {
 			const response = await octokit.repos.listForOrg({
 				org: ghOrg,
+				sort: "name",
+				per_page: threshold,
 			});
 			return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
 		};
@@ -257,6 +308,8 @@ module.exports = class extends Generator {
 		const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
 			const response = await octokit.repos.listForUser({
 				username: ghUser,
+				sort: "name",
+				per_page: threshold,
 			});
 			return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
 		};
@@ -276,12 +329,14 @@ module.exports = class extends Generator {
 			if (matchGenerator) {
 				// derive and path the generator information from command line
 				const [owner, repo, dir = "/generator", branch] = matchGenerator.slice(1);
+				// the plugin path is derived from the owner, repo, dir and branch
+				const pluginPath = `_/${owner}/${repo}${dir.replace(/[\/\\]/g, "_")}${branch ? `#${branch.replace(/[\/\\]/g, "_")}` : ""}`;
 				generator = {
 					org: owner,
 					name: repo,
 					branch,
 					dir,
-					pluginPath: `_/${owner}/${repo}`,
+					pluginPath,
 				};
 				// log which generator is being used!
 				if (this.options.verbose) {
@@ -293,6 +348,30 @@ module.exports = class extends Generator {
 		// retrieve the available repositories (if no generator is specified specified directly)
 		let availGenerators;
 		if (!generator) {
+			// lookup the non-installed embedded generator(s)
+			const generatorsToBeInstalled = glob
+				.sync(`${path.join(__dirname, "../../plugins")}/generator-*.zip`)
+				.map((file) => {
+					const generatorName = path.basename(file, ".zip");
+					const generatorPath = path.join(pluginsHome, generatorName);
+					return {
+						file,
+						generatorPath,
+					};
+				})
+				.filter(({ generatorPath }) => !fs.existsSync(generatorPath));
+			// install the missing embedded generator(s)
+			if (generatorsToBeInstalled.length > 0) {
+				this._showBusy(`Installing embedded generators of ${chalk.red("easy-ui5")}...`);
+				await Promise.all(
+					generatorsToBeInstalled.map(({ file, generatorPath }) => {
+						this._unzip(new AdmZip(file), generatorPath);
+						return this._npmInstall(generatorPath);
+					})
+				);
+				this._clearBusy(true);
+			}
+			// offline mode means local generators only versus only mode
 			if (this.options.offline) {
 				availGenerators = glob.sync(`${pluginsHome}/generator-*/package.json`).map((plugin) => {
 					const match = plugin.match(/.*\/(generator-(.+))\/package\.json/);
@@ -304,6 +383,8 @@ module.exports = class extends Generator {
 					};
 				});
 			} else {
+				// either lookup the generators from bestofui5.org (next option)
+				// or fetch it from the ui5-community gh organization
 				if (this.options.next) {
 					// check bestofui5.org for generators
 					try {
@@ -334,7 +415,7 @@ module.exports = class extends Generator {
 				} else {
 					// check the main GH org for generators
 					try {
-						availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix);
+						availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix, this.options.ghThreshold);
 					} catch (e) {
 						console.error(`Failed to connect to GitHub to retrieve all available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
 						if (this.options.verbose) {
@@ -346,14 +427,14 @@ module.exports = class extends Generator {
 					// check the additional GH org for generators with a different prefix
 					try {
 						if (this.options.addGhOrg && this.options.addSubGeneratorPrefix) {
-							availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+							availGenerators = availGenerators.concat(await listGeneratorsForOrg(this.options.addGhOrg, this.options.addSubGeneratorPrefix, this.options.ghThreshold));
 						}
 					} catch (e) {
 						if (this.options.verbose) {
 							this.log(`Failed to connect to GitHub retrieve additional generators for "${this.options.addGhOrg}" organization! Try to retrieve for user...`);
 						}
 						try {
-							availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix));
+							availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix, this.options.ghThreshold));
 						} catch (e1) {
 							console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!`);
 							if (this.options.verbose) {
@@ -432,7 +513,7 @@ module.exports = class extends Generator {
 			}
 
 			if (this.options.verbose) {
-				this.log(`Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.branch}...`);
+				this.log(`Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.branch}!`);
 			}
 			const shaMarker = path.join(generatorPath, `.${commitSHA}`);
 
@@ -440,189 +521,189 @@ module.exports = class extends Generator {
 				// check if the SHA marker exists to know whether the generator is up-to-date or not
 				if (this.options.forceUpdate || !fs.existsSync(shaMarker)) {
 					if (this.options.verbose) {
-						this.log(`Generator "${generator.name}" in "${generatorPath}" is outdated...`);
+						this.log(`Generator ${chalk.yellow(generator.name)} in "${generatorPath}" is outdated!`);
 					}
 					// remove if the SHA marker doesn't exist => outdated!
-					this._showBusy(`  Removing old "${generator.name}" templates`);
+					this._showBusy(`  Removing old ${chalk.yellow(generator.name)} templates...`);
 					await rm(generatorPath, { recursive: true });
 				}
 			}
 
 			// re-fetch the generator and extract into local plugin folder
 			if (!fs.existsSync(generatorPath)) {
+				// unzip the archive
 				if (this.options.verbose) {
 					this.log(`Extracting ZIP to "${generatorPath}"...`);
 				}
-				this._showBusy(`  Downloading and extracting "${generator.name}" templates`);
+				this._showBusy(`  Downloading ${chalk.yellow(generator.name)} templates...`);
 				const reqZIPArchive = await octokit.repos.downloadZipballArchive({
 					owner: generator.org,
 					repo: generator.name,
 					ref: commitSHA,
 				});
+
+				this._showBusy(`  Extracting ${chalk.yellow(generator.name)} templates...`);
 				const buffer = Buffer.from(new Uint8Array(reqZIPArchive.data));
 				const zip = new AdmZip(buffer);
-				const zipEntries = zip.getEntries();
-				zipEntries.forEach((entry) => {
-					const match = !entry.isDirectory && entry.entryName.match(/[^\/]+(\/.+)/);
-					let entryPath;
-					if (generator.dir && match && match[1].startsWith(generator.dir)) {
-						entryPath = path.dirname(match[1].substring(generator.dir.length));
-					} else if (!generator.dir && match) {
-						entryPath = path.dirname(match[1]);
-					}
-					if (entryPath) {
-						zip.extractEntryTo(entry, path.join(generatorPath, entryPath), false, true);
-					}
-				});
+				this._unzip(zip, generatorPath, generator.dir);
+
+				// write the sha marker
 				fs.writeFileSync(shaMarker, commitSHA);
 
 				// run yarn/npm install
 				if (this.options.verbose) {
 					this.log("Installing the plugin dependencies...");
 				}
-				this._showBusy(`  Preparing "${generator.name}"`);
-				await new Promise(
-					function (resolve, reject) {
-						spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines"], {
-							stdio: this.config.verbose ? "inherit" : "ignore",
-							cwd: generatorPath,
-							env: {
-								...process.env,
-								NO_UPDATE_NOTIFIER: true,
-							},
-						})
-							.on("exit", function (code) {
-								resolve(code);
-							})
-							.on("error", function (err) {
-								reject(err);
-							});
-					}.bind(this)
-				);
+				this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
+				await this._npmInstall(generatorPath);
 			}
 
 			this._clearBusy(true);
 		}
 
-		// filter the local options and the help command
-		const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
+		// do not execute the plugin generator during the setup/embed mode
+		if (!this.options.embed) {
+			// filter the local options and the help command
+			const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
 
-		// create the env for the plugin generator
-		let env = this.env; // in case of Yeoman UI the env is injected!
-		if (!env) {
-			const yeoman = require("yeoman-environment");
-			env = yeoman.createEnv(this.args, opts);
-		}
-
-		// helper to derive the subcommand
-		function deriveSubcommand(namespace) {
-			const match = namespace.match(/[^:]+:(.+)/);
-			return match ? match[1] : namespace;
-		}
-
-		// filter the hidden subgenerators already
-		//   -> subgenerators must be found in env as they are returned by lookup!
-		let subGenerators = env.lookup({ localOnly: true, packagePaths: generatorPath }).filter((sub) => {
-			const subGenerator = env.get(sub.namespace);
-			return !subGenerator.hidden;
-		});
-
-		// list the available subgenerators in the console (as help)
-		if (this.options.list) {
-			let maxLength = 0;
-			this.log(
-				subGenerators
-					.map((sub) => {
-						maxLength = Math.max(sub.namespace.length, maxLength);
-						return sub;
-					})
-					.reduce((output, sub) => {
-						const subGenerator = env.get(sub.namespace);
-						const displayName = subGenerator.displayName || "";
-						let line = `  ${deriveSubcommand(sub.namespace).padEnd(maxLength + 2)}`;
-						if (displayName) {
-							line += ` # ${subGenerator.displayName}`;
-						}
-						return `${output}\n${line}`;
-					}, `Subcommands (${subGenerators.length}):`)
-			);
-			return;
-		}
-
-		// if a subcommand is provided as argument, identify the matching subgenerator
-		// and remove the rest of the subgenerators from the list for later steps
-		if (this.options.subcommand) {
-			const selectedSubGenerator = subGenerators.filter((sub) => {
-				// identify the subgenerator by subcommand
-				return new RegExp(`:${this.options.subcommand}$`).test(sub.namespace);
-			});
-			if (selectedSubGenerator.length == 1) {
-				subGenerators = selectedSubGenerator;
-			} else {
-				this.log(`The generator ${chalk.red(this.options.generator)} has no subcommand ${chalk.red(this.options.subcommand)}. Please select an existing subcommand!`);
+			// create the env for the plugin generator
+			let env = this.env; // in case of Yeoman UI the env is injected!
+			if (!env) {
+				const yeoman = require("yeoman-environment");
+				env = yeoman.createEnv(this.args, opts);
 			}
-		}
 
-		// transform the list of the subgenerators and identify the
-		// default subgenerator for the default selection
-		let defaultSubGenerator;
-		let maxLength = 0;
-		subGenerators = subGenerators
-			.map((sub) => {
+			// helper to derive the subcommand
+			function deriveSubcommand(namespace) {
+				const match = namespace.match(/[^:]+:(.+)/);
+				return match ? match[1] : namespace;
+			}
+
+			// filter the hidden subgenerators already
+			//   -> subgenerators must be found in env as they are returned by lookup!
+			let subGenerators = env.lookup({ localOnly: true, packagePaths: generatorPath }).filter((sub) => {
 				const subGenerator = env.get(sub.namespace);
-				let subcommand = deriveSubcommand(sub.namespace);
-				let displayName = subGenerator.displayName || subcommand;
-				maxLength = Math.max(displayName.length, maxLength);
-				return {
-					subcommand,
-					displayName,
-					sub,
-				};
-			})
-			.map(({ subcommand, displayName, sub }) => {
-				const transformed = {
-					name: `${displayName.padEnd(maxLength + 2)} [${subcommand}]`,
-					value: sub.namespace,
-				};
-				if (/:app$/.test(sub.namespace)) {
-					defaultSubGenerator = transformed;
+				return !subGenerator.hidden;
+			});
+
+			// list the available subgenerators in the console (as help)
+			if (this.options.list) {
+				let maxLength = 0;
+				this.log(
+					subGenerators
+						.map((sub) => {
+							maxLength = Math.max(sub.namespace.length, maxLength);
+							return sub;
+						})
+						.reduce((output, sub) => {
+							const subGenerator = env.get(sub.namespace);
+							const displayName = subGenerator.displayName || "";
+							let line = `  ${deriveSubcommand(sub.namespace).padEnd(maxLength + 2)}`;
+							if (displayName) {
+								line += ` # ${subGenerator.displayName}`;
+							}
+							return `${output}\n${line}`;
+						}, `Subcommands (${subGenerators.length}):`)
+				);
+				return;
+			}
+
+			// if a subcommand is provided as argument, identify the matching subgenerator
+			// and remove the rest of the subgenerators from the list for later steps
+			if (this.options.subcommand) {
+				const selectedSubGenerator = subGenerators.filter((sub) => {
+					// identify the subgenerator by subcommand
+					return new RegExp(`:${this.options.subcommand}$`).test(sub.namespace);
+				});
+				if (selectedSubGenerator.length == 1) {
+					subGenerators = selectedSubGenerator;
+				} else {
+					this.log(`The generator ${chalk.red(this.options.generator)} has no subcommand ${chalk.red(this.options.subcommand)}. Please select an existing subcommand!`);
 				}
-				return transformed;
-			});
-
-		// at least 1 subgenerator must be present
-		if (subGenerators.length >= 1) {
-			// by default the 1st subgenerator is used
-			let subGenerator = subGenerators[0].value;
-
-			// if more than 1 subgenerator is present
-			// ask the developer to select one!
-			if (subGenerators.length > 1) {
-				subGenerator = (
-					await this.prompt([
-						{
-							type: "list",
-							name: "subGenerator",
-							message: "What do you want to do?",
-							default: defaultSubGenerator && defaultSubGenerator.value,
-							choices: subGenerators,
-						},
-					])
-				).subGenerator;
 			}
 
-			if (this.options.verbose) {
-				this.log(`Calling ${chalk.red(subGenerator)}...\n  \\_ in: ${generatorPath}`);
-			}
+			// transform the list of the subgenerators and identify the
+			// default subgenerator for the default selection
+			let defaultSubGenerator;
+			let maxLength = 0;
+			subGenerators = subGenerators
+				.map((sub) => {
+					const subGenerator = env.get(sub.namespace);
+					let subcommand = deriveSubcommand(sub.namespace);
+					let displayName = subGenerator.displayName || subcommand;
+					maxLength = Math.max(displayName.length, maxLength);
+					return {
+						subcommand,
+						displayName,
+						sub,
+					};
+				})
+				.map(({ subcommand, displayName, sub }) => {
+					const transformed = {
+						name: `${displayName.padEnd(maxLength + 2)} [${subcommand}]`,
+						value: sub.namespace,
+					};
+					if (/:app$/.test(sub.namespace)) {
+						defaultSubGenerator = transformed;
+					}
+					return transformed;
+				});
 
-			// finally, run the subgenerator
-			env.run(subGenerator, {
-				verbose: this.options.verbose,
-				embedded: true,
-				destinationRoot: this.destinationRoot(),
-			});
+			// at least 1 subgenerator must be present
+			if (subGenerators.length >= 1) {
+				// by default the 1st subgenerator is used
+				let subGenerator = subGenerators[0].value;
+
+				// if more than 1 subgenerator is present
+				// ask the developer to select one!
+				if (subGenerators.length > 1) {
+					subGenerator = (
+						await this.prompt([
+							{
+								type: "list",
+								name: "subGenerator",
+								message: "What do you want to do?",
+								default: defaultSubGenerator && defaultSubGenerator.value,
+								choices: subGenerators,
+							},
+						])
+					).subGenerator;
+				}
+
+				if (this.options.verbose) {
+					this.log(`Calling ${chalk.red(subGenerator)}...\n  \\_ in "${generatorPath}"`);
+				}
+
+				// finally, run the subgenerator
+				env.run(subGenerator, {
+					verbose: this.options.verbose,
+					embedded: true,
+					destinationRoot: this.destinationRoot(),
+				});
+			} else {
+				this.log(`The generator ${chalk.red(this.options.generator)} has no visible subgenerators!`);
+			}
 		} else {
-			this.log(`The generator ${chalk.red(this.options.generator)} has no visible subgenerators!`);
+			// zip the content of the plugin generator or
+			// install the dependencies of the generator
+			if (this.options.verbose) {
+				this.log(`Embedding plugin generator ${chalk.yellow(generator.name)}...`);
+			}
+			const generatorZIP = new AdmZip();
+			const addLocalFile = (file) => {
+				const filePath = path.join(generator.name, path.relative(generatorPath, file));
+				generatorZIP.addLocalFile(file, path.dirname(filePath), path.basename(filePath));
+				if (this.options.verbose) {
+					this.log(`  + file: ${file}`);
+				}
+			};
+			glob.sync(`${generatorPath}/*`, { nodir: true, dot: true }).forEach(addLocalFile);
+			glob.sync(`${generatorPath}/!(node_modules)/**/*`, { nodir: true, dot: true }).forEach(addLocalFile);
+			const generatorZIPPath = path.join(__dirname, "../../plugins", `${generator.name}.zip`);
+			generatorZIP.writeZip(generatorZIPPath);
+			if (this.options.verbose) {
+				this.log(`Stored plugin generator ${chalk.yellow(generator.name)} zip to "${generatorZIPPath}"!`);
+			}
 		}
 	}
 };
