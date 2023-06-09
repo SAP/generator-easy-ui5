@@ -1,13 +1,14 @@
+## [3.5.2](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.5.2) (2023-06-09)
+
+### Bug Fixes
+
+- sort subgen list, remove threshold, fix permission issues ([#123](https://github.com/SAP/generator-easy-ui5/issues/123)) ([c5dd321](https://github.com/SAP/generator-easy-ui5/commit/c5dd3218a26870a61722a9675a81831cc8af50e5)), closes [#122](https://github.com/SAP/generator-easy-ui5/issues/122) [#118](https://github.com/SAP/generator-easy-ui5/issues/118) [#117](https://github.com/SAP/generator-easy-ui5/issues/117) [#111](https://github.com/SAP/generator-easy-ui5/issues/111)
+
 ## [3.5.1](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.1) (2022-09-10)
 
 ### Bug Fixes
 
 - enable for Yeoman UI usage ([03c2e38](https://github.com/SAP/generator-easy-ui5/commit/03c2e38af4eebe108d6076710b74d8aaf7c31d8d))
-
-## [3.5.0](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.0) (2022-07-26)
-
-### Bug Fixes
-
 - **postinstall:** allow usage of NPM config for ghAuthToken to avoid rate limit ([#104](https://github.com/SAP/generator-easy-ui5/issues/104)) ([371d7fb](https://github.com/SAP/generator-easy-ui5/commit/371d7fbc82b8a59cef896197b99239b505b3cd90)), closes [#100](https://github.com/SAP/generator-easy-ui5/issues/100)
 - **postinstall:** avoid non-existing node_modules ([#98](https://github.com/SAP/generator-easy-ui5/issues/98)) ([f93c7c9](https://github.com/SAP/generator-easy-ui5/commit/f93c7c99b9e5df7af801a085afe72be85e462007))
 - usage of proper gh org for logging and download ([#94](https://github.com/SAP/generator-easy-ui5/issues/94)) ([a88d4db](https://github.com/SAP/generator-easy-ui5/commit/a88d4dbb0a1f5ed3cf60f7ed0297c651222a83fb))
