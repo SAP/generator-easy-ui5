@@ -10,7 +10,7 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "postinstall": "node generators/app/postinstall",
+    "prepublishOnly": "npx yo ./ project --embed",
     "start": "yo easy-ui5 project",
     "test": "mocha",
     "test:subgen:list": "yo easy-ui5 project --list",

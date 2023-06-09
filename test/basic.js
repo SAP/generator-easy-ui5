@@ -4,11 +4,14 @@ const fs = require("fs-extra");
 const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
 
+const pluginsHome = path.join(__dirname, "_/plugin-generators");
+
 describe("Basic project capabilities", function () {
 	this.timeout(10000);
 
 	before(function () {
-		fs.copySync(path.join(__dirname, "generator-ui5-test"), path.join(__dirname, "../plugin-generators/generator-ui5-test"), { recursive: true, overwrite: true });
+		fs.mkdirSync(path.join(pluginsHome, "generator-ui5-test"), { recursive: true });
+		fs.copySync(path.join(__dirname, "generator-ui5-test"), path.join(pluginsHome, "generator-ui5-test"), { recursive: true, overwrite: true });
 	});
 
 	it("should be able to run the test generator", async function () {
@@ -18,6 +21,7 @@ describe("Basic project capabilities", function () {
 				.inTmpDir()
 				.withArguments(["test"])
 				.withOptions({
+					pluginsHome,
 					offline: true,
 				})
 				.on("end", (ctx) => {
@@ -37,6 +41,6 @@ describe("Basic project capabilities", function () {
 	});
 
 	after(function () {
-		fs.removeSync(path.join(__dirname, "../plugin-generators/generator-ui5-test"));
+		fs.removeSync(path.join(pluginsHome, "generator-ui5-test"));
 	});
 });
