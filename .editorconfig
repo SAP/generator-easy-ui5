@@ -10,6 +10,7 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+quote_type = double
 
 # Change these settings to your own preference
 indent_style = tab

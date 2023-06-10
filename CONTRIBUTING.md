@@ -1,4 +1,4 @@
-# Contributing to Easy-UI5
+# Contributing to Easy UI5
 
 We welcome any type of contribution (code contributions, pull requests, issues) to this easy-ui5 generator equally.
 
