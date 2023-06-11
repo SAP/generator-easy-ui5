@@ -1,20 +1,33 @@
-"use strict";
-const Generator = require("yeoman-generator");
-const chalk = require("chalk");
-const yosay = require("yosay");
-const spawn = require("cross-spawn");
-const { hasYarn } = require("yarn-or-npm");
+import Generator from "yeoman-generator";
 
-const path = require("path");
-const fs = require("fs");
-const { rm } = require("fs").promises;
-const glob = require("glob");
+import path from "path";
+import fs from "fs";
+import os from "os";
+import url from "url";
 
-const { request } = require("@octokit/request");
-const { Octokit } = require("@octokit/rest");
-const { throttling } = require("@octokit/plugin-throttling");
+import { glob } from "glob";
+import chalk from "chalk";
+import yosay from "yosay";
+import libnpmconfig from "libnpmconfig";
+import yarnOrNpm from "yarn-or-npm";
+const { hasYarn } = yarnOrNpm;
+import AdmZip from "adm-zip";
+import { request } from "@octokit/request";
+import { Octokit } from "@octokit/rest";
+import { throttling } from "@octokit/plugin-throttling";
 const MyOctokit = Octokit.plugin(throttling);
-const AdmZip = require("adm-zip");
+import spawn from "cross-spawn";
+
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+
+// apply proxy settings to GLOBAL_AGENT to support the proxy configuration
+// provided via the standard Node.js environment varibales (used for fetch API)
+let HTTP_PROXY, HTTPS_PROXY, NO_PROXY;
+if (global?.GLOBAL_AGENT) {
+	HTTP_PROXY = global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY || process.env.http_proxy;
+	HTTPS_PROXY = global.GLOBAL_AGENT.HTTPS_PROXY = process.env.HTTPS_PROXY || process.env.https_proxy;
+	NO_PROXY = global.GLOBAL_AGENT.NO_PROXY = process.env.NO_PROXY || process.env.no_proxy;
+}
 
 // helper to retrieve config entries from npm
 //   --> npm config set easy-ui5_addGhOrg XYZ
@@ -22,13 +35,31 @@ const NPM_CONFIG_PREFIX = "easy-ui5_";
 let npmConfig;
 const getNPMConfig = (configName) => {
 	if (!npmConfig) {
-		npmConfig = require("libnpmconfig").read();
+		npmConfig = libnpmconfig.read();
 	}
 	return npmConfig && npmConfig[`${NPM_CONFIG_PREFIX}${configName}`];
 };
 
 // the command line options of the generator
 const generatorOptions = {
+	pluginsHome: {
+		type: String,
+		description: "Home directory of the plugin generators",
+		default: path.join(os.homedir(), ".npm", "_generator-easy-ui5", "plugin-generators"),
+		hide: true, // shouldn't be needed
+		npmConfig: true,
+	},
+	plugins: {
+		type: Boolean,
+		alias: "p",
+		description: "List detailed information about installed plugin generators",
+	},
+	ghBaseUrl: {
+		type: String,
+		description: "Base URL for the Octokit API (defaults to https://api.github.com if undefined)",
+		hide: true, // shouldn't be needed
+		npmConfig: true,
+	},
 	ghAuthToken: {
 		type: String,
 		description: "GitHub authToken to optionally access private generator repositories",
@@ -51,6 +82,12 @@ const generatorOptions = {
 		default: "generator-ui5-",
 		hide: true, // we don't want to recommend to use this option
 	},
+	addGhBaseUrl: {
+		type: String,
+		description: "Base URL for the Octokit API for the additional generators (defaults to https://api.github.com if undefined)",
+		hide: true, // shouldn't be needed
+		npmConfig: true,
+	},
 	addGhOrg: {
 		type: String,
 		description: "GitHub organization to lookup for additional available generators",
@@ -62,13 +99,6 @@ const generatorOptions = {
 		description: "Prefix used for the lookup of the additional available generators",
 		default: "generator-",
 		hide: true, // we don't want to recommend to use this option
-		npmConfig: true,
-	},
-	pluginsHome: {
-		type: String,
-		description: "Home directory of the plugin generators",
-		default: path.join(require("os").homedir(), ".npm", "_generator-easy-ui5", "plugin-generators"),
-		hide: true, // shouldn't be needed
 		npmConfig: true,
 	},
 	embed: {
@@ -97,14 +127,9 @@ const generatorOptions = {
 		type: Boolean,
 		description: "Enable detailed logging",
 	},
-	plugins: {
-		type: Boolean,
-		alias: "p",
-		description: "Get detailed version information",
-	},
 	next: {
 		type: Boolean,
-		description: "Preview the next mode to consume templates from bestofui5.org",
+		description: "Preview the next mode to consume subgenerators from bestofui5.org",
 	},
 };
 
@@ -112,16 +137,16 @@ const generatorArgs = {
 	generator: {
 		type: String,
 		required: false,
-		description: 'Name of the generator to invoke (without the "generator-ui5-" prefix)',
+		description: `Name of the generator to invoke (without the ${chalk.yellow("generator-ui5-")} prefix)`,
 	},
 	subcommand: {
 		type: String,
 		required: false,
-		description: 'Name of the subcommand to invoke (without the "generator:" prefix)',
+		description: `Name of the subcommand to invoke (without the ${chalk.yellow("generator:")} prefix)`,
 	},
 };
 
-module.exports = class extends Generator {
+export default class extends Generator {
 	constructor(args, opts) {
 		super(args, opts, {
 			// disable the Yeoman 5 package-manager logic (auto install)!
@@ -189,7 +214,8 @@ module.exports = class extends Generator {
 		);
 	}
 
-	_unzip(zip, targetPath, zipInternalPath /* used for plugin generators from GitHub (e.g. TS tutorial) */) {
+	_unzip(pathOrBuffer, targetPath, zipInternalPath /* used for plugin generators from GitHub (e.g. TS tutorial) */) {
+		const zip = new AdmZip(pathOrBuffer);
 		const zipEntries = zip.getEntries();
 		zipEntries.forEach((entry) => {
 			const match = !entry.isDirectory && entry.entryName.match(/[^\/]+(\/.+)/);
@@ -205,9 +231,13 @@ module.exports = class extends Generator {
 		});
 	}
 
+	determineAppname() {
+		return "Easy UI5";
+	}
+
 	async prompting() {
 		const home = path.join(__dirname, "..", "..");
-		const pkgJson = require(path.join(home, "package.json"));
+		const pkgJson = JSON.parse(fs.readFileSync(path.join(home, "package.json"), "utf8"));
 
 		// Have Yeoman greet the user.
 		if (!this.options.embedded) {
@@ -218,13 +248,25 @@ module.exports = class extends Generator {
 		// %user_dir%/.npm/_generator-easy-ui5/plugin-generators
 		let pluginsHome = this.options.pluginsHome;
 		if (this.options.verbose) {
-			console.error(`Plugin directory: ${chalk.green(pluginsHome)}`);
-			console.error(chalk.red(e.message));
+			console.info("  Context:");
+			console.info(`    - sourceRoot = ${chalk.green(this.sourceRoot())}`);
+			console.info(`    - destinationRoot = ${chalk.green(this.destinationRoot())}`);
+			console.info("  Options:");
+			Object.keys(generatorOptions).forEach((option) => {
+				console.info(`    - ${option} = ${chalk.green(this.options[option])}`);
+			});
+			console.info("  Proxy:");
+			console.info(`    - HTTP_PROXY = ${chalk.green(HTTP_PROXY)}`);
+			console.info(`    - HTTPS_PROXY = ${chalk.green(HTTPS_PROXY)}`);
+			console.info(`    - NO_PROXY = ${chalk.green(NO_PROXY)}`);
 		}
 		fs.mkdirSync(pluginsHome, { recursive: true });
 
 		// log the plugins and configuration
 		if (this.options.plugins) {
+			const { createRequire } = await import("node:module");
+			const require = createRequire(import.meta.url);
+
 			const yeoman = require("yeoman-environment/package.json");
 
 			const components = {
@@ -255,9 +297,11 @@ module.exports = class extends Generator {
 		if (this.options.offline) {
 			this.log(`Running in ${chalk.yellow("offline")} mode!`);
 		} else {
-			octokit = new MyOctokit({
+			// define the options for the Octokit API
+			const octokitOptions = {
 				userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
 				auth: this.options.ghAuthToken,
+				baseUrl: this.options.ghBaseUrl,
 				throttle: {
 					onRateLimit: (retryAfter, options) => {
 						this.log(`${chalk.yellow("Hit the GitHub API limit!")} Request quota exhausted for this request.`);
@@ -269,12 +313,14 @@ module.exports = class extends Generator {
 							return true;
 						}
 					},
-					onAbuseLimit: () => {
+					onSecondaryRateLimit: () => {
 						// does not retry, only logs a warning
 						this.log(`${chalk.red("Hit the GitHub API limit again!")} Please supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\` `);
 					},
 				},
-			});
+			};
+			// create the octokit instance
+			octokit = new MyOctokit(octokitOptions);
 		}
 
 		// helper for filtering repos with corresponding subGenerator prefix
@@ -299,6 +345,7 @@ module.exports = class extends Generator {
 			const response = await octokit.repos.listForOrg({
 				org: ghOrg,
 				sort: "name",
+				// eslint-disable-next-line camelcase
 				per_page: threshold,
 			});
 			return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
@@ -309,6 +356,7 @@ module.exports = class extends Generator {
 			const response = await octokit.repos.listForUser({
 				username: ghUser,
 				sort: "name",
+				// eslint-disable-next-line camelcase
 				per_page: threshold,
 			});
 			return filterReposWithSubGeneratorPrefix(response?.data, subGeneratorPrefix);
@@ -356,19 +404,18 @@ module.exports = class extends Generator {
 					const generatorPath = path.join(pluginsHome, generatorName);
 					return {
 						file,
+						generatorName,
 						generatorPath,
 					};
 				})
 				.filter(({ generatorPath }) => !fs.existsSync(generatorPath));
-			// install the missing embedded generator(s)
+			// install (unzip) the missing embedded generator(s)
 			if (generatorsToBeInstalled.length > 0) {
-				this._showBusy(`Installing embedded generators of ${chalk.red("easy-ui5")}...`);
-				await Promise.all(
-					generatorsToBeInstalled.map(({ file, generatorPath }) => {
-						this._unzip(new AdmZip(file), generatorPath);
-						return this._npmInstall(generatorPath);
-					})
-				);
+				this._showBusy("  Installing embedded subgenerators...");
+				generatorsToBeInstalled.map(({ file, generatorName, generatorPath }) => {
+					this._showBusy(`  Installing embedded subgenerator ${chalk.yellow(generatorName)}...`);
+					this._unzip(file, generatorPath);
+				});
 				this._clearBusy(true);
 			}
 			// offline mode means local generators only versus only mode
@@ -504,10 +551,10 @@ module.exports = class extends Generator {
 					branch: generator.branch,
 				});
 				commitSHA = reqBranch.data.commit.sha;
-			} catch (e) {
+			} catch (ex) {
 				console.error(chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
 				if (this.options.verbose) {
-					console.error(chalk.red(e.message));
+					console.error(chalk.red(ex.message));
 				}
 				return;
 			}
@@ -524,7 +571,7 @@ module.exports = class extends Generator {
 						this.log(`Generator ${chalk.yellow(generator.name)} in "${generatorPath}" is outdated!`);
 					}
 					// remove if the SHA marker doesn't exist => outdated!
-					this._showBusy(`  Removing old ${chalk.yellow(generator.name)} templates...`);
+					this._showBusy(`  Deleting subgenerator ${chalk.yellow(generator.name)}...`);
 					await rm(generatorPath, { recursive: true });
 				}
 			}
@@ -535,36 +582,40 @@ module.exports = class extends Generator {
 				if (this.options.verbose) {
 					this.log(`Extracting ZIP to "${generatorPath}"...`);
 				}
-				this._showBusy(`  Downloading ${chalk.yellow(generator.name)} templates...`);
+				this._showBusy(`  Downloading subgenerator ${chalk.yellow(generator.name)}...`);
 				const reqZIPArchive = await octokit.repos.downloadZipballArchive({
 					owner: generator.org,
 					repo: generator.name,
 					ref: commitSHA,
 				});
 
-				this._showBusy(`  Extracting ${chalk.yellow(generator.name)} templates...`);
+				this._showBusy(`  Extracting subgenerator ${chalk.yellow(generator.name)}...`);
 				const buffer = Buffer.from(new Uint8Array(reqZIPArchive.data));
-				const zip = new AdmZip(buffer);
-				this._unzip(zip, generatorPath, generator.dir);
+				this._unzip(buffer, generatorPath, generator.dir);
 
 				// write the sha marker
 				fs.writeFileSync(shaMarker, commitSHA);
-
-				// run yarn/npm install
-				if (this.options.verbose) {
-					this.log("Installing the plugin dependencies...");
-				}
-				this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
-				await this._npmInstall(generatorPath);
 			}
 
-			this._clearBusy(true);
+			// only when embedding we clear the busy state as otherwise
+			// the npm install will immediately again show the busy state
+			if (this.options.embed) {
+				this._clearBusy(true);
+			}
 		}
 
 		// do not execute the plugin generator during the setup/embed mode
 		if (!this.options.embed) {
 			// filter the local options and the help command
 			const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
+
+			// run yarn/npm install (always for self-healing!)
+			if (this.options.verbose) {
+				this.log("Installing the subgenerator dependencies...");
+			}
+			this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
+			await this._npmInstall(generatorPath);
+			this._clearBusy(true);
 
 			// create the env for the plugin generator
 			let env = this.env; // in case of Yeoman UI the env is injected!
@@ -706,4 +757,4 @@ module.exports = class extends Generator {
 			}
 		}
 	}
-};
+}

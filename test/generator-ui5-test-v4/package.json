@@ -1,5 +1,5 @@
 {
-  "name": "generator-ui5-test",
+  "name": "generator-ui5-test-v4",
   "private": true,
   "main": "generators/app/index.js",
   "keywords": [
@@ -10,6 +10,8 @@
     "generators"
   ],
   "dependencies": {
-    "yeoman-generator": "^4.13.0"
+    "glob": "^7.2.0",
+    "yeoman-generator": "^4.13.0",
+    "yosay": "^2.0.2"
   }
 }

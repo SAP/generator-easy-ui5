@@ -8,15 +8,15 @@
 
 ## Description
 
-Easy-ui5 💙 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [SAPUI5](https://sapui5.hana.ondemand.com/)/[OpenUI5](https://openui5.hana.ondemand.com/)-based web-apps and other UI5-related projects within seconds.
+Easy UI5 (`easy-ui5`) 💙 is a [Yeoman](http://yeoman.io/) generator which enables you to create simple [SAPUI5](https://ui5.sap.com)/[OpenUI5](https://sdk.openui5.org)-based web-apps and other UI5-related projects within seconds.
 
 This generator has been created to simplify the creation of your UI5 prototypes. Now you can scaffold simple UI5 projects from the shell/terminal of your choice. The current best practices (such as [async](https://blogs.sap.com/2018/12/18/ui5ers-buzz-41-best-practices-for-async-loading-in-ui5/)) are already baked into our templates so you don't have to worry about the definition of the metadata files.
 
-The purpose of this generator is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
+The purpose of the `project` subgenerator is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
-> :warning: Starting with easy-ui5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. Easy-ui5 will download and install these repositories when needed.
+> :warning: Starting with Easy UI5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. Easy UI5 will download and install these repositories when needed.
 >
-> By default, it will download the repository [generator-ui5-project](https://github.com/ui5-community/generator-ui5-project/) which contains the templates that were previously integrated in easy-ui5 < 3.
+> By default, it will download the repository [generator-ui5-project](https://github.com/ui5-community/generator-ui5-project/) which contains the templates that were previously integrated in Easy UI5 < 3.
 
 ## Requirements
 
@@ -63,7 +63,8 @@ During the prompting phase, the generator will ask on which target platform your
 ## More generators
 
 And this is just the start!
-We made easy-ui5 extensible, so that the entire [UI5 Community](https://github.com/ui5-community/) can build additional plugins to scaffold any UI5-related development activity.
+
+We made Easy UI5 extensible, so that the entire [UI5 Community](https://github.com/ui5-community/) can build additional plugins to scaffold any UI5-related development activity.
 
 By default, this generator comes with the [project-creation-plugin](https://github.com/ui5-community/generator-ui5-project) but there are many others as well:
 
@@ -97,6 +98,14 @@ Run the following command to see all subgenerators of a given plugin
 ```sh
 yo easy-ui5 [project|library] <sub-generator-id>
 ```
+
+## Proxy settings
+
+If you are running Easy UI5 behind a coporate proxy, just use the default proxy environment variables for Node.js to configure your corporate proxy:
+
+- `HTTP_PROXY`: Specify the value to use as the HTTP proxy for all connections, e.g., `HTTP_PROXY="http://proxy.mycompany.com:8080/"`.
+- `HTTPS_PROXY`: Specify the value to use as the HTTPS proxy for all connections, e.g., `HTTPS_PROXY="https://proxy.mycompany.com:8080/"`.
+- `NO_PROXY`: Define the hosts that should bypass the proxy, e.g., `NO_PROXY="localhost,.mycompany.com,192.168.6.254:80"`.
 
 ## How to obtain support
 
