@@ -1,6 +1,6 @@
 {
   "name": "generator-easy-ui5",
-  "version": "3.5.2",
+  "version": "3.6.0",
   "description": "Generator for UI5-based project",
   "main": "generators/app/index.js",
   "type": "module",

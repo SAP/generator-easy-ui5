@@ -1,8 +1,13 @@
-## [3.5.2](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.5.2) (2023-06-09)
+# [3.6.0](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.0) (2023-06-11)
 
 ### Bug Fixes
 
+- also include embedded subgens ([86912a8](https://github.com/SAP/generator-easy-ui5/commit/86912a8cb4736ea8950696de14ce20e87056246f))
 - sort subgen list, remove threshold, fix permission issues ([#123](https://github.com/SAP/generator-easy-ui5/issues/123)) ([c5dd321](https://github.com/SAP/generator-easy-ui5/commit/c5dd3218a26870a61722a9675a81831cc8af50e5)), closes [#122](https://github.com/SAP/generator-easy-ui5/issues/122) [#118](https://github.com/SAP/generator-easy-ui5/issues/118) [#117](https://github.com/SAP/generator-easy-ui5/issues/117) [#111](https://github.com/SAP/generator-easy-ui5/issues/111)
+
+### Features
+
+- support for coporate proxy / switch to esm / update deps ([#124](https://github.com/SAP/generator-easy-ui5/issues/124)) ([bf95254](https://github.com/SAP/generator-easy-ui5/commit/bf95254694025f3d22e5af37bb610ba7d2a0e215)), closes [#79](https://github.com/SAP/generator-easy-ui5/issues/79)
 
 ## [3.5.1](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.1) (2022-09-10)
 
