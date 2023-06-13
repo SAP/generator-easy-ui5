@@ -1,8 +1,9 @@
-# [3.6.0](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.0) (2023-06-11)
+## [3.6.1](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.1) (2023-06-13)
 
 ### Bug Fixes
 
 - also include embedded subgens ([86912a8](https://github.com/SAP/generator-easy-ui5/commit/86912a8cb4736ea8950696de14ce20e87056246f))
+- omit devDependencies for plugin generators ([#125](https://github.com/SAP/generator-easy-ui5/issues/125)) ([ffda0c5](https://github.com/SAP/generator-easy-ui5/commit/ffda0c5048543bdb29956bdde01730af4fee74fb))
 - sort subgen list, remove threshold, fix permission issues ([#123](https://github.com/SAP/generator-easy-ui5/issues/123)) ([c5dd321](https://github.com/SAP/generator-easy-ui5/commit/c5dd3218a26870a61722a9675a81831cc8af50e5)), closes [#122](https://github.com/SAP/generator-easy-ui5/issues/122) [#118](https://github.com/SAP/generator-easy-ui5/issues/118) [#117](https://github.com/SAP/generator-easy-ui5/issues/117) [#111](https://github.com/SAP/generator-easy-ui5/issues/111)
 
 ### Features
