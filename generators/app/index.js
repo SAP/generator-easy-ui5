@@ -54,6 +54,11 @@ const generatorOptions = {
 		alias: "p",
 		description: "List detailed information about installed plugin generators",
 	},
+	pluginsWithDevDeps: {
+		type: Boolean,
+		alias: "dev",
+		description: "Installs the plugin generators with dev dependencies (compat mode)",
+	},
 	ghBaseUrl: {
 		type: String,
 		description: "Base URL for the Octokit API (defaults to https://api.github.com if undefined)",
@@ -193,7 +198,7 @@ export default class extends Generator {
 		}
 	}
 
-	async _npmInstall(dir) {
+	async _npmInstall(dir, withDevDeps) {
 		return new Promise(
 			function (resolve, reject) {
 				spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines"], {
@@ -202,6 +207,7 @@ export default class extends Generator {
 					env: {
 						...process.env,
 						NO_UPDATE_NOTIFIER: true,
+						NODE_ENV: withDevDeps ? undefined : "production", // do not install devDependencies!
 					},
 				})
 					.on("exit", function (code) {
@@ -614,7 +620,7 @@ export default class extends Generator {
 				this.log("Installing the subgenerator dependencies...");
 			}
 			this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
-			await this._npmInstall(generatorPath);
+			await this._npmInstall(generatorPath, this.options.pluginsWithDevDeps);
 			this._clearBusy(true);
 
 			// create the env for the plugin generator
