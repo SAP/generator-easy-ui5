@@ -578,7 +578,7 @@ export default class extends Generator {
 					}
 					// remove if the SHA marker doesn't exist => outdated!
 					this._showBusy(`  Deleting subgenerator ${chalk.yellow(generator.name)}...`);
-					await rm(generatorPath, { recursive: true });
+					fs.rmSync(generatorPath, { recursive: true });
 				}
 			}
 
