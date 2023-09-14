@@ -1,10 +1,12 @@
-## [3.6.2](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.2) (2023-06-20)
+## [3.6.3](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.3) (2023-09-14)
 
 ### Bug Fixes
 
 - also include embedded subgens ([86912a8](https://github.com/SAP/generator-easy-ui5/commit/86912a8cb4736ea8950696de14ce20e87056246f))
+- ignore execution of scripts to avoid husky run ([#129](https://github.com/SAP/generator-easy-ui5/issues/129)) ([3da8d22](https://github.com/SAP/generator-easy-ui5/commit/3da8d221659fe80bfd8f0a5d10275d2736ee9125))
+- just use npm to install subgen dependencies ([#130](https://github.com/SAP/generator-easy-ui5/issues/130)) ([6697913](https://github.com/SAP/generator-easy-ui5/commit/6697913e03b2a188e2389ab777bb751d02fbc59b))
 - omit devDependencies for plugin generators ([#125](https://github.com/SAP/generator-easy-ui5/issues/125)) ([ffda0c5](https://github.com/SAP/generator-easy-ui5/commit/ffda0c5048543bdb29956bdde01730af4fee74fb))
-- removal of the outdated templates must not fail ([667673d](https://github.com/SAP/generator-easy-ui5/commit/667673d771649c98af3ac8e9ca71a6e99885ff23))
+- removal of the outdated templates must not fail ([#126](https://github.com/SAP/generator-easy-ui5/issues/126)) ([f196dac](https://github.com/SAP/generator-easy-ui5/commit/f196dac643a947c26081437b08673151f6536523))
 - sort subgen list, remove threshold, fix permission issues ([#123](https://github.com/SAP/generator-easy-ui5/issues/123)) ([c5dd321](https://github.com/SAP/generator-easy-ui5/commit/c5dd3218a26870a61722a9675a81831cc8af50e5)), closes [#122](https://github.com/SAP/generator-easy-ui5/issues/122) [#118](https://github.com/SAP/generator-easy-ui5/issues/118) [#117](https://github.com/SAP/generator-easy-ui5/issues/117) [#111](https://github.com/SAP/generator-easy-ui5/issues/111)
 
 ### Features
