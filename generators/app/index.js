@@ -201,7 +201,7 @@ export default class extends Generator {
 	async _npmInstall(dir, withDevDeps) {
 		return new Promise(
 			function (resolve, reject) {
-				spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines"], {
+				spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines", "--ignore-scripts"], {
 					stdio: this.config.verbose ? "inherit" : "ignore",
 					cwd: dir,
 					env: {
