@@ -9,8 +9,6 @@ import { glob } from "glob";
 import chalk from "chalk";
 import yosay from "yosay";
 import libnpmconfig from "libnpmconfig";
-import yarnOrNpm from "yarn-or-npm";
-const { hasYarn } = yarnOrNpm;
 import AdmZip from "adm-zip";
 import { request } from "@octokit/request";
 import { Octokit } from "@octokit/rest";
@@ -201,7 +199,7 @@ export default class extends Generator {
 	async _npmInstall(dir, withDevDeps) {
 		return new Promise(
 			function (resolve, reject) {
-				spawn(hasYarn() ? "yarn" : "npm", ["install", "--no-progress", "--ignore-engines", "--ignore-scripts"], {
+				spawn("npm", ["install", "--no-progress", "--ignore-engines", "--ignore-scripts"], {
 					stdio: this.config.verbose ? "inherit" : "ignore",
 					cwd: dir,
 					env: {
@@ -615,7 +613,7 @@ export default class extends Generator {
 			// filter the local options and the help command
 			const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
 
-			// run yarn/npm install (always for self-healing!)
+			// run npm install (always for self-healing!)
 			if (this.options.verbose) {
 				this.log("Installing the subgenerator dependencies...");
 			}
