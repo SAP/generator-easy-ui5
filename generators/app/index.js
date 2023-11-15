@@ -636,7 +636,8 @@ export default class extends Generator {
 
 			// filter the hidden subgenerators already
 			//   -> subgenerators must be found in env as they are returned by lookup!
-			let subGenerators = env.lookup({ localOnly: true, packagePaths: generatorPath }).filter((sub) => {
+			const lookupGeneratorMeta = await env.lookup({ localOnly: true, packagePaths: generatorPath })
+			let subGenerators = lookupGeneratorMeta.filter((sub) => {
 				const subGenerator = env.get(sub.namespace);
 				return !subGenerator.hidden;
 			});
