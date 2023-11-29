@@ -1,6 +1,6 @@
 {
   "name": "generator-easy-ui5",
-  "version": "3.6.3",
+  "version": "3.7.0",
   "description": "Generator for UI5-based project",
   "main": "generators/app/index.js",
   "type": "module",
@@ -12,7 +12,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "prepublishOnly": "npx yo ./ project --embed",
+    "prepublishOnly": "npx yo@4.3.1 ./ project --embed",
     "start": "yo easy-ui5 project",
     "test": "mocha",
     "test:subgen:list": "yo easy-ui5 project --list",

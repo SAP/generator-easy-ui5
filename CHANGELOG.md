@@ -1,3 +1,13 @@
+# [3.7.0](https://github.com/SAP/generator-easy-ui5/compare/v3.6.3...v3.7.0) (2023-11-29)
+
+### Bug Fixes
+
+- await Environment.lookup ([#132](https://github.com/SAP/generator-easy-ui5/issues/132)) ([#133](https://github.com/SAP/generator-easy-ui5/issues/133)) ([9f614d2](https://github.com/SAP/generator-easy-ui5/commit/9f614d21d8f22019de579aa03406806cb533d5a6))
+
+### Features
+
+- update the min nodejs version to 18 ([06385f4](https://github.com/SAP/generator-easy-ui5/commit/06385f44d4de6b31f3cb25e6cd2a1bd74117b685))
+
 ## [3.6.3](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.3) (2023-09-14)
 
 ### Bug Fixes
