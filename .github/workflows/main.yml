@@ -9,11 +9,14 @@ on:
 jobs:
   run-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [18, 20]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.version }}
           registry-url: https://registry.npmjs.org/
 
       - run: git config --global user.email "cicd@example.com" && git config --global user.name "Your Name"
