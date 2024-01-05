@@ -134,6 +134,10 @@ const generatorOptions = {
 		type: Boolean,
 		description: "Preview the next mode to consume subgenerators from bestofui5.org",
 	},
+	skipNested: {
+		type: Boolean,
+		description: "Skips the nested generators and runs only the first subgenerator",
+	},
 };
 
 const generatorArgs = {
@@ -149,6 +153,7 @@ const generatorArgs = {
 	},
 };
 
+// The Easy UI5 Generator!
 export default class extends Generator {
 	constructor(args, opts) {
 		super(args, opts, {
@@ -237,6 +242,102 @@ export default class extends Generator {
 
 	determineAppname() {
 		return "Easy UI5";
+	}
+
+	async _getGeneratorMetadata({ env, generatorPath }) {
+		// filter the hidden subgenerators already
+		//   -> subgenerators must be found in env as they are returned by lookup!
+		const lookupGeneratorMeta = await env.lookup({ localOnly: true, packagePaths: generatorPath });
+		const subGenerators = lookupGeneratorMeta.filter((sub) => {
+			const subGenerator = env.get(sub.namespace);
+			return !subGenerator.hidden;
+		});
+		return subGenerators;
+	}
+
+	async _installGenerator({ octokit, generator, generatorPath }) {
+		// lookup the default path of the generator if not set
+		if (!generator.branch) {
+			try {
+				const repoInfo = await octokit.repos.get({
+					owner: generator.org,
+					repo: generator.name,
+				});
+				generator.branch = repoInfo.data.default_branch;
+			} catch (e) {
+				console.error(`Generator "${owner}/${repo}!${dir}${branch ? "#" + branch : ""}" not found! Run with --verbose for details!`);
+				if (this.options.verbose) {
+					console.error(e);
+				}
+				return;
+			}
+		}
+		// fetch the branch to retrieve the latest commit SHA
+		let commitSHA;
+		try {
+			// determine the commitSHA
+			const reqBranch = await octokit.repos.getBranch({
+				owner: generator.org,
+				repo: generator.name,
+				branch: generator.branch,
+			});
+			commitSHA = reqBranch.data.commit.sha;
+		} catch (ex) {
+			console.error(chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
+			if (this.options.verbose) {
+				console.error(chalk.red(ex.message));
+			}
+			return;
+		}
+
+		if (this.options.verbose) {
+			this.log(`Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.branch}!`);
+		}
+		const shaMarker = path.join(generatorPath, `.${commitSHA}`);
+
+		if (fs.existsSync(generatorPath) && !this.options.skipUpdate) {
+			// check if the SHA marker exists to know whether the generator is up-to-date or not
+			if (this.options.forceUpdate || !fs.existsSync(shaMarker)) {
+				if (this.options.verbose) {
+					this.log(`Generator ${chalk.yellow(generator.name)} in "${generatorPath}" is outdated!`);
+				}
+				// remove if the SHA marker doesn't exist => outdated!
+				this._showBusy(`  Deleting subgenerator ${chalk.yellow(generator.name)}...`);
+				fs.rmSync(generatorPath, { recursive: true });
+			}
+		}
+
+		// re-fetch the generator and extract into local plugin folder
+		if (!fs.existsSync(generatorPath)) {
+			// unzip the archive
+			if (this.options.verbose) {
+				this.log(`Extracting ZIP to "${generatorPath}"...`);
+			}
+			this._showBusy(`  Downloading subgenerator ${chalk.yellow(generator.name)}...`);
+			const reqZIPArchive = await octokit.repos.downloadZipballArchive({
+				owner: generator.org,
+				repo: generator.name,
+				ref: commitSHA,
+			});
+
+			this._showBusy(`  Extracting subgenerator ${chalk.yellow(generator.name)}...`);
+			const buffer = Buffer.from(new Uint8Array(reqZIPArchive.data));
+			this._unzip(buffer, generatorPath, generator.dir);
+
+			// write the sha marker
+			fs.writeFileSync(shaMarker, commitSHA);
+		}
+
+		// run npm install when not embedding the generator (always for self-healing!)
+		if (!this.options.embed) {
+			if (this.options.verbose) {
+				this.log("Installing the subgenerator dependencies...");
+			}
+			this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
+			await this._npmInstall(generatorPath, this.options.pluginsWithDevDeps);
+		}
+
+		this._clearBusy(true);
 	}
 
 	async prompting() {
@@ -369,31 +470,28 @@ export default class extends Generator {
 		// determine the generator to be used
 		let generator;
 
-		// try to identify whether concrete generator is defined
-		if (!generator) {
-			// determine generator by ${owner}/${repo}(!${dir})? syntax, e.g.:
-			//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial
-			//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial#1.0
-			//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator
-			//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator#1.0
-			const reGenerator = /([^\/]+)\/([^\!\#]+)(?:\!([^\#]+))?(?:\#(.+))?/;
-			const matchGenerator = reGenerator.exec(this.options.generator);
-			if (matchGenerator) {
-				// derive and path the generator information from command line
-				const [owner, repo, dir = "/generator", branch] = matchGenerator.slice(1);
-				// the plugin path is derived from the owner, repo, dir and branch
-				const pluginPath = `_/${owner}/${repo}${dir.replace(/[\/\\]/g, "_")}${branch ? `#${branch.replace(/[\/\\]/g, "_")}` : ""}`;
-				generator = {
-					org: owner,
-					name: repo,
-					branch,
-					dir,
-					pluginPath,
-				};
-				// log which generator is being used!
-				if (this.options.verbose) {
-					this.log(`Using generator ${chalk.green(`${owner}/${repo}!${dir}${branch ? "#" + branch : ""}`)}`);
-				}
+		// determine generator by ${owner}/${repo}(!${dir})? syntax, e.g.:
+		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial
+		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial#1.0
+		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator
+		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator#1.0
+		const reGenerator = /([^\/]+)\/([^\!\#]+)(?:\!([^\#]+))?(?:\#(.+))?/;
+		const matchGenerator = reGenerator.exec(this.options.generator);
+		if (matchGenerator) {
+			// derive and path the generator information from command line
+			const [owner, repo, dir = "/generator", branch] = matchGenerator.slice(1);
+			// the plugin path is derived from the owner, repo, dir and branch
+			const pluginPath = `_/${owner}/${repo}${dir.replace(/[\/\\]/g, "_")}${branch ? `#${branch.replace(/[\/\\]/g, "_")}` : ""}`;
+			generator = {
+				org: owner,
+				name: repo,
+				branch,
+				dir,
+				pluginPath,
+			};
+			// log which generator is being used!
+			if (this.options.verbose) {
+				this.log(`Using generator ${chalk.green(`${owner}/${repo}!${dir}${branch ? "#" + branch : ""}`)}`);
 			}
 		}
 
@@ -527,99 +625,16 @@ export default class extends Generator {
 			}
 		}
 
-		let generatorPath = path.join(pluginsHome, generator.pluginPath || generator.name);
+		// install the generator if not running in offline mode
+		const generatorPath = path.join(pluginsHome, generator.pluginPath || generator.name);
 		if (!this.options.offline) {
-			// lookup the default path of the generator if not set
-			if (!generator.branch) {
-				try {
-					const repoInfo = await octokit.repos.get({
-						owner: generator.org,
-						repo: generator.name,
-					});
-					generator.branch = repoInfo.data.default_branch;
-				} catch (e) {
-					console.error(`Generator "${owner}/${repo}!${dir}${branch ? "#" + branch : ""}" not found! Run with --verbose for details!`);
-					if (this.options.verbose) {
-						console.error(e);
-					}
-					return;
-				}
-			}
-			// fetch the branch to retrieve the latest commit SHA
-			let commitSHA;
-			try {
-				// determine the commitSHA
-				const reqBranch = await octokit.repos.getBranch({
-					owner: generator.org,
-					repo: generator.name,
-					branch: generator.branch,
-				});
-				commitSHA = reqBranch.data.commit.sha;
-			} catch (ex) {
-				console.error(chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
-				if (this.options.verbose) {
-					console.error(chalk.red(ex.message));
-				}
-				return;
-			}
-
-			if (this.options.verbose) {
-				this.log(`Using commit ${commitSHA} from @${generator.org}/${generator.name}#${generator.branch}!`);
-			}
-			const shaMarker = path.join(generatorPath, `.${commitSHA}`);
-
-			if (fs.existsSync(generatorPath) && !this.options.skipUpdate) {
-				// check if the SHA marker exists to know whether the generator is up-to-date or not
-				if (this.options.forceUpdate || !fs.existsSync(shaMarker)) {
-					if (this.options.verbose) {
-						this.log(`Generator ${chalk.yellow(generator.name)} in "${generatorPath}" is outdated!`);
-					}
-					// remove if the SHA marker doesn't exist => outdated!
-					this._showBusy(`  Deleting subgenerator ${chalk.yellow(generator.name)}...`);
-					fs.rmSync(generatorPath, { recursive: true });
-				}
-			}
-
-			// re-fetch the generator and extract into local plugin folder
-			if (!fs.existsSync(generatorPath)) {
-				// unzip the archive
-				if (this.options.verbose) {
-					this.log(`Extracting ZIP to "${generatorPath}"...`);
-				}
-				this._showBusy(`  Downloading subgenerator ${chalk.yellow(generator.name)}...`);
-				const reqZIPArchive = await octokit.repos.downloadZipballArchive({
-					owner: generator.org,
-					repo: generator.name,
-					ref: commitSHA,
-				});
-
-				this._showBusy(`  Extracting subgenerator ${chalk.yellow(generator.name)}...`);
-				const buffer = Buffer.from(new Uint8Array(reqZIPArchive.data));
-				this._unzip(buffer, generatorPath, generator.dir);
-
-				// write the sha marker
-				fs.writeFileSync(shaMarker, commitSHA);
-			}
-
-			// only when embedding we clear the busy state as otherwise
-			// the npm install will immediately again show the busy state
-			if (this.options.embed) {
-				this._clearBusy(true);
-			}
+			await this._installGenerator({ octokit, generator, generatorPath });
 		}
 
 		// do not execute the plugin generator during the setup/embed mode
 		if (!this.options.embed) {
 			// filter the local options and the help command
 			const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
-
-			// run npm install (always for self-healing!)
-			if (this.options.verbose) {
-				this.log("Installing the subgenerator dependencies...");
-			}
-			this._showBusy(`  Preparing ${chalk.yellow(generator.name)}...`);
-			await this._npmInstall(generatorPath, this.options.pluginsWithDevDeps);
-			this._clearBusy(true);
 
 			// create the env for the plugin generator
 			let env = this.env; // in case of Yeoman UI the env is injected!
@@ -628,19 +643,20 @@ export default class extends Generator {
 				env = yeoman.createEnv(this.args, opts);
 			}
 
-			// helper to derive the subcommand
-			function deriveSubcommand(namespace) {
-				const match = namespace.match(/[^:]+:(.+)/);
-				return match ? match[1] : namespace;
+			// read the generator metadata
+			let subGenerators = await this._getGeneratorMetadata({ env, generatorPath });
+
+			// helper to derive the generator from the namespace
+			function deriveGenerator(namespace, defaultValue) {
+				const match = namespace.match(/([^:]+):.+/);
+				return match ? match[1] : defaultValue === undefined ? namespace : defaultValue;
 			}
 
-			// filter the hidden subgenerators already
-			//   -> subgenerators must be found in env as they are returned by lookup!
-			const lookupGeneratorMeta = await env.lookup({ localOnly: true, packagePaths: generatorPath });
-			let subGenerators = lookupGeneratorMeta.filter((sub) => {
-				const subGenerator = env.get(sub.namespace);
-				return !subGenerator.hidden;
-			});
+			// helper to derive the subcommand from the namespace
+			function deriveSubcommand(namespace, defaultValue) {
+				const match = namespace.match(/^[^:]+:(.+)$/);
+				return match ? match[1] : defaultValue === undefined ? namespace : defaultValue;
+			}
 
 			// list the available subgenerators in the console (as help)
 			if (this.options.list) {
@@ -726,16 +742,79 @@ export default class extends Generator {
 					).subGenerator;
 				}
 
-				if (this.options.verbose) {
-					this.log(`Calling ${chalk.red(subGenerator)}...\n  \\_ in "${generatorPath}"`);
+				// determine the list of subgenerators to be executed
+				const subGensToRun = [subGenerator];
+
+				// method to resolve nested generators (only once!)
+				const resolved = [];
+				const resolveNestedGenerator = async (generatorToResolve) => {
+					const constructor = await env.get(generatorToResolve);
+					await Promise.all(
+						constructor.nestedGenerators?.map(async (nestedGenerator) => {
+							const theNestedGenerator = deriveGenerator(nestedGenerator);
+							if (resolved.indexOf(theNestedGenerator) === -1) {
+								resolved.push(theNestedGenerator);
+								const nestedGeneratorInfo = availGenerators.find((repo) => repo.subGeneratorName === theNestedGenerator);
+								const nestedGeneratorPath = path.join(pluginsHome, nestedGeneratorInfo.pluginPath || nestedGeneratorInfo.name);
+								await this._installGenerator({ octokit, generator: nestedGeneratorInfo, generatorPath: nestedGeneratorPath });
+								const nestedGens = await this._getGeneratorMetadata({ env, generatorPath: nestedGeneratorPath });
+								const subcommand = deriveSubcommand(nestedGenerator, "");
+								const theNestedGen = nestedGens.filter((nested) => {
+									const nestedSubcommand = deriveSubcommand(nested.namespace, "");
+									return subcommand ? nestedSubcommand === subcommand : !nestedSubcommand;
+								})?.[0];
+								if (theNestedGen) {
+									subGensToRun.push(theNestedGen.namespace);
+									await resolveNestedGenerator(theNestedGen.namespace);
+								} else {
+									this.log(`The nested generator "${nestedGeneratorInfo.org}/${nestedGeneratorInfo.name}" has no subgenerator "${subcommand || "default"}"! Ignoring execution...`);
+								}
+							}
+						}) || []
+					);
+				};
+
+				// only resolve nested generators when they should not be skipped
+				if (!this.options.skipNested) {
+					await resolveNestedGenerator(subGenerator);
 				}
 
-				// finally, run the subgenerator
-				env.run(subGenerator, {
-					verbose: this.options.verbose,
-					embedded: true,
-					destinationRoot: this.destinationRoot(),
-				});
+				// intercept the environments runGenerator method to determine
+				// and forward the destinationRoot between the generator executions
+				const runGenerator = env.runGenerator;
+				let cwd;
+				env.runGenerator = async function (gen) {
+					if (cwd) {
+						// apply the cwd to the next gen
+						gen.destinationRoot(cwd);
+					}
+					return runGenerator.apply(this, arguments).then((retval) => {
+						// store the cwd from the current gen
+						cwd = gen.destinationRoot();
+						return retval;
+					});
+				};
+
+				// chain the execution of the generators
+				let chain = Promise.resolve();
+				for (const subGen of subGensToRun) {
+					chain = chain.then(
+						function () {
+							// we need to use env.run and not composeWith
+							// to ensure that subgenerators can have different
+							// dependencies than the root generator
+							return env.run(subGen, {
+								verbose: this.options.verbose,
+								embedded: true,
+								destinationRoot: this.destinationRoot(),
+							});
+						}.bind(this)
+					);
+				}
+
+				if (this.options.verbose) {
+					this.log(`Running generators in "${generatorPath}"...`);
+				}
 			} else {
 				this.log(`The generator ${chalk.red(this.options.generator)} has no visible subgenerators!`);
 			}
