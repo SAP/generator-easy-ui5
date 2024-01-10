@@ -1,18 +1,15 @@
-# [3.7.0](https://github.com/SAP/generator-easy-ui5/compare/v3.6.3...v3.7.0) (2023-11-29)
-
-### Bug Fixes
-
-- await Environment.lookup ([#132](https://github.com/SAP/generator-easy-ui5/issues/132)) ([#133](https://github.com/SAP/generator-easy-ui5/issues/133)) ([9f614d2](https://github.com/SAP/generator-easy-ui5/commit/9f614d21d8f22019de579aa03406806cb533d5a6))
+# [3.8.0](https://github.com/SAP/generator-easy-ui5/compare/v3.7.0...v3.8.0) (2024-01-10)
 
 ### Features
 
-- update the min nodejs version to 18 ([06385f4](https://github.com/SAP/generator-easy-ui5/commit/06385f44d4de6b31f3cb25e6cd2a1bd74117b685))
+- support nesting of generators ([#141](https://github.com/SAP/generator-easy-ui5/issues/141)) ([afd9173](https://github.com/SAP/generator-easy-ui5/commit/afd9173ad8b2450281b00147d3b071d3bb989656))
 
-## [3.6.3](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.6.3) (2023-09-14)
+# [3.7.0](https://github.com/SAP/generator-easy-ui5/compare/v3.5.1...v3.7.0) (2023-11-29)
 
 ### Bug Fixes
 
 - also include embedded subgens ([86912a8](https://github.com/SAP/generator-easy-ui5/commit/86912a8cb4736ea8950696de14ce20e87056246f))
+- await Environment.lookup ([#132](https://github.com/SAP/generator-easy-ui5/issues/132)) ([#133](https://github.com/SAP/generator-easy-ui5/issues/133)) ([9f614d2](https://github.com/SAP/generator-easy-ui5/commit/9f614d21d8f22019de579aa03406806cb533d5a6))
 - ignore execution of scripts to avoid husky run ([#129](https://github.com/SAP/generator-easy-ui5/issues/129)) ([3da8d22](https://github.com/SAP/generator-easy-ui5/commit/3da8d221659fe80bfd8f0a5d10275d2736ee9125))
 - just use npm to install subgen dependencies ([#130](https://github.com/SAP/generator-easy-ui5/issues/130)) ([6697913](https://github.com/SAP/generator-easy-ui5/commit/6697913e03b2a188e2389ab777bb751d02fbc59b))
 - omit devDependencies for plugin generators ([#125](https://github.com/SAP/generator-easy-ui5/issues/125)) ([ffda0c5](https://github.com/SAP/generator-easy-ui5/commit/ffda0c5048543bdb29956bdde01730af4fee74fb))
@@ -22,6 +19,7 @@
 ### Features
 
 - support for coporate proxy / switch to esm / update deps ([#124](https://github.com/SAP/generator-easy-ui5/issues/124)) ([bf95254](https://github.com/SAP/generator-easy-ui5/commit/bf95254694025f3d22e5af37bb610ba7d2a0e215)), closes [#79](https://github.com/SAP/generator-easy-ui5/issues/79)
+- update the min nodejs version to 18 ([06385f4](https://github.com/SAP/generator-easy-ui5/commit/06385f44d4de6b31f3cb25e6cd2a1bd74117b685))
 
 ## [3.5.1](https://github.com/SAP/generator-easy-ui5/compare/v3.2.0...v3.5.1) (2022-09-10)
 
