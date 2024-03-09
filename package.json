@@ -55,6 +55,7 @@
     "colors": "^1.4.0",
     "glob": "^10.3.10",
     "libnpmconfig": "^1.2.1",
+    "node-fetch": "^3.3.2",
     "rimraf": "^5.0.5",
     "yeoman-environment": "^3.19.3",
     "yeoman-generator": "^5.10.0",

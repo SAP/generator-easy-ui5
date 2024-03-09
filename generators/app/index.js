@@ -15,28 +15,32 @@ import { Octokit } from "@octokit/rest";
 import { throttling } from "@octokit/plugin-throttling";
 const MyOctokit = Octokit.plugin(throttling);
 import spawn from "cross-spawn";
+import nodeFetch from "node-fetch";
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-// apply proxy settings to GLOBAL_AGENT to support the proxy configuration
-// provided via the standard Node.js environment varibales (used for fetch API)
-let HTTP_PROXY, HTTPS_PROXY, NO_PROXY;
-if (global?.GLOBAL_AGENT) {
-	HTTP_PROXY = global.GLOBAL_AGENT.HTTP_PROXY = process.env.HTTP_PROXY || process.env.http_proxy;
-	HTTPS_PROXY = global.GLOBAL_AGENT.HTTPS_PROXY = process.env.HTTPS_PROXY || process.env.https_proxy;
-	NO_PROXY = global.GLOBAL_AGENT.NO_PROXY = process.env.NO_PROXY || process.env.no_proxy;
-}
-
 // helper to retrieve config entries from npm
 //   --> npm config set easy-ui5_addGhOrg XYZ
-const NPM_CONFIG_PREFIX = "easy-ui5_";
 let npmConfig;
-const getNPMConfig = (configName) => {
+const getNPMConfig = (configName, prefix = "easy-ui5_") => {
 	if (!npmConfig) {
 		npmConfig = libnpmconfig.read();
 	}
-	return npmConfig && npmConfig[`${NPM_CONFIG_PREFIX}${configName}`];
+	return npmConfig && npmConfig[`${prefix}${configName}`];
 };
+
+// apply proxy settings to GLOBAL_AGENT to support the proxy configuration for node-fetch using the GLOBAL_AGENT
+// ==> the configuration is derived from the environment variables ([GLOBAL_AGENT_](HTTP|HTTPS|NO)_PROXY) and the npm config ((http|https|no)-proxy)
+// ==> empty values will allow to override the more general proxy settings and make the proxy value undefined
+let HTTP_PROXY, HTTPS_PROXY, NO_PROXY;
+if (global?.GLOBAL_AGENT) {
+	HTTP_PROXY = process.env.GLOBAL_AGENT_HTTP_PROXY ?? process.env.HTTP_PROXY ?? process.env.http_proxy ?? getNPMConfig("http-proxy", "") ?? getNPMConfig("proxy", "");
+	global.GLOBAL_AGENT.HTTP_PROXY = HTTP_PROXY = HTTP_PROXY || global.GLOBAL_AGENT.HTTP_PROXY;
+	HTTPS_PROXY = process.env.GLOBAL_AGENT_HTTPS_PROXY ?? process.env.HTTPS_PROXY ?? process.env.https_proxy ?? getNPMConfig("https-proxy", "") ?? getNPMConfig("proxy", "");
+	global.GLOBAL_AGENT.HTTPS_PROXY = HTTPS_PROXY = HTTPS_PROXY || global.GLOBAL_AGENT.HTTPS_PROXY;
+	NO_PROXY = process.env.GLOBAL_AGENT_NO_PROXY ?? process.env.NO_PROXY ?? process.env.no_proxy ?? getNPMConfig("no-proxy", "");
+	global.GLOBAL_AGENT.NO_PROXY = NO_PROXY = NO_PROXY || global.GLOBAL_AGENT.NO_PROXY;
+}
 
 // the command line options of the generator
 const generatorOptions = {
@@ -265,7 +269,7 @@ export default class extends Generator {
 				});
 				generator.branch = repoInfo.data.default_branch;
 			} catch (e) {
-				console.error(`Generator "${owner}/${repo}!${dir}${branch ? "#" + branch : ""}" not found! Run with --verbose for details!`);
+				console.error(`Generator "${owner}/${repo}!${dir}${branch ? "#" + branch : ""}" not found! Run with --verbose for details!\n(Hint: ${e.message})`);
 				if (this.options.verbose) {
 					console.error(e);
 				}
@@ -283,7 +287,9 @@ export default class extends Generator {
 			});
 			commitSHA = reqBranch.data.commit.sha;
 		} catch (ex) {
-			console.error(chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!`));
+			console.error(
+				chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!\n(Hint: ${e.message})`)
+			);
 			if (this.options.verbose) {
 				console.error(chalk.red(ex.message));
 			}
@@ -405,6 +411,13 @@ export default class extends Generator {
 			// define the options for the Octokit API
 			const octokitOptions = {
 				userAgent: `${this.rootGeneratorName()}:${this.rootGeneratorVersion()}`,
+				request: {
+					fetch: (_url, _options) => {
+						return nodeFetch(_url, {
+							..._options,
+						});
+					},
+				},
 				auth: this.options.ghAuthToken,
 				baseUrl: this.options.ghBaseUrl,
 				throttle: {
@@ -555,7 +568,7 @@ export default class extends Generator {
 								};
 							});
 					} catch (e) {
-						console.error("Failed to connect to bestofui5.org to retrieve all available generators! Run with --verbose for details!");
+						console.error(`Failed to connect to bestofui5.org to retrieve all available generators! Run with --verbose for details!\n(Hint: ${e.message})`);
 						if (this.options.verbose) {
 							console.error(e);
 						}
@@ -566,7 +579,7 @@ export default class extends Generator {
 					try {
 						availGenerators = await listGeneratorsForOrg(this.options.ghOrg, this.options.subGeneratorPrefix, this.options.ghThreshold);
 					} catch (e) {
-						console.error(`Failed to connect to GitHub to retrieve all available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!`);
+						console.error(`Failed to connect to GitHub to retrieve all available generators for "${this.options.ghOrg}" organization! Run with --verbose for details!\n(Hint: ${e.message})`);
 						if (this.options.verbose) {
 							console.error(e);
 						}
@@ -585,7 +598,7 @@ export default class extends Generator {
 						try {
 							availGenerators = availGenerators.concat(await listGeneratorsForUser(this.options.addGhOrg, this.options.addSubGeneratorPrefix, this.options.ghThreshold));
 						} catch (e1) {
-							console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!`);
+							console.error(`Failed to connect to GitHub to retrieve additional generators for organization or user "${this.options.addGhOrg}"! Run with --verbose for details!\n(Hint: ${e.message})`);
 							if (this.options.verbose) {
 								console.error(e1);
 							}
