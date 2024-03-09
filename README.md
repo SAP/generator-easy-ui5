@@ -104,8 +104,19 @@ yo easy-ui5 [project|library] <sub-generator-id>
 If you are running Easy UI5 behind a coporate proxy, just use the default proxy environment variables for Node.js to configure your corporate proxy:
 
 - `HTTP_PROXY`: Specify the value to use as the HTTP proxy for all connections, e.g., `HTTP_PROXY="http://proxy.mycompany.com:8080/"`.
-- `HTTPS_PROXY`: Specify the value to use as the HTTPS proxy for all connections, e.g., `HTTPS_PROXY="https://proxy.mycompany.com:8080/"`.
+- `HTTPS_PROXY`: Specify the value to use as the HTTPS proxy for all connections, e.g., `HTTPS_PROXY="http://proxy.mycompany.com:8080/"`.
 - `NO_PROXY`: Define the hosts that should bypass the proxy, e.g., `NO_PROXY="localhost,.mycompany.com,192.168.6.254:80"`.
+
+In addition, Easy UI5 also supports proxy configuration from the `.npmrc` configuration:
+
+```text
+http-proxy=http://proxy.mycompany.com:8080/
+https-proxy=http://proxy.mycompany.com:8080/
+proxy=http://proxy.mycompany.com:8080/
+no-proxy=localhost,.mycompany.com,192.168.6.254:80
+```
+
+This configuration is shared with npm itself since this proxy configuration is used to download the packages from npm.
 
 ## How to obtain support
 
