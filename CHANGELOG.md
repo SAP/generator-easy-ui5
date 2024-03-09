@@ -1,4 +1,8 @@
-# [3.8.0](https://github.com/SAP/generator-easy-ui5/compare/v3.7.0...v3.8.0) (2024-01-10)
+## [3.8.1](https://github.com/SAP/generator-easy-ui5/compare/v3.7.0...v3.8.1) (2024-03-09)
+
+### Bug Fixes
+
+- ensure proper support for corporate proxies ([#143](https://github.com/SAP/generator-easy-ui5/issues/143)) ([c99ab14](https://github.com/SAP/generator-easy-ui5/commit/c99ab14049e3b9dbe05fdca70674d1717e1544bd)), closes [#142](https://github.com/SAP/generator-easy-ui5/issues/142)
 
 ### Features
 
