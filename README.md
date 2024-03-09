@@ -118,6 +118,13 @@ no-proxy=localhost,.mycompany.com,192.168.6.254:80
 
 This configuration is shared with npm itself since this proxy configuration is used to download the packages from npm.
 
+Proxies can be passed as env variables or as npm config options. The highest precedence have the `GLOBAL_AGENT_*` env variables before the regular env variables followed by the npm configuration options, e.g.:
+
+1. env: `GLOBAL_AGENT_HTTP_PROXY`
+2. env: `HTTP_PROXY`
+3. npm: `http-proxy`
+4. npm: `proxy`
+
 ## How to obtain support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
