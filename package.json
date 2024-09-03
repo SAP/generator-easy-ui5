@@ -24,7 +24,7 @@
     "lint:staged": "lint-staged",
     "format": "prettier --write .",
     "format:staged": "pretty-quick --staged --verbose",
-    "prepare": "husky",
+    "prepare": "node ./.husky/skip.js || husky",
     "hooks:commit-msg": "commitlint -e",
     "hooks:pre-commit": "npm run format:staged && npm run lint:staged"
   },
