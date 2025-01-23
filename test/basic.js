@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs-extra";
+import { mkdirSync, cpSync, rmSync } from "fs";
 import assert from "yeoman-assert";
 import helpers from "yeoman-test";
 import url from "url";
@@ -11,8 +11,8 @@ describe("Basic V4 project capabilities", function () {
 	this.timeout(120000);
 
 	before(function () {
-		fs.mkdirSync(path.join(pluginsHome, "generator-ui5-test-v4"), { recursive: true });
-		fs.copySync(path.join(__dirname, "generator-ui5-test-v4"), path.join(pluginsHome, "generator-ui5-test-v4"), { recursive: true, overwrite: true });
+		mkdirSync(path.join(pluginsHome, "generator-ui5-test-v4"), { recursive: true });
+		cpSync(path.join(__dirname, "generator-ui5-test-v4"), path.join(pluginsHome, "generator-ui5-test-v4"), { recursive: true });
 	});
 
 	it("should be able to run the test generator", async function () {
@@ -43,7 +43,7 @@ describe("Basic V4 project capabilities", function () {
 	});
 
 	after(function () {
-		fs.removeSync(path.join(pluginsHome, "generator-ui5-test-v4"));
+		rmSync(path.join(pluginsHome, "generator-ui5-test-v4"), { recursive: true });
 	});
 });
 
@@ -51,8 +51,8 @@ describe("Basic V5 project capabilities", function () {
 	this.timeout(120000);
 
 	before(function () {
-		fs.mkdirSync(path.join(pluginsHome, "generator-ui5-test-v5"), { recursive: true });
-		fs.copySync(path.join(__dirname, "generator-ui5-test-v5"), path.join(pluginsHome, "generator-ui5-test-v5"), { recursive: true, overwrite: true });
+		mkdirSync(path.join(pluginsHome, "generator-ui5-test-v5"), { recursive: true });
+		cpSync(path.join(__dirname, "generator-ui5-test-v5"), path.join(pluginsHome, "generator-ui5-test-v5"), { recursive: true });
 	});
 
 	it("should be able to run the test generator", async function () {
@@ -83,6 +83,6 @@ describe("Basic V5 project capabilities", function () {
 	});
 
 	after(function () {
-		fs.removeSync(path.join(pluginsHome, "generator-ui5-test-v5"));
+		rmSync(path.join(pluginsHome, "generator-ui5-test-v5"), { recursive: true });
 	});
 });

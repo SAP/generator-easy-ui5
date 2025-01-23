@@ -20,7 +20,7 @@ The purpose of the `project` subgenerator is to guide you on your first steps wi
 
 ## Requirements
 
-- Get [Node.js](https://nodejs.org/en/download/) (:warning: **version 18 or higher**)
+- Get [Node.js](https://nodejs.org/en/download/) (:warning: **version 20 or higher**)
 
 ## Download and Installation
 
