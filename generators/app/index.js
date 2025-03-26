@@ -1,186 +1,36 @@
 import Generator from "yeoman-generator";
 
+import defineGeneratorArguments from "./defineGeneratorArguments.js";
+import defineGeneratorOptions, { generatorOptions } from "./defineGeneratorOptions.js";
+import { HTTP_PROXY, HTTPS_PROXY, NO_PROXY } from "./detectProxySettings.js";
+
 import path from "path";
 import fs from "fs";
-import os from "os";
 import url from "url";
 
 import { glob } from "glob";
 import chalk from "chalk";
 import yosay from "yosay";
-import libnpmconfig from "libnpmconfig";
+import nodeFetch from "node-fetch";
 import AdmZip from "adm-zip";
+
 import { request } from "@octokit/request";
 import { Octokit } from "@octokit/rest";
 import { throttling } from "@octokit/plugin-throttling";
 const MyOctokit = Octokit.plugin(throttling);
-import spawn from "cross-spawn";
-import nodeFetch from "node-fetch";
 
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-// helper to retrieve config entries from npm
-//   --> npm config set easy-ui5_addGhOrg XYZ
-let npmConfig;
-const getNPMConfig = (configName, prefix = "easy-ui5_") => {
-	if (!npmConfig) {
-		npmConfig = libnpmconfig.read();
-	}
-	return npmConfig && npmConfig[`${prefix}${configName}`];
-};
-
-// apply proxy settings to GLOBAL_AGENT to support the proxy configuration for node-fetch using the GLOBAL_AGENT
-// ==> the configuration is derived from the environment variables ([GLOBAL_AGENT_](HTTP|HTTPS|NO)_PROXY) and the npm config ((http|https|no)-proxy)
-// ==> empty values will allow to override the more general proxy settings and make the proxy value undefined
-let HTTP_PROXY, HTTPS_PROXY, NO_PROXY;
-if (global?.GLOBAL_AGENT) {
-	HTTP_PROXY = process.env.GLOBAL_AGENT_HTTP_PROXY ?? process.env.HTTP_PROXY ?? process.env.http_proxy ?? getNPMConfig("http-proxy", "") ?? getNPMConfig("proxy", "");
-	global.GLOBAL_AGENT.HTTP_PROXY = HTTP_PROXY = HTTP_PROXY || global.GLOBAL_AGENT.HTTP_PROXY;
-	HTTPS_PROXY = process.env.GLOBAL_AGENT_HTTPS_PROXY ?? process.env.HTTPS_PROXY ?? process.env.https_proxy ?? getNPMConfig("https-proxy", "") ?? getNPMConfig("proxy", "");
-	global.GLOBAL_AGENT.HTTPS_PROXY = HTTPS_PROXY = HTTPS_PROXY || global.GLOBAL_AGENT.HTTPS_PROXY;
-	NO_PROXY = process.env.GLOBAL_AGENT_NO_PROXY ?? process.env.NO_PROXY ?? process.env.no_proxy ?? getNPMConfig("no-proxy", "");
-	global.GLOBAL_AGENT.NO_PROXY = NO_PROXY = NO_PROXY || global.GLOBAL_AGENT.NO_PROXY;
-}
-
-// the command line options of the generator
-const generatorOptions = {
-	pluginsHome: {
-		type: String,
-		description: "Home directory of the plugin generators",
-		default: path.join(os.homedir(), ".npm", "_generator-easy-ui5", "plugin-generators"),
-		hide: true, // shouldn't be needed
-		npmConfig: true,
-	},
-	plugins: {
-		type: Boolean,
-		alias: "p",
-		description: "List detailed information about installed plugin generators",
-	},
-	pluginsWithDevDeps: {
-		type: Boolean,
-		alias: "dev",
-		description: "Installs the plugin generators with dev dependencies (compat mode)",
-	},
-	ghBaseUrl: {
-		type: String,
-		description: "Base URL for the Octokit API (defaults to https://api.github.com if undefined)",
-		hide: true, // shouldn't be needed
-		npmConfig: true,
-	},
-	ghAuthToken: {
-		type: String,
-		description: "GitHub authToken to optionally access private generator repositories",
-		npmConfig: true,
-	},
-	ghOrg: {
-		type: String,
-		description: "GitHub organization to lookup for available generators",
-		default: "ui5-community",
-		hide: true, // we don't want to recommend to use this option
-	},
-	ghThreshold: {
-		type: Number,
-		default: 100,
-		hide: true, // shouldn't be needed
-	},
-	subGeneratorPrefix: {
-		type: String,
-		description: "Prefix used for the lookup of the available generators",
-		default: "generator-ui5-",
-		hide: true, // we don't want to recommend to use this option
-	},
-	addGhBaseUrl: {
-		type: String,
-		description: "Base URL for the Octokit API for the additional generators (defaults to https://api.github.com if undefined)",
-		hide: true, // shouldn't be needed
-		npmConfig: true,
-	},
-	addGhOrg: {
-		type: String,
-		description: "GitHub organization to lookup for additional available generators",
-		hide: true, // we don't want to recommend to use this option
-		npmConfig: true,
-	},
-	addSubGeneratorPrefix: {
-		type: String,
-		description: "Prefix used for the lookup of the additional available generators",
-		default: "generator-",
-		hide: true, // we don't want to recommend to use this option
-		npmConfig: true,
-	},
-	embed: {
-		type: Boolean,
-		description: "Embeds the selected plugin generator",
-		hide: true, // shouldn't be needed
-	},
-	list: {
-		type: Boolean,
-		description: "List the available subcommands of the generator",
-	},
-	skipUpdate: {
-		type: Boolean,
-		description: "Skip the update of the plugin generator",
-	},
-	forceUpdate: {
-		type: Boolean,
-		description: "Force the update of the plugin generator",
-	},
-	offline: {
-		type: Boolean,
-		alias: "o",
-		description: "Running easy-ui5 in offline mode",
-	},
-	verbose: {
-		type: Boolean,
-		description: "Enable detailed logging",
-	},
-	next: {
-		type: Boolean,
-		description: "Preview the next mode to consume subgenerators from bestofui5.org",
-	},
-	skipNested: {
-		type: Boolean,
-		description: "Skips the nested generators and runs only the first subgenerator",
-	},
-};
-
-const generatorArgs = {
-	generator: {
-		type: String,
-		required: false,
-		description: `Name of the generator to invoke (without the ${chalk.yellow("generator-ui5-")} prefix)`,
-	},
-	subcommand: {
-		type: String,
-		required: false,
-		description: `Name of the subcommand to invoke (without the ${chalk.yellow("generator:")} prefix)`,
-	},
-};
-
 // The Easy UI5 Generator!
-export default class extends Generator {
+export default class EasyUI5Generator extends Generator {
 	constructor(args, opts) {
 		super(args, opts, {
 			// disable the Yeoman 5 package-manager logic (auto install)!
 			customInstallTask: "disabled",
 		});
 
-		Object.keys(generatorArgs).forEach((argName) => {
-			// register the argument for being displayed in the help
-			this.argument(argName, generatorArgs[argName]);
-		});
-
-		Object.keys(generatorOptions).forEach((optionName) => {
-			const initialValue = this.options[optionName];
-			// register the option for being displayed in the help
-			this.option(optionName, generatorOptions[optionName]);
-			const defaultedValue = this.options[optionName];
-			if (generatorOptions[optionName].npmConfig) {
-				// if a value is set, use the set value (parameter has higher precedence than npm config)
-				// => this.option(...) applies the default value to this.options[...] used as last resort
-				this.options[optionName] = initialValue || getNPMConfig(optionName) || defaultedValue;
-			}
-		});
+		defineGeneratorArguments(this);
+		defineGeneratorOptions(this);
 	}
 
 	_showBusy(statusText) {
@@ -206,32 +56,30 @@ export default class extends Generator {
 	}
 
 	async _npmInstall(dir, withDevDeps) {
-		return new Promise(
-			function (resolve, reject) {
-				spawn("npm", ["install", "--no-progress", "--ignore-engines", "--ignore-scripts"], {
-					stdio: this.config.verbose ? "inherit" : "ignore",
-					cwd: dir,
-					env: {
-						...process.env,
-						NO_UPDATE_NOTIFIER: true,
-						NODE_ENV: withDevDeps ? undefined : "production", // do not install devDependencies!
-					},
+		return new Promise((resolve, reject) => {
+			this.spawnCommand("npm", ["install", "--no-progress", "--ignore-engines", "--ignore-scripts"], {
+				stdio: this.config.verbose ? "inherit" : "ignore",
+				cwd: dir,
+				env: {
+					...process.env,
+					NO_UPDATE_NOTIFIER: true,
+					NODE_ENV: withDevDeps ? undefined : "production", // do not install devDependencies!
+				},
+			})
+				.on("exit", (code) => {
+					resolve(code);
 				})
-					.on("exit", function (code) {
-						resolve(code);
-					})
-					.on("error", function (err) {
-						reject(err);
-					});
-			}.bind(this)
-		);
+				.on("error", (err) => {
+					reject(err);
+				});
+		});
 	}
 
 	_unzip(pathOrBuffer, targetPath, zipInternalPath /* used for plugin generators from GitHub (e.g. TS tutorial) */) {
 		const zip = new AdmZip(pathOrBuffer);
 		const zipEntries = zip.getEntries();
 		zipEntries.forEach((entry) => {
-			const match = !entry.isDirectory && entry.entryName.match(/[^\/]+(\/.+)/);
+			const match = !entry.isDirectory && entry.entryName.match(/[^/]+(\/.+)/);
 			let entryPath;
 			if (zipInternalPath && match && match[1].startsWith(zipInternalPath)) {
 				entryPath = path.dirname(match[1].substring(zipInternalPath.length));
@@ -262,10 +110,11 @@ export default class extends Generator {
 	async _installGenerator({ octokit, generator, generatorPath }) {
 		// lookup the default path of the generator if not set
 		if (!generator.branch) {
+			const { org: owner, name: repo, dir, branch } = generator;
 			try {
 				const repoInfo = await octokit.repos.get({
-					owner: generator.org,
-					repo: generator.name,
+					owner,
+					repo,
 				});
 				generator.branch = repoInfo.data.default_branch;
 			} catch (e) {
@@ -288,7 +137,7 @@ export default class extends Generator {
 			commitSHA = reqBranch.data.commit.sha;
 		} catch (ex) {
 			console.error(
-				chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!\n(Hint: ${e.message})`)
+				chalk.red(`Failed to retrieve the branch "${generator.branch}" for repository "${generator.name}" for "${generator.org}" organization! Run with --verbose for details!\n(Hint: ${ex.message})`),
 			);
 			if (this.options.verbose) {
 				console.error(chalk.red(ex.message));
@@ -426,7 +275,7 @@ export default class extends Generator {
 						if (options.request.retryCount === 0) {
 							// only retries once
 							this.log(
-								`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\`. `
+								`Retrying after ${retryAfter} seconds. Alternatively, you can cancel this operation and supply an auth token with the \`--ghAuthToken\` option. For more details, run \`yo easy-ui5 --help\`. `,
 							);
 							return true;
 						}
@@ -470,7 +319,7 @@ export default class extends Generator {
 		};
 
 		// helper to retrieve the available repositories for a GH user
-		const listGeneratorsForUser = async (ghUser, subGeneratorPrefix) => {
+		const listGeneratorsForUser = async (ghUser, subGeneratorPrefix, threshold) => {
 			const response = await octokit.repos.listForUser({
 				username: ghUser,
 				sort: "name",
@@ -488,13 +337,13 @@ export default class extends Generator {
 		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial#1.0
 		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator
 		//   > yo easy-ui5 SAP-samples/ui5-typescript-tutorial\!/generator#1.0
-		const reGenerator = /([^\/]+)\/([^\!\#]+)(?:\!([^\#]+))?(?:\#(.+))?/;
+		const reGenerator = /([^/]+)\/([^!#]+)(?:!([^#]+))?(?:#(.+))?/;
 		const matchGenerator = reGenerator.exec(this.options.generator);
 		if (matchGenerator) {
 			// derive and path the generator information from command line
 			const [owner, repo, dir = "/generator", branch] = matchGenerator.slice(1);
 			// the plugin path is derived from the owner, repo, dir and branch
-			const pluginPath = `_/${owner}/${repo}${dir.replace(/[\/\\]/g, "_")}${branch ? `#${branch.replace(/[\/\\]/g, "_")}` : ""}`;
+			const pluginPath = `_/${owner}/${repo}${dir.replace(/[/\\]/g, "_")}${branch ? `#${branch.replace(/[/\\]/g, "_")}` : ""}`;
 			generator = {
 				org: owner,
 				name: repo,
@@ -647,7 +496,7 @@ export default class extends Generator {
 		// do not execute the plugin generator during the setup/embed mode
 		if (!this.options.embed) {
 			// filter the local options and the help command
-			const opts = Object.keys(this._options).filter((optionName) => !(generatorOptions.hasOwnProperty(optionName) || optionName === "help"));
+			const opts = Object.keys(this._options).filter((optionName) => !(Object.prototype.hasOwnProperty.call(generatorOptions, optionName) || optionName === "help"));
 
 			// create the env for the plugin generator
 			let env = this.env; // in case of Yeoman UI the env is injected!
@@ -660,16 +509,16 @@ export default class extends Generator {
 			let subGenerators = await this._getGeneratorMetadata({ env, generatorPath });
 
 			// helper to derive the generator from the namespace
-			function deriveGenerator(namespace, defaultValue) {
+			const deriveGenerator = (namespace, defaultValue) => {
 				const match = namespace.match(/([^:]+):.+/);
 				return match ? match[1] : defaultValue === undefined ? namespace : defaultValue;
-			}
+			};
 
 			// helper to derive the subcommand from the namespace
-			function deriveSubcommand(namespace, defaultValue) {
+			const deriveSubcommand = (namespace, defaultValue) => {
 				const match = namespace.match(/^[^:]+:(.+)$/);
 				return match ? match[1] : defaultValue === undefined ? namespace : defaultValue;
-			}
+			};
 
 			// list the available subgenerators in the console (as help)
 			if (this.options.list) {
@@ -688,7 +537,7 @@ export default class extends Generator {
 								line += ` # ${subGenerator.displayName}`;
 							}
 							return `${output}\n${line}`;
-						}, `Subcommands (${subGenerators.length}):`)
+						}, `Subcommands (${subGenerators.length}):`),
 				);
 				return;
 			}
@@ -783,7 +632,7 @@ export default class extends Generator {
 									this.log(`The nested generator "${nestedGeneratorInfo.org}/${nestedGeneratorInfo.name}" has no subgenerator "${subcommand || "default"}"! Ignoring execution...`);
 								}
 							}
-						}) || []
+						}) || [],
 					);
 				};
 
@@ -808,26 +657,38 @@ export default class extends Generator {
 					});
 				};
 
-				// chain the execution of the generators
-				let chain = Promise.resolve();
-				for (const subGen of subGensToRun) {
-					chain = chain.then(
-						function () {
-							// we need to use env.run and not composeWith
-							// to ensure that subgenerators can have different
-							// dependencies than the root generator
-							return env.run(subGen, {
-								verbose: this.options.verbose,
-								embedded: true,
-								destinationRoot: this.destinationRoot(),
-							});
-						}.bind(this)
-					);
-				}
-
 				if (this.options.verbose) {
 					this.log(`Running generators in "${generatorPath}"...`);
 				}
+
+				// chain the execution of the generators
+				let chain = Promise.resolve();
+				for (const subGen of subGensToRun) {
+					chain = chain.then(() => {
+						// we need to use env.run and not composeWith
+						// to ensure that subgenerators can have different
+						// dependencies than the root generator
+						return env.run(subGen, {
+							verbose: this.options.verbose,
+							embedded: true,
+							destinationRoot: this.destinationRoot(),
+						});
+					});
+				}
+
+				// check whether repo should be initialized or not
+				/* TODO
+				chain.then(async () => {
+					this.initrepo = await this.prompt([
+						{
+							type: "confirm",
+							name: "initrepo",
+							message: "Would you like to initialize a local git repository for this project?",
+							default: true,
+						},
+					]);
+				});
+				*/
 			} else {
 				this.log(`The generator ${chalk.red(this.options.generator)} has no visible subgenerators!`);
 			}
@@ -852,6 +713,20 @@ export default class extends Generator {
 			if (this.options.verbose) {
 				this.log(`Stored plugin generator ${chalk.yellow(generator.name)} zip to "${generatorZIPPath}"!`);
 			}
+		}
+	}
+
+	end() {
+		if (this.config.get("initrepo")) {
+			this.spawnCommandSync("git", ["init", "--quiet"], {
+				cwd: this.destinationPath(),
+			});
+			this.spawnCommandSync("git", ["add", "."], {
+				cwd: this.destinationPath(),
+			});
+			this.spawnCommandSync("git", ["commit", "--quiet", "--allow-empty", "-m", "Initial commit"], {
+				cwd: this.destinationPath(),
+			});
 		}
 	}
 }
