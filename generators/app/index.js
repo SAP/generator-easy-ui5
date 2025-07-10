@@ -248,6 +248,37 @@ export default class extends Generator {
 		return "Easy UI5";
 	}
 
+	/**
+	 * Helper function to extract options that should be forwarded to subgenerators
+	 * @returns {Object} Options object for subgenerators
+	 */
+	_getSubGeneratorOptions() {
+		// Define internal options that should NOT be forwarded to subgenerators
+		const internalOptions = new Set([
+			'pluginsHome', 'plugins', 'pluginsWithDevDeps', 'ghBaseUrl', 'ghAuthToken',
+			'ghOrg', 'ghThreshold', 'subGeneratorPrefix', 'addGhBaseUrl', 'addGhOrg',
+			'addSubGeneratorPrefix', 'embed', 'list', 'skipUpdate', 'forceUpdate',
+			'offline', 'verbose', 'next', 'skipNested', 'generator', 'subcommand',
+			'help', 'env', 'resolved', 'namespace', 'namespaceId'
+		]);
+		
+		// Extract all options that are not internal
+		const subGeneratorOptions = {};
+		Object.keys(this.options).forEach(key => {
+			if (!internalOptions.has(key)) {
+				subGeneratorOptions[key] = this.options[key];
+			}
+		});
+		
+		// Return the base options plus the forwarded options
+		return {
+			verbose: this.options.verbose,
+			embedded: true,
+			destinationRoot: this.destinationRoot(),
+			...subGeneratorOptions
+		};
+	}
+
 	async _getGeneratorMetadata({ env, generatorPath }) {
 		// filter the hidden subgenerators already
 		//   -> subgenerators must be found in env as they are returned by lookup!
@@ -816,11 +847,7 @@ export default class extends Generator {
 							// we need to use env.run and not composeWith
 							// to ensure that subgenerators can have different
 							// dependencies than the root generator
-							return env.run(subGen, {
-								verbose: this.options.verbose,
-								embedded: true,
-								destinationRoot: this.destinationRoot(),
-							});
+							return env.run(subGen, this._getSubGeneratorOptions());
 						}.bind(this)
 					);
 				}
