@@ -1,9 +1,9 @@
 ---
-name: New Issue for the Easy-UI5 shell
+name: New Issue for the easy-ui5 shell
 about: Only use this template if there is a problem during the prompting phase or with the file generation. Use the other template if incorrect files were generated.
 ---
 
-## Easy-Ui5 version:
+## Easy UI5 version:
 
 > Run `yo easy-ui5 --plugins` to print all relevant version strings
 
