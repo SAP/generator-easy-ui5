@@ -74,8 +74,13 @@ Note that the developers also have their regular duties, so depending on the req
 
 First, make sure that you pull the latest state of the GitHub repository and then proceed with the following steps:
 
-1. Update the version: `npm version patch|minor|major`
+1. Make sure you have `husky` and `npm-run-all` installed globally:
 
-2. Push the new commit and tag: `git push && git push --tags`
+   ```sh
+   npm install -g husky npm-run-all
+   ```
+
+1. Update the version: `npm version patch|minor|major`
+1. Push the new commit and tag: `git push && git push --tags`
 
 A GitHub action will do the needful once the new tag has been pushed.
