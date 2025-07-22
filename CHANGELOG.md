@@ -1,10 +1,12 @@
-## <small>3.8.2 (2025-07-22)</small>
+## <small>3.8.3 (2025-07-22)</small>
 
 - 3.8.0 ([c68817b](https://github.com/SAP/generator-easy-ui5/commit/c68817b))
 - 3.8.1 ([d5ea70d](https://github.com/SAP/generator-easy-ui5/commit/d5ea70d))
-- 3.8.2 ([1185e76](https://github.com/SAP/generator-easy-ui5/commit/1185e76))
+- 3.8.2 ([1a294cf](https://github.com/SAP/generator-easy-ui5/commit/1a294cf))
+- 3.8.3 ([e18e1e2](https://github.com/SAP/generator-easy-ui5/commit/e18e1e2))
 - Reuse Version update from dep to toml ([79a4004](https://github.com/SAP/generator-easy-ui5/commit/79a4004))
 - chore: bump deps ([95ab483](https://github.com/SAP/generator-easy-ui5/commit/95ab483))
+- chore: node 20 ([b2a5ae9](https://github.com/SAP/generator-easy-ui5/commit/b2a5ae9))
 - chore: npm version will update package.json ([bfeaf05](https://github.com/SAP/generator-easy-ui5/commit/bfeaf05))
 - docs: add gen ai contribution guidelines ([2100b37](https://github.com/SAP/generator-easy-ui5/commit/2100b37))
 - docs: move genai section into CONTRIBUTING.md ([8c32432](https://github.com/SAP/generator-easy-ui5/commit/8c32432))
