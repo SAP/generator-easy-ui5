@@ -1,14 +1,17 @@
-const Generator = require("yeoman-generator"),
-	path = require("path"),
-	yosay = require("yosay"),
-	glob = require("glob");
+import Generator from "yeoman-generator";
+import path from "path";
+import yosay from "yosay";
+import { glob } from "glob";
+import url from "url";
 
-module.exports = class extends Generator {
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+
+export default class extends Generator {
 	static displayName = "This name should be displayed";
 
 	async writing() {
 		if (!this.options.embedded) {
-			this.log(yosay(`Welcome to the ${chalk.red("test-v4")} generator!`));
+			this.log(yosay(`Welcome to the ${chalk.red("test-v5")} generator!`));
 		}
 
 		const oConfig = this.config.getAll();
@@ -26,4 +29,4 @@ module.exports = class extends Generator {
 				this.fs.copyTpl(sOrigin, sTarget, oConfig);
 			});
 	}
-};
+}
