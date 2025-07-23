@@ -9,10 +9,10 @@
     "plugins"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
-    "prepublishOnly": "npx yo@4.3.1 ./ project --embed",
+    "prepublishOnly": "npx yo@5.1.0 ./generators/app/index.js project --embed",
     "start": "yo easy-ui5 project",
     "test": "mocha",
     "test:subgen:list": "yo easy-ui5 project --list",
