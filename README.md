@@ -14,7 +14,7 @@ This generator has been created to simplify the creation of your UI5 prototypes.
 
 The purpose of the (preinstalled) `project generator` is to guide you on your first steps with [SAPUI5](https://sapui5.hana.ondemand.com/) and [SAP BTP](https://www.sap.com/products/business-technology-platform.html) deployments. Once you are familiar with those technologies, you might want to tweak the projects to adapt them for productive use-cases (such as continuous deployment pipelines and full i18n).
 
-> :warning: Starting with easy-ui5 v3, all templates will be outsource to repositories in the [UI5 Community](https://github.com/ui5-community/). This project is from now on a shell that will offer all generators hosted on that GitHub org. easy-ui5 will download and install these repositories when needed.
+> Note: This project was formerly located at the [SAP GitHub organization](https://github.com/SAP). Starting with easy-ui5 v3, all templates were outsourced to repositories in the [UI5 Community](https://github.com/ui5-community/). To highlight easy-ui5 is also a fully community driven project, the project was moved to the [UI5 Community](https://github.com/ui5-community/), too. Still SAP employees take care of managing incoming feature requests and bug reports.
 >
 > By default, it will download the repository [generator-ui5-project](https://github.com/ui5-community/generator-ui5-project/) which contains the templates that were previously integrated in easy-ui5 < 3.
 
@@ -139,15 +139,15 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 
 We welcome any type of contribution (code contributions, pull requests, issues) to this project equally.
 
-Please follow our instructions if you would like to [contribute](https://github.com/SAP/generator-easy-ui5/blob/master/CONTRIBUTING.md).
+Please follow our instructions if you would like to [contribute](https://github.com/ui5-community/generator-easy-ui5/blob/master/CONTRIBUTING.md).
 
 [npm-image]: https://img.shields.io/npm/v/generator-easy-ui5.svg
 [npm-url]: https://www.npmjs.com/package/generator-easy-ui5
-[test-image]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml/badge.svg
-[test-url]: https://github.com/SAP/generator-easy-ui5/actions/workflows/main.yml
-[librariesio-image]: https://img.shields.io/librariesio/github/SAP/generator-easy-ui5
-[repo-url]: https://github.com/SAP/generator-easy-ui5
+[test-image]: https://github.com/ui5-community/generator-easy-ui5/actions/workflows/main.yml/badge.svg
+[test-url]: https://github.com/ui5-community/generator-easy-ui5/actions/workflows/main.yml
+[librariesio-image]: https://img.shields.io/librariesio/github/ui5-community/generator-easy-ui5
+[repo-url]: https://github.com/ui5-community/generator-easy-ui5
 [license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
-[license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
-[reuse-image]: https://api.reuse.software/badge/github.com/SAP/generator-easy-ui5/
-[reuse-url]: https://api.reuse.software/info/github.com/SAP/generator-easy-ui5/
+[license-url]: https://github.com/ui5-community/generator-easy-ui5/blob/master/LICENSE
+[reuse-image]: https://api.reuse.software/badge/github.com/ui5-community/generator-easy-ui5/
+[reuse-url]: https://api.reuse.software/info/github.com/ui5-community/generator-easy-ui5/

@@ -4,13 +4,13 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 
 ## Analyze Issues
 
-Analyzing issue reports can be a lot of effort. Any help is welcome! Go to the Github [issue tracker](https://github.com/SAP/generator-easy-ui5/issues?q=is%3Aopen) and find an open issue which needs additional work or a bugfix.
+Analyzing issue reports can be a lot of effort. Any help is welcome! Go to the Github [issue tracker](https://github.com/ui5-community/generator-easy-ui5/issues?q=is%3Aopen) and find an open issue which needs additional work or a bugfix.
 
 Additional work may be further information, or a minimized example or gist, or it might be a hint that helps understanding the issue. Maybe you can even find and contribute a bugfix?
 
 ## Report an Issue
 
-If you find a bug - behavior of easy-ui5 code contradicting its specification - you are welcome to report it. We can only handle well-reported, actual bugs, so please follow the guidelines below before reporting the issue to the Github [issue tracker](https://github.com/SAP/generator-easy-ui5/issues).
+If you find a bug - behavior of easy-ui5 code contradicting its specification - you are welcome to report it. We can only handle well-reported, actual bugs, so please follow the guidelines below before reporting the issue to the Github [issue tracker](https://github.com/ui5-community/generator-easy-ui5/issues).
 
 ### Quick Checklist for Bug Reports
 
@@ -22,7 +22,7 @@ Issue report checklist:
 - Good summary
 - Well-documented
 - Minimal example
-- Use the [template](https://github.com/SAP/generator-easy-ui5/issues/new)
+- Use the [template](https://github.com/ui5-community/generator-easy-ui5/issues/new)
 
 ### Issue Reporting Disclaimer
 
@@ -44,7 +44,7 @@ My **overall vision for this project** is to support basic scaffolding for multi
 
 As artificial intelligence evolves, AI-generated code is becoming valuable for many software projects, including open-source initiatives. While we recognize the potential benefits of incorporating AI-generated content into our open-source projects there are certain requirements that need to be reflected and adhered to when making contributions.
 
-Please see our [guideline for AI-generated code contributions to SAP Open Source Software Projects](https://github.com/SAP/.github/blob/main/CONTRIBUTING_USING_GENAI.md) for these requirements.
+Please see our [guideline for AI-generated code contributions to Open Source Software Projects](https://github.com/ui5-community/.github/blob/main/CONTRIBUTING_USING_GENAI.md) for these requirements.
 
 ## Developer Certificate of Origin (DCO)
 
